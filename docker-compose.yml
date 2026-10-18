@@ -6,13 +6,19 @@ services:
       args:
         VITE_API_BASE_URL: /api
         VITE_GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID}
-    container_name: travelPhoto-frontend
+    container_name: travelphoto-web
+    image: travelphoto-web:latest
     restart: unless-stopped
     ports:
-      - "8090:80"
+      # Quy tac [PP][SS]: travelphoto = ma 83 -> WEB 8300. Chi bind localhost
+      # (public qua Cloudflare Tunnel). Nginx trong container van listen 80.
+      - "127.0.0.1:${WEB_PORT:-8300}:80"
     networks:
-      - shared-network
+      - internal
 
 networks:
-  shared-network:
+  # Mang noi bo du an do api/docker-compose.yml tao -> deploy api truoc,
+  # hoac chay: docker network create travelphoto-net
+  internal:
+    name: travelphoto-net
     external: true

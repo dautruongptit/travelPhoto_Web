@@ -33,28 +33,28 @@ export default defineConfig(({ mode }) => {
     },
     server: {
       host: '0.0.0.0',
-      port: parseInt(process.env.PORT || '8443'),
+      port: parseInt(process.env.PORT || '8300'),
       strictPort: true,
       proxy: {
-        '/api': { target: 'http://localhost:8085', changeOrigin: true, configure: withOfflineFallback() },
+        '/api': { target: 'http://localhost:8310', changeOrigin: true, configure: withOfflineFallback() },
         // CHỈ proxy "/oauth2/authorization/**" (endpoint khởi tạo OAuth2 Login của
         // Spring Security) — KHÔNG proxy bare "/oauth2" vì sẽ nuốt luôn route
         // "/oauth2/callback" của chính SPA (App.tsx tự đọc token từ query string ở
         // route này), khiến request bị đẩy nhầm sang backend và lỗi NoResourceFoundException.
-        '/oauth2/authorization': { target: 'http://localhost:8085', changeOrigin: true, configure: withOfflineFallback() },
-        '/login/oauth2': { target: 'http://localhost:8085', changeOrigin: true, configure: withOfflineFallback() },
+        '/oauth2/authorization': { target: 'http://localhost:8310', changeOrigin: true, configure: withOfflineFallback() },
+        '/login/oauth2': { target: 'http://localhost:8310', changeOrigin: true, configure: withOfflineFallback() },
       },
       watch: { ignored: ['**/.figma/**'] },
     },
     preview: {
       host: '0.0.0.0',
-      port: parseInt(process.env.PORT || '8443'),
+      port: parseInt(process.env.PORT || '8300'),
     },
   }
 })
 
 /**
- * Khi backend (localhost:8085) chưa start/crash, http-proxy của Vite dev server mặc
+ * Khi backend (localhost:8310) chưa start/crash, http-proxy của Vite dev server mặc
  * định chỉ đóng kết nối — trình duyệt tự hiện trang lỗi kết nối riêng (không phải
  * response HTTP thật), trải nghiệm còn tệ hơn cả trang 502 mặc định. Bắt sự kiện
  * "error" của proxy và trả về đúng public/error.html (cùng popup thông báo dùng ở
