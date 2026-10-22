@@ -1,6 +1,6 @@
 import { useState, useMemo, useRef } from "react"
 import type { TravelEvent, User, Photo, SortOption } from "../types"
-import { formatFileSize, formatDateRange } from "../utils"
+import { formatFileSize, formatDateRange, formatDate } from "../utils"
 import Lightbox from "./Lightbox"
 import ShareModal from "./ShareModal"
 import AuthImg from "./AuthImg"
@@ -23,6 +23,7 @@ const SORT_LABELS: Record<SortOption, string> = {
   "name-za": "Tên Z–A",
 }
 
+type AlbumTab = "photos" | "info" | "shared"
 type ViewMode = "justified" | "grid" | "large"
 const VIEW_MODE_KEY = "travelphoto-album-view"
 
@@ -72,6 +73,7 @@ export default function AlbumPage({
   onDeletePhotos,
   onToast,
 }: Props) {
+  const [activeTab, setActiveTab] = useState<AlbumTab>("photos")
   const [selected, setSelected] = useState<Set<string>>(new Set())
   const [sort, setSort] = useState<SortOption>("newest")
   const [filterQuery, setFilterQuery] = useState("")
@@ -126,6 +128,14 @@ export default function AlbumPage({
   }, [event.photos, q, sort])
 
   const totalSize = event.photos.reduce((s, p) => s + p.size, 0)
+  const isOwner = !!user && String(event.ownerId) === String(user.id)
+  const photoTotal = event.photoCount ?? event.photos.length
+
+  const TABS: { key: AlbumTab; label: string }[] = [
+    { key: "photos", label: `Ảnh (${photoTotal})` },
+    { key: "info", label: "Thông tin" },
+    ...(isOwner ? [{ key: "shared" as AlbumTab, label: "Chia sẻ" }] : []),
+  ]
 
   const toggleSelect = (id: string) => {
     setSelected((prev) => {
@@ -164,7 +174,7 @@ export default function AlbumPage({
                   strokeLinejoin="round"
                 />
               </svg>
-              Khám phá
+              Trang chủ
             </button>
             <span>/</span>
             <span className="text-neutral-900 dark:text-white font-medium truncate max-w-xs sm:max-w-md">
@@ -175,7 +185,7 @@ export default function AlbumPage({
           {/* Event info */}
           <div className="flex items-start justify-between gap-4">
             <div className="flex items-start gap-4">
-              <div className="hidden sm:block w-20 h-20 rounded-xl overflow-hidden bg-neutral-100 dark:bg-neutral-800 flex-shrink-0 border border-neutral-200 dark:border-neutral-800">
+              <div className="hidden sm:block w-20 h-20 rounded-2xl overflow-hidden bg-neutral-100 dark:bg-neutral-800 flex-shrink-0 border border-neutral-200 dark:border-neutral-800">
                 <AuthImg
                   src={event.coverImage}
                   alt={event.name}
@@ -248,7 +258,7 @@ export default function AlbumPage({
               {user && String(event.ownerId) === String(user.id) && (
                 <button
                   onClick={() => setShowShareModal(true)}
-                  className="flex items-center gap-1.5 bg-neutral-100 hover:bg-neutral-200 dark:bg-neutral-800 dark:hover:bg-neutral-700 text-neutral-700 dark:text-neutral-200 font-medium px-3.5 py-2 rounded-full transition-all text-xs sm:text-sm cursor-pointer"
+                  className="flex items-center gap-1.5 h-9 px-3.5 bg-neutral-50 dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 rounded-xl text-sm font-medium text-neutral-600 dark:text-neutral-200 hover:border-blue-300 hover:text-blue-600 transition-all cursor-pointer"
                 >
                   <svg
                     width="15"
@@ -269,7 +279,7 @@ export default function AlbumPage({
               {user && (
                 <button
                   onClick={onUpload}
-                  className="flex items-center gap-1.5 bg-[#ff0084] hover:bg-[#e00074] text-white font-medium px-3.5 py-2 rounded-full transition-all text-xs sm:text-sm shadow-sm cursor-pointer"
+                  className="flex items-center gap-1.5 h-9 px-4 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-xl transition-all text-sm shadow-sm hover:shadow-md hover:shadow-blue-200 cursor-pointer"
                 >
                   <svg
                     width="15"
@@ -279,21 +289,38 @@ export default function AlbumPage({
                     stroke="white"
                     strokeWidth="2.5"
                   >
-                    <path
-                      d="M12 4v16m8-8H4"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" strokeLinecap="round" />
+                    <polyline points="17 8 12 3 7 8" strokeLinecap="round" strokeLinejoin="round" />
+                    <line x1="12" y1="3" x2="12" y2="15" strokeLinecap="round" />
                   </svg>
-                  <span>Thêm ảnh</span>
+                  <span className="hidden sm:inline">Tải ảnh</span>
                 </button>
               )}
             </div>
           </div>
+
+          {/* Tabs */}
+          <div className="flex gap-0 mt-5 border-b border-neutral-100 dark:border-neutral-800 -mb-px">
+            {TABS.map((tab) => (
+              <button
+                key={tab.key}
+                onClick={() => setActiveTab(tab.key)}
+                className={`px-4 py-2.5 text-sm font-semibold border-b-2 transition-colors mr-1 cursor-pointer ${
+                  activeTab === tab.key
+                    ? "border-blue-600 text-blue-600"
+                    : "border-transparent text-neutral-500 hover:text-neutral-700 dark:hover:text-neutral-300"
+                }`}
+              >
+                {tab.label}
+              </button>
+            ))}
+          </div>
         </div>
       </div>
 
-      <div className="max-w-[1920px] mx-auto px-4 sm:px-8 lg:px-14 xl:px-24 py-4">
+      <div className="max-w-[1920px] mx-auto px-4 sm:px-8 lg:px-14 xl:px-24 py-5">
+        {activeTab === "photos" && (
+          <>
         {/* Toolbar */}
         <div className="flex items-center justify-between gap-3 mb-3 flex-wrap">
           {/* Search inside album */}
@@ -323,8 +350,8 @@ export default function AlbumPage({
               type="text"
               value={filterQuery}
               onChange={(e) => setFilterQuery(e.target.value)}
-              placeholder="Lọc tên ảnh…"
-              className="w-full h-8 pl-8 pr-7 bg-neutral-100 dark:bg-neutral-800/80 border border-transparent dark:border-neutral-800 rounded-full text-xs sm:text-sm text-neutral-800 dark:text-neutral-200 placeholder-neutral-400 focus:outline-none focus:border-[#0063dc] transition-all"
+              placeholder="Tìm tên ảnh…"
+              className="w-full h-9 pl-9 pr-8 bg-neutral-50 dark:bg-neutral-800/80 border border-neutral-200 dark:border-neutral-800 rounded-xl text-sm text-neutral-700 dark:text-neutral-200 placeholder-neutral-400 focus:outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-100 dark:focus:ring-blue-900/40 transition-all"
             />
             {filterQuery && (
               <button
@@ -389,7 +416,7 @@ export default function AlbumPage({
             <div className="relative" ref={sortRef}>
               <button
                 onClick={() => setShowSortMenu((v) => !v)}
-                className="flex items-center gap-1.5 h-8 px-3 bg-neutral-100 dark:bg-neutral-800/80 border border-transparent dark:border-neutral-800 rounded-full text-xs text-neutral-700 dark:text-neutral-300 hover:border-neutral-300 dark:hover:border-neutral-700 transition-colors cursor-pointer"
+                className="flex items-center gap-1.5 h-9 px-3.5 bg-neutral-50 dark:bg-neutral-800/80 border border-neutral-200 dark:border-neutral-800 rounded-xl text-sm text-neutral-600 dark:text-neutral-300 hover:border-blue-300 transition-colors cursor-pointer"
               >
                 <svg
                   width="13"
@@ -430,7 +457,7 @@ export default function AlbumPage({
                 onClick={
                   selected.size === photos.length ? clearSelect : selectAll
                 }
-                className="h-8 px-3 bg-neutral-100 dark:bg-neutral-800/80 border border-transparent dark:border-neutral-800 rounded-full text-xs text-neutral-700 dark:text-neutral-300 hover:border-neutral-300 dark:hover:border-neutral-700 transition-colors cursor-pointer"
+                className="h-9 px-3.5 bg-neutral-50 dark:bg-neutral-800/80 border border-neutral-200 dark:border-neutral-800 rounded-xl text-sm text-neutral-600 dark:text-neutral-300 hover:border-blue-300 transition-colors cursor-pointer"
               >
                 {selected.size === photos.length
                   ? "Bỏ chọn tất cả"
@@ -441,19 +468,112 @@ export default function AlbumPage({
         </div>
 
         {/* Flickr Justified Photo Gallery */}
-        <JustifiedGallery
-          photos={photos}
-          selectedIds={selected}
-          onSelectPhoto={(id) => toggleSelect(id)}
-          onPhotoClick={(_photo, index) => {
-            setSlideshow(false)
-            setLightboxIndex(index)
-          }}
-          targetRowHeight={250}
-          gap={4}
-          mode={viewMode}
-          loading={event.photos.length === 0 && (event.photoCount ?? 0) > 0}
-        />
+        {photos.length === 0 && photoTotal === 0 ? (
+          <div className="flex flex-col items-center justify-center py-28 text-center">
+            <div className="w-20 h-20 bg-neutral-50 dark:bg-neutral-800 rounded-3xl flex items-center justify-center mb-5">
+              <svg width="36" height="36" viewBox="0 0 24 24" fill="none">
+                <rect x="3" y="3" width="18" height="18" rx="3" stroke="#D1D5DB" strokeWidth="1.5" />
+                <circle cx="8.5" cy="8.5" r="1.5" fill="#D1D5DB" />
+                <path d="M21 15l-5-5L5 21" stroke="#D1D5DB" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
+            </div>
+            <h3 className="text-lg font-semibold text-neutral-900 dark:text-white mb-2">
+              {q ? "Không tìm thấy ảnh" : "Chưa có ảnh nào"}
+            </h3>
+            <p className="text-neutral-500 dark:text-neutral-400 text-sm mb-6">
+              {q
+                ? `Không có ảnh khớp với "${q}".`
+                : "Tải ảnh lên để bắt đầu lưu giữ kỷ niệm chuyến đi này."}
+            </p>
+            {user && !q && (
+              <button
+                onClick={onUpload}
+                className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold px-5 py-2.5 rounded-xl transition-colors shadow-lg shadow-blue-200 dark:shadow-none cursor-pointer"
+              >
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                  <path d="M12 5v14M5 12h14" stroke="white" strokeWidth="2.5" strokeLinecap="round" />
+                </svg>
+                Tải ảnh lên ngay
+              </button>
+            )}
+          </div>
+        ) : (
+          <JustifiedGallery
+            photos={photos}
+            selectedIds={selected}
+            onSelectPhoto={(id) => toggleSelect(id)}
+            onPhotoClick={(_photo, index) => {
+              setSlideshow(false)
+              setLightboxIndex(index)
+            }}
+            targetRowHeight={250}
+            gap={4}
+            mode={viewMode}
+            loading={event.photos.length === 0 && (event.photoCount ?? 0) > 0}
+          />
+        )}
+          </>
+        )}
+
+        {/* INFO TAB */}
+        {activeTab === "info" && (
+          <div className="max-w-xl space-y-5">
+            <div className="bg-white dark:bg-[#18181b] rounded-2xl border border-neutral-100 dark:border-neutral-800 shadow-sm overflow-hidden">
+              <div className="h-48 bg-neutral-100 dark:bg-neutral-800">
+                <AuthImg
+                  src={event.coverImage}
+                  alt={event.name}
+                  className="w-full h-full object-cover"
+                />
+              </div>
+              <div className="p-5 space-y-4">
+                {[
+                  { label: "Tên sự kiện", value: event.name },
+                  { label: "Mô tả", value: event.description || "—" },
+                  { label: "Địa điểm", value: event.location || "—" },
+                  {
+                    label: "Thời gian",
+                    value: formatDateRange(event.startDate, event.endDate),
+                  },
+                  {
+                    label: "Số ảnh",
+                    value: `${photoTotal} ảnh · ${formatFileSize(event.totalSizeBytes ?? totalSize)}`,
+                  },
+                  { label: "Người tạo", value: event.createdBy || "—" },
+                  { label: "Ngày tạo", value: formatDate(event.createdAt) },
+                ].map(({ label, value }) => (
+                  <div key={label} className="flex items-start gap-4">
+                    <span className="text-sm text-neutral-400 w-32 flex-shrink-0 pt-0.5">
+                      {label}
+                    </span>
+                    <span className="text-sm text-neutral-900 dark:text-white font-medium">
+                      {value}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* SHARED TAB (chỉ chủ album) */}
+        {activeTab === "shared" && isOwner && (
+          <div className="max-w-xl py-10 text-center mx-auto">
+            <div className="text-4xl mb-3">🔗</div>
+            <h3 className="text-base font-semibold text-neutral-900 dark:text-white mb-2">
+              Chia sẻ album
+            </h3>
+            <p className="text-sm text-neutral-500 dark:text-neutral-400 mb-5">
+              Tạo link chia sẻ hoặc quản lý những người có thể xem album này.
+            </p>
+            <button
+              onClick={() => setShowShareModal(true)}
+              className="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold px-5 py-2.5 rounded-xl transition-colors cursor-pointer"
+            >
+              Cài đặt chia sẻ
+            </button>
+          </div>
+        )}
       </div>
 
       {/* Floating selection toolbar */}

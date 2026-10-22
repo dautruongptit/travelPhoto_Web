@@ -211,11 +211,12 @@ export default function Dashboard({
       {/* Events / Albums Grid */}
       <section>
         <div className="flex items-center justify-between mb-4">
-          <h2 className="text-base font-bold text-neutral-900 dark:text-white tracking-tight">
+          <h2 className="text-sm font-semibold text-neutral-700 dark:text-neutral-200 flex items-center gap-2">
+            <span className="w-1.5 h-4 bg-indigo-500 rounded-full" />
             {searchQuery
-              ? `Kết quả tìm kiếm cho "${searchQuery}"`
-              : "Tất cả album chuyến đi"}
-            <span className="ml-2 text-xs font-normal text-neutral-400">
+              ? `Kết quả tìm kiếm "${searchQuery}"`
+              : "Tất cả sự kiện"}
+            <span className="text-neutral-400 font-normal">
               ({filtered.length})
             </span>
           </h2>
@@ -225,14 +226,14 @@ export default function Dashboard({
           searchQuery ? (
             <div className="py-20 text-center">
               <p className="text-neutral-400 text-sm">
-                Không tìm thấy album hoặc địa điểm phù hợp.
+                Không tìm thấy sự kiện phù hợp.
               </p>
             </div>
           ) : (
             <EmptyEvents onCreateEvent={onCreateEvent} />
           )
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-5">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
             {filtered.map((event) => (
               <EventCard
                 key={event.id}
