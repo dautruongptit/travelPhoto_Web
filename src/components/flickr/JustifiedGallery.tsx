@@ -11,6 +11,8 @@ interface JustifiedGalleryProps {
   onToggleLike?: (photoId: string, currentLiked: boolean) => void
   targetRowHeight?: number
   gap?: number
+  /** true khi ảnh của event đang được tải (hiện spinner thay vì "chưa có ảnh") */
+  loading?: boolean
 }
 
 export default function JustifiedGallery({
@@ -21,6 +23,7 @@ export default function JustifiedGallery({
   onToggleLike,
   targetRowHeight = 240,
   gap = 4,
+  loading = false,
 }: JustifiedGalleryProps) {
   const containerRef = useRef<HTMLDivElement>(null)
   const [containerWidth, setContainerWidth] = useState<number>(0)
@@ -48,8 +51,26 @@ export default function JustifiedGallery({
     gap: responsiveGap,
   })
 
-  if (photos.length === 0) {
-    return (
+  let photoIndex = 0
+
+  // Container (có ref cho ResizeObserver) phải LUÔN được render. Trước đây khi photos rỗng
+  // (ảnh đang tải) component return sớm -> ref chưa gắn lúc effect chạy -> không bao giờ đo
+  // được độ rộng -> khi ảnh về vẫn không vẽ gì cho tới lần mở lại thứ 2.
+  return (
+    <div
+      ref={containerRef}
+      className="w-full select-none"
+      style={{
+        display: "flex",
+        flexDirection: "column",
+        gap: `${responsiveGap}px`,
+      }}
+    >
+      {photos.length === 0 && (loading ? (
+        <div className="py-24 flex justify-center">
+          <div className="w-8 h-8 border-2 border-[#0063dc] border-t-transparent rounded-full animate-spin" />
+        </div>
+      ) : (
       <div className="py-24 text-center">
         <div className="w-16 h-16 mx-auto mb-3 rounded-full bg-neutral-100 dark:bg-neutral-800/80 flex items-center justify-center text-neutral-400">
           <svg
@@ -73,21 +94,7 @@ export default function JustifiedGallery({
           Hãy bắt đầu chia sẻ những bức ảnh tuyệt đẹp của bạn.
         </p>
       </div>
-    )
-  }
-
-  let photoIndex = 0
-
-  return (
-    <div
-      ref={containerRef}
-      className="w-full select-none"
-      style={{
-        display: "flex",
-        flexDirection: "column",
-        gap: `${responsiveGap}px`,
-      }}
-    >
+      ))}
       {rows.map((row, rowIndex) => (
         <div
           key={`row-${rowIndex}`}

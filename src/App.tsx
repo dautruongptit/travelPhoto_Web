@@ -11,7 +11,7 @@ import type {
 import { storagePlans } from "./mockData"
 import { generateId, formatTotalSize, FREE_STORAGE_BYTES } from "./utils"
 import { useTheme } from "./hooks/useTheme"
-import { useHistoryNavigation } from "./hooks/useHistoryNavigation"
+import { useHistoryNavigation, parsePath } from "./hooks/useHistoryNavigation"
 import { getToken, setToken, clearToken } from "./lib/apiClient"
 import { fetchCurrentUser, logout as apiLogout } from "./lib/authApi"
 import {
@@ -122,15 +122,18 @@ export default function App() {
   }, [])
 
   // Tải danh sách Event thật từ backend (gọi sau khi xác nhận đã đăng nhập).
-  const loadEvents = useCallback(async () => {
+  const loadEvents = useCallback(async (): Promise<TravelEvent[]> => {
     try {
       const page = await listEvents(0, 100)
-      setEvents(page.content.map((dto) => mapEventResponse(dto)))
+      const list = page.content.map((dto) => mapEventResponse(dto))
+      setEvents(list)
+      return list
     } catch (err) {
       addToast(
         "error",
         err instanceof Error ? err.message : "Không thể tải danh sách sự kiện.",
       )
+      return []
     }
   }, [addToast])
 
@@ -262,11 +265,23 @@ export default function App() {
       return
     }
     fetchCurrentUser()
-      .then((restoredUser) => {
+      .then(async (restoredUser) => {
         setUser(restoredUser)
-        setView("dashboard")
-        replace({ view: "dashboard" })
-        loadEvents()
+        // F5 / mở link trực tiếp: khôi phục đúng màn hình theo URL (/events/{id}, /help)
+        const target = parsePath(window.location.pathname)
+        const list = await loadEvents()
+        if (target.view === "album" && list.some((e) => e.id === target.eventId)) {
+          setSelectedEventId(target.eventId)
+          setView("album")
+          replace(target)
+          loadEventPhotos(target.eventId)
+        } else if (target.view === "help") {
+          setView("help")
+          replace(target)
+        } else {
+          setView("dashboard")
+          replace({ view: "dashboard" }) // URL lạ / không có quyền -> về trang chủ, URL về "/"
+        }
       })
       .catch(() => {
         // token hết hạn / không hợp lệ -> coi như chưa đăng nhập

@@ -343,6 +343,7 @@ export default function AlbumPage({
           onPhotoClick={(_photo, index) => setLightboxIndex(index)}
           targetRowHeight={250}
           gap={4}
+          loading={event.photos.length === 0 && (event.photoCount ?? 0) > 0}
         />
       </div>
 

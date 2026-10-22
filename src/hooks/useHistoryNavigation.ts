@@ -1,9 +1,29 @@
 import { useCallback, useEffect, useRef } from "react"
 
-type NavState = { view: "login" } | { view: "dashboard" } | {
+export type NavState = { view: "login" } | { view: "dashboard" } | {
   view: "album"
   eventId: string
 } | { view: "help" }
+
+/** URL hiển thị trên thanh địa chỉ cho từng màn hình (login/dashboard dùng chung "/"). */
+export function pathFor(state: NavState): string {
+  switch (state.view) {
+    case "album":
+      return `/events/${state.eventId}`
+    case "help":
+      return "/help"
+    default:
+      return "/"
+  }
+}
+
+/** Đọc ngược URL hiện tại (F5 / mở link trực tiếp) thành màn hình cần khôi phục. */
+export function parsePath(pathname: string): NavState {
+  const m = pathname.match(/^\/events\/(\d+)\/?$/)
+  if (m) return { view: "album", eventId: m[1] }
+  if (pathname === "/help") return { view: "help" }
+  return { view: "dashboard" }
+}
 
 interface Options {
   onNavigate: (state: NavState) => void
@@ -38,13 +58,13 @@ export function useHistoryNavigation({ onNavigate }: Options) {
   // Tạo entry lịch sử mới (cho phép back về trạng thái trước đó)
 
   const push = useCallback((state: NavState) => {
-    window.history.pushState(state, "")
+    window.history.pushState(state, "", pathFor(state))
   }, [])
 
   // Ghi đè entry hiện tại, không tạo entry mới (dùng cho login/logout)
 
   const replace = useCallback((state: NavState) => {
-    window.history.replaceState(state, "")
+    window.history.replaceState(state, "", pathFor(state))
   }, [])
 
   return { push, replace }
