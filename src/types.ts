@@ -11,6 +11,14 @@ export interface Photo {
   url: string
   /** URL để hiển thị (RAW -> JPEG xem trước). Nếu thiếu thì dùng url. */
   previewUrl?: string
+  // EXIF thật do backend đọc lúc upload (có thể thiếu)
+  cameraModel?: string
+  lensModel?: string
+  focalLength?: string
+  fNumber?: string
+  shutterSpeed?: string
+  iso?: number
+  takenAt?: string
   raw?: boolean
   size: number
   width: number
@@ -72,11 +80,6 @@ export interface FlickrPhoto extends Photo {
   commentsCount?: number
   isLiked?: boolean
   aspectRatio?: number
-  cameraModel?: string
-  focalLength?: string
-  iso?: number
-  fNumber?: string
-  shutterSpeed?: string
 }
 
 export type FlickrNavTab = "explore" | "photostream" | "albums" | "trips"

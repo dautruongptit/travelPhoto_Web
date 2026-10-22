@@ -23,6 +23,46 @@ const SORT_LABELS: Record<SortOption, string> = {
   "name-za": "Tên Z–A",
 }
 
+type ViewMode = "justified" | "grid" | "large"
+const VIEW_MODE_KEY = "travelphoto-album-view"
+
+const VIEW_BUTTONS: { mode: ViewMode; label: string; icon: React.ReactNode }[] = [
+  {
+    mode: "grid",
+    label: "Lưới ô vuông",
+    icon: (
+      <>
+        <rect x="3" y="3" width="4.5" height="4.5" />
+        <rect x="9.75" y="3" width="4.5" height="4.5" />
+        <rect x="16.5" y="3" width="4.5" height="4.5" />
+        <rect x="3" y="9.75" width="4.5" height="4.5" />
+        <rect x="9.75" y="9.75" width="4.5" height="4.5" />
+        <rect x="16.5" y="9.75" width="4.5" height="4.5" />
+        <rect x="3" y="16.5" width="4.5" height="4.5" />
+        <rect x="9.75" y="16.5" width="4.5" height="4.5" />
+        <rect x="16.5" y="16.5" width="4.5" height="4.5" />
+      </>
+    ),
+  },
+  {
+    mode: "justified",
+    label: "Hàng cân bằng",
+    icon: (
+      <>
+        <rect x="3" y="3" width="11" height="8" />
+        <rect x="15.5" y="3" width="5.5" height="8" />
+        <rect x="3" y="13" width="6" height="8" />
+        <rect x="10.5" y="13" width="10.5" height="8" />
+      </>
+    ),
+  },
+  {
+    mode: "large",
+    label: "Ảnh lớn",
+    icon: <rect x="4" y="4" width="16" height="16" rx="1" />,
+  },
+]
+
 export default function AlbumPage({
   event,
   user,
@@ -39,6 +79,23 @@ export default function AlbumPage({
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false)
   const [showShareModal, setShowShareModal] = useState(false)
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null)
+  const [slideshow, setSlideshow] = useState(false)
+  const [viewMode, setViewMode] = useState<ViewMode>(() => {
+    try {
+      const saved = localStorage.getItem(VIEW_MODE_KEY)
+      return saved === "grid" || saved === "large" ? saved : "justified"
+    } catch {
+      return "justified"
+    }
+  })
+  const changeViewMode = (m: ViewMode) => {
+    setViewMode(m)
+    try {
+      localStorage.setItem(VIEW_MODE_KEY, m)
+    } catch {
+      // bỏ qua nếu trình duyệt chặn localStorage
+    }
+  }
   const sortRef = useRef<HTMLDivElement>(null)
 
   const q = filterQuery || searchQuery
@@ -91,7 +148,7 @@ export default function AlbumPage({
     <main className="min-h-screen pb-16">
       {/* Flickr Sub-header & Album Cover banner */}
       <div className="bg-white dark:bg-[#0b0b0c] border-b border-neutral-200/80 dark:border-neutral-800/80 transition-colors">
-        <div className="max-w-[1920px] mx-auto px-4 sm:px-6 py-4">
+        <div className="max-w-[1920px] mx-auto px-4 sm:px-8 lg:px-14 xl:px-24 py-4">
           {/* Breadcrumb */}
           <div className="flex items-center gap-2 text-xs sm:text-sm text-neutral-500 dark:text-neutral-400 mb-3">
             <button
@@ -236,7 +293,7 @@ export default function AlbumPage({
         </div>
       </div>
 
-      <div className="max-w-[1920px] mx-auto px-2 sm:px-4 py-4">
+      <div className="max-w-[1920px] mx-auto px-4 sm:px-8 lg:px-14 xl:px-24 py-4">
         {/* Toolbar */}
         <div className="flex items-center justify-between gap-3 mb-3 flex-wrap">
           {/* Search inside album */}
@@ -281,6 +338,54 @@ export default function AlbumPage({
 
           {/* Sort & Select actions */}
           <div className="flex items-center gap-2">
+            {/* Chế độ xem: trình chiếu · lưới · hàng cân bằng · ảnh lớn */}
+            <div className="flex items-center gap-0.5 text-neutral-500 dark:text-neutral-400 mr-1">
+              {photos.length > 0 && (
+                <button
+                  onClick={() => {
+                    setSlideshow(true)
+                    setLightboxIndex(0)
+                  }}
+                  title="Trình chiếu"
+                  aria-label="Trình chiếu"
+                  className="w-8 h-8 flex items-center justify-center rounded-md hover:bg-neutral-100 dark:hover:bg-neutral-800 hover:text-neutral-800 dark:hover:text-white transition-colors cursor-pointer"
+                >
+                  <svg
+                    width="18"
+                    height="18"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  >
+                    <rect x="3" y="4" width="18" height="13" rx="2" />
+                    <path d="M10 8.5v4l3.5-2z" fill="currentColor" />
+                    <path d="M8 21h8" />
+                  </svg>
+                </button>
+              )}
+              {VIEW_BUTTONS.map((b) => (
+                <button
+                  key={b.mode}
+                  onClick={() => changeViewMode(b.mode)}
+                  title={b.label}
+                  aria-label={b.label}
+                  aria-pressed={viewMode === b.mode}
+                  className={`w-8 h-8 flex items-center justify-center rounded-md transition-colors cursor-pointer ${
+                    viewMode === b.mode
+                      ? "text-[#0063dc]"
+                      : "hover:bg-neutral-100 dark:hover:bg-neutral-800 hover:text-neutral-800 dark:hover:text-white"
+                  }`}
+                >
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+                    {b.icon}
+                  </svg>
+                </button>
+              ))}
+            </div>
+
             <div className="relative" ref={sortRef}>
               <button
                 onClick={() => setShowSortMenu((v) => !v)}
@@ -340,9 +445,13 @@ export default function AlbumPage({
           photos={photos}
           selectedIds={selected}
           onSelectPhoto={(id) => toggleSelect(id)}
-          onPhotoClick={(_photo, index) => setLightboxIndex(index)}
+          onPhotoClick={(_photo, index) => {
+            setSlideshow(false)
+            setLightboxIndex(index)
+          }}
           targetRowHeight={250}
           gap={4}
+          mode={viewMode}
           loading={event.photos.length === 0 && (event.photoCount ?? 0) > 0}
         />
       </div>
@@ -387,7 +496,11 @@ export default function AlbumPage({
           photographerName={user?.name}
           selected={selected}
           onToggleSelect={toggleSelect}
-          onClose={() => setLightboxIndex(null)}
+          autoPlay={slideshow}
+          onClose={() => {
+            setLightboxIndex(null)
+            setSlideshow(false)
+          }}
         />
       )}
 

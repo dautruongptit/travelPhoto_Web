@@ -1,6 +1,10 @@
-import { useRef, useState, useEffect } from "react"
+import { useRef, useState, useEffect, useMemo } from "react"
 import type { FlickrPhoto, Photo } from "../../types"
-import { useJustifiedLayout } from "../../hooks/useJustifiedLayout"
+import {
+  useJustifiedLayout,
+  type LayoutRow,
+  type LayoutPhoto,
+} from "../../hooks/useJustifiedLayout"
 import PhotoCard from "./PhotoCard"
 
 interface JustifiedGalleryProps {
@@ -13,6 +17,8 @@ interface JustifiedGalleryProps {
   gap?: number
   /** true khi ảnh của event đang được tải (hiện spinner thay vì "chưa có ảnh") */
   loading?: boolean
+  /** justified: hàng cân bằng (mặc định) · grid: ô vuông đều nhau · large: ảnh lớn (ít ảnh mỗi hàng) */
+  mode?: "justified" | "grid" | "large"
 }
 
 export default function JustifiedGallery({
@@ -24,6 +30,7 @@ export default function JustifiedGallery({
   targetRowHeight = 240,
   gap = 4,
   loading = false,
+  mode = "justified",
 }: JustifiedGalleryProps) {
   const containerRef = useRef<HTMLDivElement>(null)
   const [containerWidth, setContainerWidth] = useState<number>(0)
@@ -42,14 +49,39 @@ export default function JustifiedGallery({
     return () => observer.disconnect()
   }, [])
 
-  const responsiveTargetHeight = containerWidth < 640 ? 170 : targetRowHeight
+  const baseHeight = mode === "large" ? targetRowHeight * 2 : targetRowHeight
+  const responsiveTargetHeight =
+    containerWidth < 640 ? (mode === "large" ? 300 : 170) : baseHeight
   const responsiveGap = containerWidth < 640 ? 3 : gap
 
-  const rows = useJustifiedLayout(photos, {
+  const justifiedRows = useJustifiedLayout(photos, {
     containerWidth,
     targetRowHeight: responsiveTargetHeight,
     gap: responsiveGap,
   })
+
+  // Kiểu lưới: ô vuông bằng nhau, số cột tự theo độ rộng khung (ô tối thiểu ~170px)
+  const gridRows = useMemo<LayoutRow[]>(() => {
+    if (mode !== "grid" || !containerWidth) return []
+    const minCell = containerWidth < 640 ? 110 : 170
+    const cols = Math.max(
+      2,
+      Math.floor((containerWidth + responsiveGap) / (minCell + responsiveGap)),
+    )
+    const cell = Math.floor((containerWidth - responsiveGap * (cols - 1)) / cols)
+    const out: LayoutRow[] = []
+    for (let i = 0; i < photos.length; i += cols) {
+      const chunk: LayoutPhoto[] = photos.slice(i, i + cols).map((p) => ({
+        ...p,
+        computedWidth: cell,
+        computedHeight: cell,
+      }))
+      out.push({ photos: chunk, height: cell })
+    }
+    return out
+  }, [mode, containerWidth, responsiveGap, photos])
+
+  const rows = mode === "grid" ? gridRows : justifiedRows
 
   let photoIndex = 0
 

@@ -11,6 +11,8 @@ interface Props {
   selected: Set<string>
   onToggleSelect: (id: string) => void
   onClose: () => void
+  /** Mở ở chế độ trình chiếu tự động chuyển ảnh */
+  autoPlay?: boolean
 }
 
 const ZOOM_LEVELS = [1, 1.4, 1.8, 2.5]
@@ -23,10 +25,13 @@ export default function Lightbox({
   selected,
   onToggleSelect,
   onClose,
+  autoPlay = false,
 }: Props) {
   const [index, setIndex] = useState(initialIndex)
+  const [playing, setPlaying] = useState(autoPlay)
   const [zoomStep, setZoomStep] = useState(0)
-  const [showInfo, setShowInfo] = useState(false)
+  // Màn hình rộng: mở sẵn bảng Thông tin & EXIF khi xem ảnh (phím I để ẩn/hiện).
+  const [showInfo, setShowInfo] = useState(() => window.innerWidth >= 1024)
   const [likedMap, setLikedMap] = useState<Record<string, boolean>>({})
   const stripRef = useRef<HTMLDivElement>(null)
   const touchStartX = useRef<number>(0)
@@ -56,6 +61,10 @@ export default function Lightbox({
       if (e.key === "ArrowLeft") prev()
       else if (e.key === "ArrowRight") next()
       else if (e.key === "Escape") onClose()
+      else if (e.key === " ") {
+        e.preventDefault()
+        setPlaying((v) => !v)
+      }
       else if (e.key.toLowerCase() === "i") setShowInfo((v) => !v)
       else if (e.key === "+" || e.key === "=") zoomIn()
       else if (e.key === "-") zoomOut()
@@ -67,6 +76,16 @@ export default function Lightbox({
     window.addEventListener("keydown", handler)
     return () => window.removeEventListener("keydown", handler)
   }, [prev, next, onClose, photo?.id])
+
+  // Trình chiếu: tự chuyển ảnh mỗi 4 giây, hết ảnh thì quay lại ảnh đầu
+  useEffect(() => {
+    if (!playing || photos.length < 2) return
+    const timer = setInterval(() => {
+      setZoomStep(0)
+      setIndex((i) => (i + 1) % photos.length)
+    }, 4000)
+    return () => clearInterval(timer)
+  }, [playing, photos.length])
 
   // Cuộn thanh thumbnail tới ảnh hiện tại
   useEffect(() => {
@@ -105,7 +124,9 @@ export default function Lightbox({
   const aperture = flickrPhoto.fNumber
   const shutter = flickrPhoto.shutterSpeed
   const iso = flickrPhoto.iso
-  const hasExif = Boolean(camera || focalLength || aperture || shutter || iso)
+  const lens = flickrPhoto.lensModel
+  const takenAt = flickrPhoto.takenAt
+  const hasExif = Boolean(camera || lens || focalLength || aperture || shutter || iso)
 
   return (
     <div
@@ -202,6 +223,28 @@ export default function Lightbox({
             <span className="hidden sm:inline">
               {isLiked ? "Đã thích" : "Thích"}
             </span>
+          </button>
+
+          {/* Trình chiếu (Space) */}
+          <button
+            onClick={() => setPlaying((v) => !v)}
+            className={`w-8 h-8 rounded-full flex items-center justify-center transition-colors cursor-pointer ${
+              playing
+                ? "bg-white text-neutral-900"
+                : "text-neutral-300 hover:text-white hover:bg-white/10"
+            }`}
+            title={playing ? "Dừng trình chiếu (Space)" : "Trình chiếu (Space)"}
+          >
+            {playing ? (
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor">
+                <rect x="6" y="5" width="4" height="14" rx="1" />
+                <rect x="14" y="5" width="4" height="14" rx="1" />
+              </svg>
+            ) : (
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M7 4.5v15a1 1 0 0 0 1.5.86l12.5-7.5a1 1 0 0 0 0-1.72L8.5 3.64A1 1 0 0 0 7 4.5z" />
+              </svg>
+            )}
           </button>
 
           {/* Toggle EXIF Info Panel */}
@@ -396,8 +439,13 @@ export default function Lightbox({
             <div className="bg-[#222226] p-4 rounded-xl border border-neutral-800">
               <div className="flex items-center gap-2 text-sm font-semibold text-white mb-3">
                 <span>📷</span>
-                <span>{camera}</span>
+                <span>{camera || "Không rõ máy ảnh"}</span>
               </div>
+              {lens && (
+                <p className="text-[11px] text-neutral-400 -mt-1.5 mb-3">
+                  🔭 {lens}
+                </p>
+              )}
               <div className="grid grid-cols-2 gap-3 text-xs">
                 <div className="bg-neutral-800/60 p-2.5 rounded-lg">
                   <p className="text-neutral-400 text-[10px] uppercase font-mono">
@@ -441,6 +489,14 @@ export default function Lightbox({
                   {photo.width} × {photo.height} px
                 </span>
               </div>
+              {takenAt && (
+                <div className="flex justify-between py-1.5 border-b border-neutral-800/80">
+                  <span className="text-neutral-400">Ngày chụp</span>
+                  <span className="font-mono text-neutral-200">
+                    {new Date(takenAt).toLocaleString("vi-VN")}
+                  </span>
+                </div>
+              )}
               <div className="flex justify-between py-1.5 border-b border-neutral-800/80">
                 <span className="text-neutral-400">Dung lượng</span>
                 <span className="font-mono text-neutral-200">

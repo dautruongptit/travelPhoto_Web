@@ -25,6 +25,21 @@ export interface PhotoResponse {
 
   uploadedBy: string
 
+  // EXIF thật (null nếu ảnh không có / ảnh cũ)
+  cameraModel?: string | null
+
+  lensModel?: string | null
+
+  focalLength?: string | null
+
+  aperture?: string | null
+
+  shutterSpeed?: string | null
+
+  iso?: number | null
+
+  takenAt?: string | null
+
   uploadedTime: string // ISO datetime
 }
 
