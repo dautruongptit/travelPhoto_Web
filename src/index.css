@@ -139,3 +139,11 @@ input[type='date']::-webkit-calendar-picker-indicator {
 .toast-in {
   animation: toastIn 0.22s cubic-bezier(0.4, 0, 0.2, 1);
 }
+
+@keyframes heroZoom { from { transform: scale(1) } to { transform: scale(1.04) } }
+@keyframes heroIn { from { opacity: 0; transform: translateY(12px) } to { opacity: 1; transform: none } }
+.hero-zoom { animation: heroZoom 20s ease-in-out infinite alternate; }
+.hero-in { opacity: 0; animation: heroIn .7s ease-out forwards; animation-delay: var(--d, 0ms); }
+@media (prefers-reduced-motion: reduce) {
+  .hero-zoom, .hero-in { animation: none; opacity: 1; transform: none; }
+}

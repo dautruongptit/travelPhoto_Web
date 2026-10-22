@@ -21,7 +21,7 @@ export default function LoginPage({
   })
 
   return (
-    <div className="min-h-screen flex relative">
+    <div className="min-h-screen flex flex-col lg:flex-row relative">
       {/* Theme toggle */}
       <button
         onClick={onToggleTheme}
@@ -62,14 +62,35 @@ export default function LoginPage({
       </button>
 
       {/* Left hero panel */}
-      <div className="hidden lg:flex lg:w-3/5 relative overflow-hidden">
-        <img
-          src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=1400&auto=format&q=85"
-          alt="Travel landscape"
-          className="absolute inset-0 w-full h-full object-cover"
+      <div className="flex h-[220px] lg:h-auto lg:w-3/5 relative overflow-hidden bg-[#1b1646]">
+        <picture>
+          <source srcSet="/images/login-hero.avif" type="image/avif" />
+          <source srcSet="/images/login-hero.webp" type="image/webp" />
+          <img
+            src="/images/login-hero.png"
+            alt=""
+            aria-hidden="true"
+            loading="eager"
+            decoding="async"
+            style={{ objectPosition: "center top" }}
+            className="hero-zoom absolute inset-0 w-full h-full object-cover"
+          />
+        </picture>
+        {/* Lớp phủ dưới lên: đậm ở dark, ~50% ở light */}
+        <div
+          aria-hidden="true"
+          className="absolute inset-0 pointer-events-none opacity-50 dark:opacity-100"
+          style={{
+            background:
+              "linear-gradient(to top, rgba(17,24,39,0.85) 0%, rgba(27,22,70,0.55) 30%, transparent 60%)",
+          }}
         />
-        <div className="absolute inset-0 bg-gradient-to-br from-blue-900/80 via-blue-800/60 to-transparent" />
-        <div className="relative z-10 flex flex-col justify-between p-14 w-full">
+        {/* Mép phải mờ dần sang panel phải */}
+        <div
+          aria-hidden="true"
+          className="hidden lg:block absolute inset-y-0 right-0 w-20 pointer-events-none bg-gradient-to-r from-transparent to-[#111827] opacity-50 dark:opacity-100"
+        />
+        <div className="relative z-10 flex flex-col justify-between p-5 lg:p-12 xl:p-16 w-full">
           {/* Logo */}
           <div className="flex items-center gap-3">
             <div className="w-9 h-9 bg-white dark:bg-gray-900 rounded-xl flex items-center justify-center">
@@ -88,27 +109,41 @@ export default function LoginPage({
             </span>
           </div>
           {/* Quote */}
-          <div>
-            <h1 className="text-white text-5xl font-bold leading-tight tracking-tight mb-6">
+          <div className="max-w-[480px]">
+            <h1
+              className="hero-in text-[#FFF3E0] text-2xl lg:text-5xl xl:text-6xl font-extrabold leading-tight tracking-tight lg:mb-6"
+              style={{ filter: "drop-shadow(0 2px 12px rgba(17,24,39,0.5))" }}
+            >
               Lưu giữ từng
               <br />
-              khoảnh khắc
+              <span className="bg-gradient-to-r from-[#FFB48A] to-[#FF7A9C] bg-clip-text text-transparent">
+                khoảnh khắc
+              </span>
               <br />
               du lịch
             </h1>
-            <p className="text-blue-100/90 text-lg font-normal leading-relaxed max-w-sm">
+            <p
+              style={{ "--d": "100ms" } as React.CSSProperties}
+              className="hero-in hidden lg:block text-[#CFCBEA] text-base xl:text-lg leading-relaxed"
+            >
               Tạo album, chia sẻ ảnh với bạn bè và lưu giữ những chuyến đi đáng
               nhớ — mãi mãi.
             </p>
-            <div className="flex items-center gap-6 mt-10">
+            <div
+              style={{ "--d": "200ms" } as React.CSSProperties}
+              className="hero-in hidden lg:flex items-center gap-8 mt-10"
+            >
               {[
                 ["4K+", "Ảnh được tải lên"],
                 ["120+", "Sự kiện"],
                 ["98%", "Hài lòng"],
               ].map(([num, label]) => (
-                <div key={label}>
-                  <p className="text-white text-2xl font-bold">{num}</p>
-                  <p className="text-blue-200 text-xs mt-0.5">{label}</p>
+                <div
+                  key={label}
+                  className="[&:not(:first-child)]:border-l [&:not(:first-child)]:border-white/10 [&:not(:first-child)]:pl-8"
+                >
+                  <p className="text-[#FFB48A] text-2xl font-bold">{num}</p>
+                  <p className="text-[#CFCBEA] text-xs mt-0.5">{label}</p>
                 </div>
               ))}
             </div>
@@ -118,23 +153,6 @@ export default function LoginPage({
 
       {/* Right login panel */}
       <div className="flex-1 flex flex-col items-center justify-center px-8 bg-white dark:bg-gray-900">
-        {/* Mobile logo */}
-        <div className="lg:hidden flex items-center gap-3 mb-12">
-          <div className="w-10 h-10 bg-blue-600 rounded-xl flex items-center justify-center">
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
-              <path d="M12 2L2 7l10 5 10-5-10-5z" fill="white" />
-              <path
-                d="M2 17l10 5 10-5M2 12l10 5 10-5"
-                stroke="white"
-                strokeWidth="2"
-                strokeLinecap="round"
-              />
-            </svg>
-          </div>
-          <span className="text-gray-900 dark:text-white font-semibold text-xl tracking-tight">
-            Travel Photo
-          </span>
-        </div>
 
         <div className="w-full max-w-sm slide-up">
           <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-2 tracking-tight">
