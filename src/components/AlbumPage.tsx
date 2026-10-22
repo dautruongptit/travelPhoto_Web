@@ -5,6 +5,7 @@ import Lightbox from "./Lightbox"
 import ShareModal from "./ShareModal"
 import AuthImg from "./AuthImg"
 import JustifiedGallery from "./flickr/JustifiedGallery"
+import PhotoMasonry from "./PhotoMasonry"
 
 interface Props {
   event: TravelEvent
@@ -24,10 +25,22 @@ const SORT_LABELS: Record<SortOption, string> = {
 }
 
 type AlbumTab = "photos" | "info" | "shared"
-type ViewMode = "justified" | "grid" | "large"
+type ViewMode = "masonry" | "justified" | "grid" | "large"
 const VIEW_MODE_KEY = "travelphoto-album-view"
 
 const VIEW_BUTTONS: { mode: ViewMode; label: string; icon: React.ReactNode }[] = [
+  {
+    mode: "masonry",
+    label: "Xếp gạch (giữ tỉ lệ ảnh)",
+    icon: (
+      <>
+        <rect x="3" y="3" width="8" height="10" />
+        <rect x="13" y="3" width="8" height="6" />
+        <rect x="3" y="15" width="8" height="6" />
+        <rect x="13" y="11" width="8" height="10" />
+      </>
+    ),
+  },
   {
     mode: "grid",
     label: "Lưới ô vuông",
@@ -85,9 +98,11 @@ export default function AlbumPage({
   const [viewMode, setViewMode] = useState<ViewMode>(() => {
     try {
       const saved = localStorage.getItem(VIEW_MODE_KEY)
-      return saved === "grid" || saved === "large" ? saved : "justified"
+      return saved === "grid" || saved === "large" || saved === "justified"
+        ? saved
+        : "masonry"
     } catch {
-      return "justified"
+      return "masonry"
     }
   })
   const changeViewMode = (m: ViewMode) => {
@@ -497,6 +512,28 @@ export default function AlbumPage({
               </button>
             )}
           </div>
+        ) : viewMode === "masonry" ? (
+          photos.length === 0 ? (
+            event.photos.length === 0 ? (
+              <div className="flex justify-center py-20">
+                <div className="w-8 h-8 border-2 border-blue-600 border-t-transparent rounded-full animate-spin" />
+              </div>
+            ) : (
+              <p className="py-20 text-center text-sm text-neutral-500">
+                Không có ảnh khớp với "{q}".
+              </p>
+            )
+          ) : (
+            <PhotoMasonry
+              photos={photos}
+              selectedIds={selected}
+              onSelectPhoto={(id) => toggleSelect(id)}
+              onPhotoClick={(_photo, index) => {
+                setSlideshow(false)
+                setLightboxIndex(index)
+              }}
+            />
+          )
         ) : (
           <JustifiedGallery
             photos={photos}

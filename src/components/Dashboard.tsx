@@ -247,17 +247,12 @@ export default function Dashboard({
             {!searchQuery && (
               <button
                 onClick={onCreateEvent}
-                className="group text-left cursor-pointer"
+                className="group min-h-[220px] rounded-2xl border-2 border-dashed border-gray-200 dark:border-neutral-700 hover:border-blue-400 hover:bg-blue-50/40 dark:hover:bg-neutral-900 flex flex-col items-center justify-center gap-2 text-gray-400 hover:text-blue-600 transition-all cursor-pointer"
               >
-                <div
-                  className="rounded-2xl bg-neutral-200 dark:bg-neutral-800 group-hover:bg-neutral-300 dark:group-hover:bg-neutral-700 transition-colors flex items-center justify-center"
-                  style={{ aspectRatio: "3/2" }}
-                >
-                  <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="text-neutral-600 dark:text-neutral-300">
-                    <path d="M12 5v14M5 12h14" strokeLinecap="round" />
-                  </svg>
-                </div>
-                <p className="pt-2.5 px-1 font-bold text-neutral-900 dark:text-neutral-100 text-base">Tạo</p>
+                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <path d="M12 5v14M5 12h14" strokeLinecap="round" />
+                </svg>
+                <span className="text-sm font-semibold">Tạo sự kiện</span>
               </button>
             )}
           </div>
