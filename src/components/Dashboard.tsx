@@ -14,6 +14,9 @@ interface Props {
   onDeleteEvents: (ids: string[]) => void
 }
 
+// Tạm ẩn mục "Khoảnh khắc mới nhất" trên trang chủ (đổi thành true để hiện lại).
+const SHOW_RECENT_MOMENTS = false
+
 const EmptyEvents = ({ onCreateEvent }: { onCreateEvent: () => void }) => (
   <div className="flex flex-col items-center justify-center py-28 text-center">
     <div className="w-20 h-20 bg-neutral-100 dark:bg-neutral-800/80 rounded-full flex items-center justify-center mb-5 text-neutral-400">
@@ -142,24 +145,6 @@ export default function Dashboard({
           </p>
         </div>
 
-        <div className="flex items-center gap-2.5">
-          <button
-            onClick={onCreateEvent}
-            className="flex items-center gap-1.5 bg-[#0063dc] hover:bg-[#0052b8] text-white font-semibold px-4 py-2 rounded-full transition-all text-xs sm:text-sm shadow-sm active:scale-95 cursor-pointer"
-          >
-            <svg
-              width="15"
-              height="15"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2.5"
-            >
-              <path d="M12 5v14M5 12h14" strokeLinecap="round" />
-            </svg>
-            <span>Tạo sự kiện mới</span>
-          </button>
-        </div>
       </div>
 
       {/* Flickr Quick Metric Pills */}
@@ -199,7 +184,7 @@ export default function Dashboard({
       </div>
 
       {/* Recent Photos Showcase (Flickr Justified Gallery) */}
-      {recentPhotos.length > 0 && !searchQuery && (
+      {SHOW_RECENT_MOMENTS && recentPhotos.length > 0 && !searchQuery && (
         <section className="mb-10">
           <div className="flex items-center justify-between mb-3">
             <div className="flex items-center gap-2">
@@ -258,6 +243,22 @@ export default function Dashboard({
                 onClick={() => onOpenEvent(event.id)}
               />
             ))}
+            {!searchQuery && (
+              <button
+                onClick={onCreateEvent}
+                className="group text-left cursor-pointer"
+              >
+                <div
+                  className="rounded-2xl bg-neutral-200 dark:bg-neutral-800 group-hover:bg-neutral-300 dark:group-hover:bg-neutral-700 transition-colors flex items-center justify-center"
+                  style={{ aspectRatio: "3/2" }}
+                >
+                  <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="text-neutral-600 dark:text-neutral-300">
+                    <path d="M12 5v14M5 12h14" strokeLinecap="round" />
+                  </svg>
+                </div>
+                <p className="pt-2.5 px-1 font-bold text-neutral-900 dark:text-neutral-100 text-base">Tạo</p>
+              </button>
+            )}
           </div>
         )}
       </section>

@@ -49,6 +49,7 @@ function mapEventResponse(
     endDate: dto.endDate || dto.startDate,
     location: dto.location,
     coverImage: dto.coverImageUrl || FALLBACK_COVER_IMAGE,
+    thumbnails: dto.previewImageUrls ?? [],
     photos,
     photoCount: dto.photoCount,
     totalSizeBytes: dto.totalSize,

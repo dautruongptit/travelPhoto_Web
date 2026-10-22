@@ -5,7 +5,7 @@ import {
   ACCEPTED_TYPES,
   MAX_FILE_SIZE,
   RAW_EXTENSIONS,
-  isRawFileName,
+  needsPreviewBadge,
 } from "../utils"
 import { uploadPhotos } from "../api/photos"
 import {
@@ -75,7 +75,7 @@ export default function UploadModal({
         }
 
         // RAW: trình duyệt không hiển thị được -> không tạo preview (hiện nhãn "RAW")
-        const preview = isRawFileName(f.name) ? "" : URL.createObjectURL(f)
+        const preview = needsPreviewBadge(f.name) ? "" : URL.createObjectURL(f)
         const entry: FileEntry = {
           id,
           file: f,
@@ -368,7 +368,7 @@ export default function UploadModal({
               </div>
 
               <p className="text-xs text-neutral-400">
-                hoặc kéo thả nhiều ảnh trực tiếp vào đây (JPG, PNG, WEBP, RAW: CR2, NEF, ARW, DNG... — tối đa 50MB/ảnh)
+                hoặc kéo thả nhiều ảnh trực tiếp vào đây (JPG, PNG, WEBP, HEIC của iPhone, RAW: CR2, NEF, ARW, DNG... — tối đa 50MB/ảnh)
               </p>
 
               {/* Input file bình thường */}
@@ -435,7 +435,7 @@ export default function UploadModal({
                     />
                   ) : (
                     <div className="w-full h-full flex items-center justify-center text-[10px] font-bold text-neutral-500 dark:text-neutral-300">
-                      RAW
+                      {entry.file.name.split(".").pop()?.toUpperCase().slice(0, 4)}
                     </div>
                   )}
                 </div>

@@ -1,5 +1,5 @@
 import type { TravelEvent, User } from "../types"
-import { formatDateRange, formatTimeAgo } from "../utils"
+import { formatDateRange } from "../utils"
 import AuthImg from "./AuthImg"
 
 interface Props {
@@ -10,6 +10,20 @@ interface Props {
   onClick: () => void
 }
 
+function Tile({ src, alt, className }: { src?: string; alt: string; className: string }) {
+  return (
+    <div className={`overflow-hidden bg-neutral-200 dark:bg-neutral-800 ${className}`}>
+      {src && (
+        <AuthImg
+          src={src}
+          alt={alt}
+          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 ease-out"
+        />
+      )}
+    </div>
+  )
+}
+
 export default function EventCard({
   event,
   selected = false,
@@ -17,29 +31,25 @@ export default function EventCard({
   onClick,
 }: Props) {
   const totalPhotos = event.photoCount ?? event.photos.length
+  const thumbs = event.thumbnails ?? []
 
   return (
     <article
       onClick={onClick}
-      className={`group bg-white dark:bg-[#18181b] rounded-2xl overflow-hidden border transition-all duration-200 cursor-pointer ${
-        selected
-          ? "border-[#0063dc] ring-2 ring-[#0063dc] ring-offset-2 dark:ring-offset-[#0b0b0c]"
-          : "border-neutral-200/80 dark:border-neutral-800 hover:border-neutral-300 dark:hover:border-neutral-700 shadow-sm hover:shadow-md"
+      className={`group cursor-pointer rounded-2xl transition-all duration-200 ${
+        selected ? "ring-2 ring-[#0063dc] ring-offset-2 dark:ring-offset-[#0b0b0c]" : ""
       }`}
     >
-      {/* Cover */}
+      {/* Collage: 1 ảnh lớn bên trái + 2 ảnh nhỏ xếp dọc bên phải */}
       <div
-        className="relative overflow-hidden bg-neutral-100 dark:bg-neutral-800"
-        style={{ aspectRatio: "16/10" }}
+        className="relative grid grid-cols-3 grid-rows-2 gap-0.5 rounded-2xl overflow-hidden"
+        style={{ aspectRatio: "3/2" }}
       >
-        <AuthImg
-          src={event.coverImage}
-          alt={event.name}
-          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 ease-out"
-        />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent" />
+        <Tile src={thumbs[0]} alt={event.name} className="col-span-2 row-span-2" />
+        <Tile src={thumbs[1]} alt={event.name} className="" />
+        <Tile src={thumbs[2]} alt={event.name} className="" />
+        <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors pointer-events-none" />
 
-        {/* Select badge (top-left) */}
         {onSelect && (
           <button
             onClick={(e) => {
@@ -54,14 +64,7 @@ export default function EventCard({
             }`}
           >
             {selected ? (
-              <svg
-                width="14"
-                height="14"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2.5"
-              >
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
                 <polyline points="20 6 9 17 4 12" />
               </svg>
             ) : (
@@ -69,83 +72,20 @@ export default function EventCard({
             )}
           </button>
         )}
-
-        {/* Photo count badge */}
-        <div className="absolute top-3 right-3 flex items-center gap-1.5 bg-black/60 backdrop-blur-md text-white text-xs font-medium px-2.5 py-1 rounded-full border border-white/10">
-          <svg
-            width="12"
-            height="12"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="white"
-            strokeWidth="2"
-          >
-            <rect x="3" y="3" width="18" height="18" rx="2" />
-            <circle cx="8.5" cy="8.5" r="1.5" />
-            <path
-              d="M21 15l-5-5L5 21"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            />
-          </svg>
-          <span>{totalPhotos} ảnh</span>
-        </div>
-
-        {/* Event name on cover image */}
-        <div className="absolute bottom-3 left-3 right-3">
-          <p className="text-white font-bold text-base sm:text-lg leading-tight drop-shadow-sm truncate">
-            {event.name}
-          </p>
-        </div>
       </div>
 
-      {/* Body */}
-      <div className="p-4">
-        {/* Location */}
-        {event.location && (
-          <div className="flex items-center gap-1.5 text-neutral-500 dark:text-neutral-400 text-xs mb-2">
-            <svg
-              width="12"
-              height="12"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-            >
-              <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z" />
-              <circle cx="12" cy="9" r="2.5" />
-            </svg>
-            <span className="truncate">{event.location}</span>
-          </div>
-        )}
-
-        {/* Description */}
-        {event.description && (
-          <p className="text-neutral-600 dark:text-neutral-300 text-xs sm:text-sm leading-relaxed line-clamp-2 mb-3">
-            {event.description}
-          </p>
-        )}
-
-        {/* Meta */}
-        <div className="flex items-center justify-between pt-3 border-t border-neutral-100 dark:border-neutral-800 text-xs text-neutral-400 dark:text-neutral-500">
-          <div className="flex items-center gap-1">
-            <svg
-              width="12"
-              height="12"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-            >
-              <rect x="3" y="4" width="18" height="18" rx="2" />
-              <line x1="16" y1="2" x2="16" y2="6" />
-              <line x1="8" y1="2" x2="8" y2="6" />
-              <line x1="3" y1="10" x2="21" y2="10" />
-            </svg>
-            <span>{formatDateRange(event.startDate, event.endDate)}</span>
-          </div>
-          <span>{formatTimeAgo(event.createdAt)}</span>
-        </div>
+      {/* Text */}
+      <div className="pt-2.5 px-1">
+        <p className="font-bold text-neutral-900 dark:text-neutral-100 text-base leading-tight truncate">
+          {event.name}
+        </p>
+        <p className="text-neutral-500 dark:text-neutral-400 text-xs mt-1 truncate">
+          {totalPhotos} ảnh
+          {event.location ? ` · ${event.location}` : ""}
+        </p>
+        <p className="text-neutral-400 dark:text-neutral-500 text-xs mt-0.5 truncate">
+          {formatDateRange(event.startDate, event.endDate)}
+        </p>
       </div>
     </article>
   )

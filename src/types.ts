@@ -36,6 +36,7 @@ export interface TravelEvent {
   endDate: string
   location: string
   coverImage: string
+  thumbnails?: string[]
   photos: Photo[]
   // Tổng số ảnh / dung lượng theo backend (EventResponse.photoCount/totalSize) —
   // dùng để hiển thị ở Dashboard/EventCard mà không cần tải hết `photos` của

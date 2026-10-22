@@ -149,7 +149,7 @@ export default function Lightbox({
       onTouchEnd={handleTouchEnd}
     >
       {/* Top Header Bar: trái = Quay lại · phải = Chia sẻ, Phóng to, Thu nhỏ, Yêu thích, Xóa, Tải về, Thông tin */}
-      <div className="flex items-center justify-between gap-4 px-3 sm:px-5 h-14 bg-black/60 backdrop-blur-md border-b border-neutral-800/60 z-20">
+      <div className="flex items-center justify-between gap-4 px-3 sm:px-5 h-14 bg-black/60 backdrop-blur-md border-b border-neutral-800/60 z-40">
         {/* Trái: quay lại */}
         <button
           onClick={onClose}

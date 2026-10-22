@@ -21,6 +21,8 @@ export interface EventResponse {
 
   coverImageUrl: string
 
+  previewImageUrls?: string[]
+
   photoCount: number
 
   totalSize: number // bytes

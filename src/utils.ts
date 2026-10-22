@@ -64,6 +64,7 @@ export const ACCEPTED_TYPES = [
   "image/png",
   "image/webp",
   "image/heic",
+  "image/heif",
 ]
 
 export const MAX_FILE_SIZE = 50 * 1024 * 1024 // 50 MB (khớp backend + nginx)
@@ -77,6 +78,17 @@ export const RAW_EXTENSIONS = [
 /** URL ảnh dùng để HIỂN THỊ: ưu tiên previewUrl (RAW -> JPEG xem trước), không có thì dùng url gốc. */
 export const displayUrl = (p: { url: string; previewUrl?: string }): string =>
   p.previewUrl || p.url
+
+export const HEIC_EXTENSIONS = [".heic", ".heif"]
+
+export const isHeicFileName = (name: string): boolean => {
+  const lower = name.toLowerCase()
+  return HEIC_EXTENSIONS.some((ext) => lower.endsWith(ext))
+}
+
+/** RAW / HEIC: trình duyệt không hiển thị trực tiếp được -> hiện nhãn thay vì ảnh xem trước. */
+export const needsPreviewBadge = (name: string): boolean =>
+  isRawFileName(name) || isHeicFileName(name)
 
 export const isRawFileName = (name: string): boolean => {
   const lower = name.toLowerCase()
