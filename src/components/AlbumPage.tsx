@@ -497,6 +497,26 @@ export default function AlbumPage({
           selected={selected}
           onToggleSelect={toggleSelect}
           autoPlay={slideshow}
+          onShare={
+            user && String(event.ownerId) === String(user.id)
+              ? () => {
+                  setLightboxIndex(null)
+                  setSlideshow(false)
+                  setShowShareModal(true)
+                }
+              : undefined
+          }
+          onDelete={
+            user
+              ? (photoId) => {
+                  // Đóng Lightbox rồi mở hộp thoại xác nhận xóa (nằm dưới Lightbox về z-index)
+                  setSelected(new Set([photoId]))
+                  setLightboxIndex(null)
+                  setSlideshow(false)
+                  setShowDeleteConfirm(true)
+                }
+              : undefined
+          }
           onClose={() => {
             setLightboxIndex(null)
             setSlideshow(false)

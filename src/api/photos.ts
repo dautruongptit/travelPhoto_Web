@@ -32,6 +32,8 @@ export interface PhotoResponse {
 
   focalLength?: string | null
 
+  focalLength35mm?: string | null
+
   aperture?: string | null
 
   shutterSpeed?: string | null

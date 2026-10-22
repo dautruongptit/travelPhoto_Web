@@ -67,6 +67,7 @@ function mapPhotoResponse(dto: PhotoResponse): Photo {
     cameraModel: dto.cameraModel ?? undefined,
     lensModel: dto.lensModel ?? undefined,
     focalLength: dto.focalLength ?? undefined,
+    focalLength35mm: dto.focalLength35mm ?? undefined,
     fNumber: dto.aperture ?? undefined,
     shutterSpeed: dto.shutterSpeed ?? undefined,
     iso: dto.iso ?? undefined,

@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState, useCallback } from "react"
 import type { Photo, FlickrPhoto } from "../types"
-import { formatFileSize, formatDate, displayUrl } from "../utils"
+import { formatFileSize, displayUrl } from "../utils"
 import AuthImg, { downloadAuthed } from "./AuthImg"
 
 interface Props {
@@ -13,6 +13,10 @@ interface Props {
   onClose: () => void
   /** Mở ở chế độ trình chiếu tự động chuyển ảnh */
   autoPlay?: boolean
+  /** Có thì hiện nút Chia sẻ (chỉ truyền cho chủ sự kiện) */
+  onShare?: () => void
+  /** Có thì hiện nút Xóa; nhận id ảnh đang xem */
+  onDelete?: (photoId: string) => void
 }
 
 const ZOOM_LEVELS = [1, 1.4, 1.8, 2.5]
@@ -21,11 +25,11 @@ export default function Lightbox({
   photos,
   initialIndex,
   location,
-  photographerName,
   selected,
-  onToggleSelect,
   onClose,
   autoPlay = false,
+  onShare,
+  onDelete,
 }: Props) {
   const [index, setIndex] = useState(initialIndex)
   const [playing, setPlaying] = useState(autoPlay)
@@ -37,7 +41,6 @@ export default function Lightbox({
   const touchStartX = useRef<number>(0)
 
   const photo = photos[index]
-  const isSelected = selected.has(photo.id)
   const zoomed = zoomStep > 0
   const isLiked =
     likedMap[photo.id] ?? ("isLiked" in photo ? Boolean(photo.isLiked) : false)
@@ -125,8 +128,19 @@ export default function Lightbox({
   const shutter = flickrPhoto.shutterSpeed
   const iso = flickrPhoto.iso
   const lens = flickrPhoto.lensModel
+  const focal35 = flickrPhoto.focalLength35mm
   const takenAt = flickrPhoto.takenAt
-  const hasExif = Boolean(camera || lens || focalLength || aperture || shutter || iso)
+  const hasExif = Boolean(
+    camera || lens || focalLength || focal35 || aperture || shutter || iso,
+  )
+  const megapixels =
+    photo.width && photo.height ? (photo.width * photo.height) / 1_000_000 : 0
+  const mpLabel =
+    megapixels > 0
+      ? `${megapixels.toLocaleString("vi-VN", { maximumFractionDigits: 1 })} MP`
+      : ""
+  const fmtDateTime = (iso: string) =>
+    new Date(iso).toLocaleString("vi-VN", { dateStyle: "long", timeStyle: "short" })
 
   return (
     <div
@@ -134,192 +148,106 @@ export default function Lightbox({
       onTouchStart={handleTouchStart}
       onTouchEnd={handleTouchEnd}
     >
-      {/* Top Header Bar */}
-      <div className="flex items-center justify-between gap-4 px-4 sm:px-6 h-14 bg-black/60 backdrop-blur-md border-b border-neutral-800/60 z-20">
-        <div className="flex items-center gap-3 min-w-0">
-          <button
-            onClick={onClose}
-            className="w-8 h-8 rounded-full flex items-center justify-center text-neutral-400 hover:text-white hover:bg-white/10 transition-colors cursor-pointer"
-            title="Đóng (Esc)"
+      {/* Top Header Bar: trái = Quay lại · phải = Chia sẻ, Phóng to, Thu nhỏ, Yêu thích, Xóa, Tải về, Thông tin */}
+      <div className="flex items-center justify-between gap-4 px-3 sm:px-5 h-14 bg-black/60 backdrop-blur-md border-b border-neutral-800/60 z-20">
+        {/* Trái: quay lại */}
+        <button
+          onClick={onClose}
+          className="flex items-center gap-2 h-9 pl-2 pr-3.5 rounded-full text-neutral-200 hover:text-white hover:bg-white/10 transition-colors cursor-pointer"
+          title="Quay lại (Esc)"
+        >
+          <svg
+            width="20"
+            height="20"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
           >
-            <svg
-              width="20"
-              height="20"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-            >
-              <path
-                d="M18 6L6 18M6 6l12 12"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-            </svg>
-          </button>
+            <path d="M19 12H5M12 19l-7-7 7-7" />
+          </svg>
+          <span className="text-sm font-medium">Quay lại</span>
+        </button>
 
-          <div className="min-w-0">
-            <h2 className="text-sm sm:text-base font-semibold truncate max-w-[45vw] text-neutral-100">
-              {photo.name}
-            </h2>
-            <p className="text-[11px] text-neutral-400">
-              {index + 1} / {photos.length} · by{" "}
-              <span className="text-neutral-200">
-                {photographerName || photo.uploadedBy || "Thành viên"}
+        {/* Giữa: tên ảnh + vị trí (ẩn trên màn hình nhỏ) */}
+        <div className="hidden md:block min-w-0 text-center">
+          <p className="text-sm font-medium truncate max-w-[40vw] text-neutral-100">
+            {photo.name}
+          </p>
+          <p className="text-[11px] text-neutral-400">
+            {playing ? (
+              <span className="text-[#4da3ff]">
+                ▶ Đang trình chiếu · Space để dừng ·{" "}
               </span>
-            </p>
-          </div>
+            ) : null}
+            {index + 1} / {photos.length}
+          </p>
         </div>
 
-        {/* Top Right Actions */}
-        <div className="flex items-center gap-1.5 sm:gap-2 flex-shrink-0">
-          {/* Select Toggle Button */}
-          <button
-            onClick={() => onToggleSelect(photo.id)}
-            className={`flex items-center gap-1.5 h-8 px-3 rounded-full text-xs font-medium transition-all cursor-pointer ${
-              isSelected
-                ? "bg-[#0063dc] text-white shadow-sm"
-                : "bg-white/10 text-neutral-300 hover:text-white hover:bg-white/20"
-            }`}
-          >
-            {isSelected ? (
-              <svg
-                width="14"
-                height="14"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2.5"
-              >
-                <polyline points="20 6 9 17 4 12" />
-              </svg>
-            ) : (
-              <span className="w-3 h-3 rounded-[2px] border border-neutral-400" />
-            )}
-            <span className="hidden sm:inline">
-              {isSelected ? "Đã chọn" : "Chọn ảnh"}
-            </span>
-          </button>
+        {/* Phải: các nút thao tác (có chú thích khi rê chuột) */}
+        <div className="flex items-center gap-0.5 sm:gap-1 flex-shrink-0">
+          {onShare && (
+            <IconButton label="Chia sẻ" onClick={onShare}>
+              <circle cx="18" cy="5" r="3" />
+              <circle cx="6" cy="12" r="3" />
+              <circle cx="18" cy="19" r="3" />
+              <path d="M8.59 13.51l6.83 3.98M15.41 6.51l-6.82 3.98" />
+            </IconButton>
+          )}
 
-          {/* Like Button (Flickr Pink) */}
-          <button
+          <IconButton
+            label="Phóng to (+)"
+            onClick={zoomIn}
+            disabled={zoomStep === ZOOM_LEVELS.length - 1}
+          >
+            <circle cx="11" cy="11" r="7" />
+            <path d="M21 21l-4.35-4.35M11 8v6M8 11h6" />
+          </IconButton>
+
+          <IconButton label="Thu nhỏ (-)" onClick={zoomOut} disabled={zoomStep === 0}>
+            <circle cx="11" cy="11" r="7" />
+            <path d="M21 21l-4.35-4.35M8 11h6" />
+          </IconButton>
+
+          <IconButton
+            label={isLiked ? "Bỏ yêu thích (F)" : "Yêu thích (F)"}
             onClick={toggleLike}
-            className={`h-8 px-3 rounded-full text-xs font-semibold flex items-center gap-1.5 transition-all cursor-pointer ${
-              isLiked
-                ? "bg-[#ff0084] text-white shadow-sm"
-                : "bg-white/10 text-neutral-300 hover:text-white hover:bg-white/20"
-            }`}
-            title="Thích ảnh (F)"
+            active={isLiked}
+            activeClass="text-[#ff0084]"
+            fillWhenActive
           >
-            <svg
-              className={`w-3.5 h-3.5 ${isLiked ? "text-white" : ""}`}
-              viewBox="0 0 24 24"
-              fill={isLiked ? "currentColor" : "none"}
-              stroke="currentColor"
-              strokeWidth="2"
+            <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
+          </IconButton>
+
+          {onDelete && (
+            <IconButton
+              label="Xóa"
+              onClick={() => onDelete(photo.id)}
+              hoverClass="hover:text-red-400"
             >
-              <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
-            </svg>
-            <span className="hidden sm:inline">
-              {isLiked ? "Đã thích" : "Thích"}
-            </span>
-          </button>
+              <path d="M3 6h18M8 6V4a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v2M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6M10 11v6M14 11v6" />
+            </IconButton>
+          )}
 
-          {/* Trình chiếu (Space) */}
-          <button
-            onClick={() => setPlaying((v) => !v)}
-            className={`w-8 h-8 rounded-full flex items-center justify-center transition-colors cursor-pointer ${
-              playing
-                ? "bg-white text-neutral-900"
-                : "text-neutral-300 hover:text-white hover:bg-white/10"
-            }`}
-            title={playing ? "Dừng trình chiếu (Space)" : "Trình chiếu (Space)"}
+          <IconButton
+            label="Tải về (ảnh gốc)"
+            onClick={() => downloadAuthed(photo.url, photo.name).catch(() => {})}
           >
-            {playing ? (
-              <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor">
-                <rect x="6" y="5" width="4" height="14" rx="1" />
-                <rect x="14" y="5" width="4" height="14" rx="1" />
-              </svg>
-            ) : (
-              <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M7 4.5v15a1 1 0 0 0 1.5.86l12.5-7.5a1 1 0 0 0 0-1.72L8.5 3.64A1 1 0 0 0 7 4.5z" />
-              </svg>
-            )}
-          </button>
+            <path d="M12 3v13M8 12l4 4 4-4M4 21h16" />
+          </IconButton>
 
-          {/* Toggle EXIF Info Panel */}
-          <button
+          <IconButton
+            label="Thông tin (I)"
             onClick={() => setShowInfo((v) => !v)}
-            className={`w-8 h-8 rounded-full flex items-center justify-center transition-colors cursor-pointer ${
-              showInfo
-                ? "bg-white text-neutral-900"
-                : "text-neutral-300 hover:text-white hover:bg-white/10"
-            }`}
-            title="Thông số kỹ thuật & EXIF (i)"
+            active={showInfo}
+            activeClass="bg-white text-neutral-900 hover:text-neutral-900"
+            align="right"
           >
-            <svg
-              width="17"
-              height="17"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-            >
-              <circle cx="12" cy="12" r="10" />
-              <path d="M12 16v-4M12 8h.01" strokeLinecap="round" />
-            </svg>
-          </button>
-
-          {/* Zoom In / Out Controls */}
-          <div className="hidden sm:flex items-center bg-white/10 rounded-full p-0.5">
-            <button
-              onClick={zoomOut}
-              disabled={zoomStep === 0}
-              className="w-7 h-7 flex items-center justify-center rounded-full text-neutral-300 hover:text-white disabled:opacity-30 cursor-pointer"
-              title="Thu nhỏ (-)"
-            >
-              -
-            </button>
-            <span className="text-[10px] px-1 text-neutral-400 font-mono">
-              {ZOOM_LEVELS[zoomStep]}x
-            </span>
-            <button
-              onClick={zoomIn}
-              disabled={zoomStep === ZOOM_LEVELS.length - 1}
-              className="w-7 h-7 flex items-center justify-center rounded-full text-neutral-300 hover:text-white disabled:opacity-30 cursor-pointer"
-              title="Phóng to (+)"
-            >
-              +
-            </button>
-          </div>
-
-          {/* Direct Download Button */}
-          <a
-            href={photo.url}
-            download={photo.name}
-            onClick={(e) => {
-              e.preventDefault()
-              downloadAuthed(photo.url, photo.name).catch(() => {})
-            }}
-            className="flex items-center gap-1.5 h-8 px-3 rounded-full bg-[#0063dc] hover:bg-[#0052b8] text-white text-xs font-semibold transition-colors cursor-pointer"
-            title="Tải ảnh gốc"
-          >
-            <svg
-              width="13"
-              height="13"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2.5"
-            >
-              <path
-                d="M12 3v13M8 12l4 4 4-4M3 21h18"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-            </svg>
-            <span className="hidden sm:inline">Tải về</span>
-          </a>
+            <circle cx="12" cy="12" r="10" />
+            <path d="M12 16v-4M12 8h.01" />
+          </IconButton>
         </div>
       </div>
 
@@ -421,95 +349,94 @@ export default function Lightbox({
               </button>
             </div>
 
-            {/* Photo Title & Description */}
-            <div>
-              <h4 className="text-base font-bold text-white tracking-tight">
-                {photo.name}
-              </h4>
-              <p className="text-xs text-neutral-400 mt-1">
-                Tải lên vào {formatDate(photo.uploadedAt)} bởi{" "}
-                <strong className="text-neutral-200">
-                  {photo.uploadedBy || "Thành viên"}
-                </strong>
-              </p>
-            </div>
+            {/* Thông tin ảnh kiểu Google Photos: icon + dòng chính + dòng thông số */}
+            <div className="space-y-5 text-sm">
+              {/* Ngày chụp / ngày tải lên */}
+              <InfoRow
+                icon={
+                  <>
+                    <rect x="3" y="4" width="18" height="18" rx="2" />
+                    <path d="M16 2v4M8 2v4M3 10h18" />
+                  </>
+                }
+                title={takenAt ? fmtDateTime(takenAt) : fmtDateTime(photo.uploadedAt)}
+                lines={[
+                  takenAt
+                    ? `Được chụp vào ${fmtDateTime(takenAt)}`
+                    : "Không có ngày chụp trong ảnh",
+                  `Được tải lên vào ${fmtDateTime(photo.uploadedAt)} bởi ${photo.uploadedBy || "Thành viên"}`,
+                ]}
+              />
 
-            {/* Camera Specs / Settings (Flickr Signature Block) */}
-            {hasExif && (
-            <div className="bg-[#222226] p-4 rounded-xl border border-neutral-800">
-              <div className="flex items-center gap-2 text-sm font-semibold text-white mb-3">
-                <span>📷</span>
-                <span>{camera || "Không rõ máy ảnh"}</span>
-              </div>
-              {lens && (
-                <p className="text-[11px] text-neutral-400 -mt-1.5 mb-3">
-                  🔭 {lens}
-                </p>
+              {/* Máy ảnh + thông số chụp */}
+              {hasExif && (
+                <InfoRow
+                  icon={
+                    <>
+                      <circle cx="12" cy="12" r="10" />
+                      <path d="M14.31 8l5.74 9.94M9.69 8h11.48M7.38 12l5.74-9.94M9.69 16L3.95 6.06M14.31 16H2.83M16.62 12l-5.74 9.94" />
+                    </>
+                  }
+                  title={camera || "Không rõ máy ảnh"}
+                  lines={[
+                    [
+                      aperture ? aperture.replace(/^f\//i, "ƒ/").replace(".", ",") : "",
+                      shutter ? shutter.replace(/\s*sec$/i, "") : "",
+                      focalLength ? focalLength.replace(/\s+/g, "").replace(".", ",") : "",
+                      iso ? `ISO${iso}` : "",
+                    ]
+                      .filter(Boolean)
+                      .join("   "),
+                    [lens, focal35 ? `${focal35.replace(/\s+/g, " ")} (quy đổi 35mm)` : ""]
+                      .filter(Boolean)
+                      .join(" — "),
+                  ]}
+                />
               )}
-              <div className="grid grid-cols-2 gap-3 text-xs">
-                <div className="bg-neutral-800/60 p-2.5 rounded-lg">
-                  <p className="text-neutral-400 text-[10px] uppercase font-mono">
-                    Tiêu cự
-                  </p>
-                  <p className="font-semibold text-neutral-200 mt-0.5">
-                    {focalLength}
-                  </p>
-                </div>
-                <div className="bg-neutral-800/60 p-2.5 rounded-lg">
-                  <p className="text-neutral-400 text-[10px] uppercase font-mono">
-                    Khẩu độ
-                  </p>
-                  <p className="font-semibold text-neutral-200 mt-0.5">
-                    {aperture}
-                  </p>
-                </div>
-                <div className="bg-neutral-800/60 p-2.5 rounded-lg">
-                  <p className="text-neutral-400 text-[10px] uppercase font-mono">
-                    Tốc độ màn trập
-                  </p>
-                  <p className="font-semibold text-neutral-200 mt-0.5">
-                    {shutter}
-                  </p>
-                </div>
-                <div className="bg-neutral-800/60 p-2.5 rounded-lg">
-                  <p className="text-neutral-400 text-[10px] uppercase font-mono">
-                    ISO
-                  </p>
-                  <p className="font-semibold text-neutral-200 mt-0.5">{iso}</p>
-                </div>
-              </div>
-            </div>
-            )}
 
-            {/* Technical Specifications */}
-            <div className="space-y-2.5 text-xs">
-              <div className="flex justify-between py-1.5 border-b border-neutral-800/80">
-                <span className="text-neutral-400">Độ phân giải</span>
-                <span className="font-mono text-neutral-200">
-                  {photo.width} × {photo.height} px
-                </span>
-              </div>
-              {takenAt && (
-                <div className="flex justify-between py-1.5 border-b border-neutral-800/80">
-                  <span className="text-neutral-400">Ngày chụp</span>
-                  <span className="font-mono text-neutral-200">
-                    {new Date(takenAt).toLocaleString("vi-VN")}
-                  </span>
-                </div>
-              )}
-              <div className="flex justify-between py-1.5 border-b border-neutral-800/80">
-                <span className="text-neutral-400">Dung lượng</span>
-                <span className="font-mono text-neutral-200">
-                  {formatFileSize(photo.size)}
-                </span>
-              </div>
+              {/* Tên file + MP + kích thước */}
+              <InfoRow
+                icon={
+                  <>
+                    <rect x="3" y="3" width="18" height="18" rx="2" />
+                    <circle cx="8.5" cy="8.5" r="1.5" />
+                    <path d="M21 15l-5-5L5 21" />
+                  </>
+                }
+                title={photo.name}
+                lines={[
+                  [
+                    mpLabel,
+                    photo.width && photo.height ? `${photo.width} × ${photo.height}` : "",
+                  ]
+                    .filter(Boolean)
+                    .join("   "),
+                ]}
+              />
+
+              {/* Dung lượng */}
+              <InfoRow
+                icon={
+                  <>
+                    <ellipse cx="12" cy="5" rx="8" ry="3" />
+                    <path d="M4 5v14c0 1.7 3.6 3 8 3s8-1.3 8-3V5M4 12c0 1.7 3.6 3 8 3s8-1.3 8-3" />
+                  </>
+                }
+                title={formatFileSize(photo.size)}
+                lines={["Dung lượng file gốc"]}
+              />
+
               {location && (
-                <div className="flex justify-between py-1.5 border-b border-neutral-800/80">
-                  <span className="text-neutral-400">Địa điểm</span>
-                  <span className="text-neutral-200 font-medium">
-                    {location}
-                  </span>
-                </div>
+                <InfoRow
+                  icon={
+                    <>
+                      <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z" />
+                      <circle cx="12" cy="9" r="2.5" />
+                    </>
+                  }
+                  title={location}
+                  lines={["Địa điểm sự kiện"]}
+                />
               )}
             </div>
 
@@ -587,6 +514,103 @@ export default function Lightbox({
           ))}
         </div>
       </div>
+    </div>
+  )
+}
+
+/** Một dòng thông tin có icon: dòng chính (đậm) + các dòng phụ nhỏ phía dưới (bỏ dòng rỗng). */
+function InfoRow({
+  icon,
+  title,
+  lines,
+}: {
+  icon: React.ReactNode
+  title: string
+  lines: string[]
+}) {
+  return (
+    <div className="flex items-start gap-4">
+      <svg
+        className="w-5 h-5 mt-0.5 flex-shrink-0 text-neutral-300"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="1.8"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      >
+        {icon}
+      </svg>
+      <div className="min-w-0">
+        <p className="text-neutral-100 font-medium break-words">{title}</p>
+        {lines
+          .filter((l) => l && l.trim() !== "" && l !== title)
+          .map((l, i) => (
+            <p key={i} className="text-xs text-neutral-400 mt-0.5 break-words">
+              {l}
+            </p>
+          ))}
+      </div>
+    </div>
+  )
+}
+
+/** Nút icon tròn có chú thích (tooltip) khi rê chuột hoặc focus bàn phím. */
+function IconButton({
+  label,
+  onClick,
+  disabled = false,
+  active = false,
+  activeClass = "bg-white text-neutral-900",
+  hoverClass = "hover:text-white",
+  fillWhenActive = false,
+  align = "center",
+  children,
+}: {
+  label: string
+  onClick: () => void
+  disabled?: boolean
+  active?: boolean
+  activeClass?: string
+  hoverClass?: string
+  fillWhenActive?: boolean
+  align?: "center" | "right"
+  children: React.ReactNode
+}) {
+  return (
+    <div className="relative group">
+      <button
+        type="button"
+        onClick={onClick}
+        disabled={disabled}
+        aria-label={label}
+        className={`w-9 h-9 rounded-full flex items-center justify-center transition-colors cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed ${
+          active
+            ? activeClass
+            : `text-neutral-300 hover:bg-white/10 ${hoverClass}`
+        }`}
+      >
+        <svg
+          width="19"
+          height="19"
+          viewBox="0 0 24 24"
+          fill={active && fillWhenActive ? "currentColor" : "none"}
+          stroke="currentColor"
+          strokeWidth="1.9"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        >
+          {children}
+        </svg>
+      </button>
+      <span
+        role="tooltip"
+        className={`pointer-events-none absolute top-full mt-1.5 z-30 whitespace-nowrap rounded-md border border-white/10 bg-black/90 px-2 py-1 text-[11px] font-medium text-white opacity-0 shadow-lg transition-opacity duration-150 group-hover:opacity-100 group-focus-within:opacity-100 ${
+          align === "right" ? "right-0" : "left-1/2 -translate-x-1/2"
+        }`}
+      >
+        {label}
+      </span>
     </div>
   )
 }

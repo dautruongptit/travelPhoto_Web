@@ -15,6 +15,7 @@ export interface Photo {
   cameraModel?: string
   lensModel?: string
   focalLength?: string
+  focalLength35mm?: string
   fNumber?: string
   shutterSpeed?: string
   iso?: number
