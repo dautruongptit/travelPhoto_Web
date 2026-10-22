@@ -1,10 +1,5 @@
 import type { TravelEvent, User } from "../types"
-import {
-  formatDateRange,
-  formatTimeAgo,
-  formatFileSize,
-  formatTotalSize,
-} from "../utils"
+import { formatDateRange, formatTimeAgo } from "../utils"
 import AuthImg from "./AuthImg"
 
 interface Props {
@@ -24,10 +19,10 @@ export default function EventCard({
   onClick,
 }: Props) {
   const totalPhotos = event.photoCount ?? event.photos.length
-  const totalBytes =
-    event.totalSizeBytes ?? event.photos.reduce((sum, p) => sum + p.size, 0)
-  // Album chưa có ảnh bìa riêng thì dùng ảnh đầu tiên trong album
-  const cover = event.thumbnails?.[0] ?? event.coverImage
+  // Ưu tiên ảnh bìa riêng; chưa có thì dùng ảnh đầu tiên trong album
+  const cover = event.hasCover
+    ? event.coverImage
+    : (event.thumbnails?.[0] ?? event.coverImage)
 
   return (
     <article
@@ -48,7 +43,7 @@ export default function EventCard({
           alt={event.name}
           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/10 to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent" />
 
         {/* Select (top-left) */}
         {onSelect && (
@@ -81,45 +76,45 @@ export default function EventCard({
             <circle cx="8.5" cy="8.5" r="1.5" fill="white" />
             <path d="M21 15l-5-5L5 21" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
           </svg>
-          {totalPhotos} ảnh · {totalBytes >= 1024 ** 3 ? formatTotalSize(totalBytes) : formatFileSize(totalBytes)}
+          {totalPhotos}
         </div>
 
-        {/* Thông tin đầy đủ trên ảnh bìa: tên, địa điểm, thời gian */}
-        <div className="absolute bottom-3 left-3 right-3 text-white">
-          <p className="font-semibold text-base leading-tight truncate">
+        {/* Event name */}
+        <div className="absolute bottom-3 left-3">
+          <p className="text-white font-semibold text-base leading-tight">
             {event.name}
           </p>
-          <div className="mt-1 flex flex-wrap items-center gap-x-3 gap-y-0.5 text-[11px] text-white/85">
-            {event.location && (
-              <span className="flex items-center gap-1 min-w-0">
-                <svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor">
-                  <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z" />
-                </svg>
-                <span className="truncate">{event.location}</span>
-              </span>
-            )}
-            <span className="flex items-center gap-1">
-              <svg width="11" height="11" viewBox="0 0 24 24" fill="none">
-                <rect x="3" y="4" width="18" height="18" rx="2" stroke="currentColor" strokeWidth="2" />
-                <line x1="3" y1="10" x2="21" y2="10" stroke="currentColor" strokeWidth="2" />
-              </svg>
-              {formatDateRange(event.startDate, event.endDate)}
-            </span>
-          </div>
         </div>
       </div>
 
       {/* Body */}
       <div className="p-4">
+        <div className="flex items-center gap-1.5 text-gray-400 text-xs mb-2">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" opacity=".5">
+            <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z" />
+          </svg>
+          <span className="truncate">{event.location}</span>
+        </div>
+
         {event.description && (
           <p className="text-gray-600 dark:text-neutral-300 text-sm leading-relaxed line-clamp-2 mb-3">
             {event.description}
           </p>
         )}
 
-        <div className="flex items-center justify-between pt-3 border-t border-gray-100 dark:border-neutral-800 text-xs text-gray-400">
-          <span>Tạo {formatTimeAgo(event.createdAt)}</span>
-          <span>{event.createdBy}</span>
+        <div className="flex items-center justify-between pt-3 border-t border-gray-100 dark:border-neutral-800">
+          <div className="flex items-center gap-1 text-xs text-gray-400">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none">
+              <rect x="3" y="4" width="18" height="18" rx="2" stroke="currentColor" strokeWidth="2" />
+              <line x1="16" y1="2" x2="16" y2="6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+              <line x1="8" y1="2" x2="8" y2="6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+              <line x1="3" y1="10" x2="21" y2="10" stroke="currentColor" strokeWidth="2" />
+            </svg>
+            {formatDateRange(event.startDate, event.endDate)}
+          </div>
+          <span className="text-xs text-gray-400">
+            {formatTimeAgo(event.createdAt)}
+          </span>
         </div>
       </div>
     </article>

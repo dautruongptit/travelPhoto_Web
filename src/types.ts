@@ -37,6 +37,8 @@ export interface TravelEvent {
   location: string
   coverImage: string
   thumbnails?: string[]
+  /** true khi sự kiện có ảnh bìa riêng (không phải ảnh mặc định) */
+  hasCover?: boolean
   photos: Photo[]
   // Tổng số ảnh / dung lượng theo backend (EventResponse.photoCount/totalSize) —
   // dùng để hiển thị ở Dashboard/EventCard mà không cần tải hết `photos` của

@@ -50,6 +50,7 @@ function mapEventResponse(
     location: dto.location,
     coverImage: dto.coverImageUrl || FALLBACK_COVER_IMAGE,
     thumbnails: dto.previewImageUrls ?? [],
+    hasCover: !!dto.coverImageUrl,
     photos,
     photoCount: dto.photoCount,
     totalSizeBytes: dto.totalSize,
