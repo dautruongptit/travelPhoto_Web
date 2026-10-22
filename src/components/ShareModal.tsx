@@ -6,15 +6,57 @@ import type { TravelEvent } from "../types"
 
 import { createShareLink } from "../api/share"
 
+import { setEventPublic } from "../api/events"
+
 interface Props {
   event: TravelEvent
 
   onClose: () => void
 
   onToast: (type: "success" | "error" | "warning" | "info", msg: string) => void
+
+  /** Quyền xem của album đã đổi (đã tạo link / bật tắt công khai) */
+  onChanged?: () => void
 }
 
-export default function ShareModal({ event, onClose, onToast }: Props) {
+export default function ShareModal({
+  event,
+  onClose,
+  onToast,
+  onChanged,
+}: Props) {
+  const [isPublic, setIsPublic] = useState(event.visibility === "public")
+
+  const [savingPublic, setSavingPublic] = useState(false)
+
+  const handleTogglePublic = async () => {
+    const next = !isPublic
+
+    setSavingPublic(true)
+
+    try {
+      await setEventPublic(Number(event.id), next)
+
+      setIsPublic(next)
+
+      onChanged?.()
+
+      onToast(
+        "success",
+        next
+          ? "Album đã công khai: mọi người đăng nhập đều xem được."
+          : "Đã tắt công khai album.",
+      )
+    } catch (err) {
+      onToast(
+        "error",
+        err instanceof Error ? err.message : "Không thể đổi chế độ công khai.",
+      )
+    } finally {
+      setSavingPublic(false)
+    }
+  }
+
   const [role, setRole] = useState<"VIEWER" | "EDITOR">("VIEWER")
 
   const [shareUrl, setShareUrl] = useState<string | null>(null)
@@ -28,6 +70,8 @@ export default function ShareModal({ event, onClose, onToast }: Props) {
       const res = await createShareLink(Number(event.id), role)
 
       setShareUrl(res.shareUrl)
+
+      onChanged?.()
 
       onToast("success", "Đã tạo liên kết chia sẻ thành công!")
     } catch (err) {
@@ -77,6 +121,36 @@ export default function ShareModal({ event, onClose, onToast }: Props) {
 
         {/* Content */}
         <div className="p-6 space-y-6">
+          {/* Công khai: mọi người đã đăng nhập xem được (chỉ đọc) */}
+          <div className="flex items-center justify-between gap-4 p-4 rounded-2xl border border-gray-200 dark:border-gray-700">
+            <div>
+              <p className="text-sm font-semibold text-gray-900 dark:text-white">
+                🌐 Công khai
+              </p>
+              <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                Mọi người đã đăng nhập đều xem được album này (chỉ xem, không
+                sửa hay xóa).
+              </p>
+            </div>
+            <button
+              type="button"
+              role="switch"
+              aria-checked={isPublic}
+              aria-label="Công khai album"
+              disabled={savingPublic}
+              onClick={handleTogglePublic}
+              className={`relative w-11 h-6 rounded-full flex-shrink-0 transition-colors disabled:opacity-50 cursor-pointer ${
+                isPublic ? "bg-green-500" : "bg-gray-300 dark:bg-gray-600"
+              }`}
+            >
+              <span
+                className={`absolute top-0.5 left-0.5 w-5 h-5 rounded-full bg-white shadow transition-transform ${
+                  isPublic ? "translate-x-5" : ""
+                }`}
+              />
+            </button>
+          </div>
+
           {!shareUrl ? (
             <div className="space-y-4">
               <div>

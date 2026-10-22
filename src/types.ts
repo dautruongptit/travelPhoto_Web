@@ -28,6 +28,8 @@ export interface Photo {
   uploadedBy: string
 }
 
+export type Visibility = "private" | "link" | "public"
+
 export interface TravelEvent {
   id: string
   name: string
@@ -39,6 +41,8 @@ export interface TravelEvent {
   thumbnails?: string[]
   /** true khi sự kiện có ảnh bìa riêng (không phải ảnh mặc định) */
   hasCover?: boolean
+  /** Quyền xem: riêng tư / có link chia sẻ / công khai (backend trả về) */
+  visibility?: Visibility
   photos: Photo[]
   // Tổng số ảnh / dung lượng theo backend (EventResponse.photoCount/totalSize) —
   // dùng để hiển thị ở Dashboard/EventCard mà không cần tải hết `photos` của

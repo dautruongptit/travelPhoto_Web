@@ -6,6 +6,7 @@ import ShareModal from "./ShareModal"
 import AuthImg from "./AuthImg"
 import JustifiedGallery from "./flickr/JustifiedGallery"
 import PhotoMasonry from "./PhotoMasonry"
+import { VISIBILITY_INFO } from "../visibility"
 
 interface Props {
   event: TravelEvent
@@ -15,6 +16,8 @@ interface Props {
   onUpload: () => void
   onDeletePhotos: (ids: string[]) => void
   onToast: (type: "success" | "error" | "warning" | "info", msg: string) => void
+  /** Gọi khi quyền xem của album có thể đã đổi (tạo link chia sẻ, bật/tắt công khai) */
+  onVisibilityChanged?: (eventId: string) => void
 }
 
 const SORT_LABELS: Record<SortOption, string> = {
@@ -85,6 +88,7 @@ export default function AlbumPage({
   onUpload,
   onDeletePhotos,
   onToast,
+  onVisibilityChanged,
 }: Props) {
   const [activeTab, setActiveTab] = useState<AlbumTab>("photos")
   const [selected, setSelected] = useState<Set<string>>(new Set())
@@ -143,6 +147,7 @@ export default function AlbumPage({
   }, [event.photos, q, sort])
 
   const totalSize = event.photos.reduce((s, p) => s + p.size, 0)
+  const vis = VISIBILITY_INFO[event.visibility ?? "private"]
   const isOwner = !!user && String(event.ownerId) === String(user.id)
   const photoTotal = event.photoCount ?? event.photos.length
 
@@ -208,9 +213,14 @@ export default function AlbumPage({
                 />
               </div>
               <div className="flex-1 min-w-0">
-                <h1 className="text-xl sm:text-2xl font-bold text-neutral-900 dark:text-white tracking-tight">
-                  {event.name}
-                </h1>
+                <div className="flex items-center gap-2 flex-wrap">
+                  <h1 className="text-xl sm:text-2xl font-bold text-neutral-900 dark:text-white tracking-tight">
+                    {event.name}
+                  </h1>
+                  <span className={`text-xs font-medium px-2 py-0.5 rounded-full ${vis.color}`}>
+                    {vis.icon} {vis.label}
+                  </span>
+                </div>
                 {event.description && (
                   <p className="text-neutral-500 dark:text-neutral-400 text-sm mt-1 line-clamp-2 max-w-2xl">
                     {event.description}
@@ -576,6 +586,7 @@ export default function AlbumPage({
                     label: "Số ảnh",
                     value: `${photoTotal} ảnh · ${formatFileSize(event.totalSizeBytes ?? totalSize)}`,
                   },
+                  { label: "Quyền xem", value: `${vis.icon} ${vis.label}` },
                   { label: "Người tạo", value: event.createdBy || "—" },
                   { label: "Ngày tạo", value: formatDate(event.createdAt) },
                 ].map(({ label, value }) => (
@@ -719,6 +730,7 @@ export default function AlbumPage({
           event={event}
           onClose={() => setShowShareModal(false)}
           onToast={onToast}
+          onChanged={() => onVisibilityChanged?.(event.id)}
         />
       )}
     </main>

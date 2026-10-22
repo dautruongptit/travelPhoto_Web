@@ -1,6 +1,7 @@
 import type { TravelEvent, User } from "../types"
 import { formatDateRange, formatTimeAgo } from "../utils"
 import AuthImg from "./AuthImg"
+import { VISIBILITY_BADGE } from "../visibility"
 
 interface Props {
   event: TravelEvent
@@ -19,6 +20,7 @@ export default function EventCard({
   onClick,
 }: Props) {
   const totalPhotos = event.photoCount ?? event.photos.length
+  const badge = VISIBILITY_BADGE[event.visibility ?? "private"]
   // Ưu tiên ảnh bìa riêng; chưa có thì dùng ảnh đầu tiên trong album
   const cover = event.hasCover
     ? event.coverImage
@@ -27,7 +29,7 @@ export default function EventCard({
   return (
     <article
       onClick={onClick}
-      className={`group bg-white dark:bg-[#18181b] rounded-2xl overflow-hidden border shadow-sm hover:shadow-xl hover:shadow-gray-200/60 dark:hover:shadow-none hover:-translate-y-1 transition-all duration-300 cursor-pointer ${
+      className={`group flex flex-col h-full bg-white dark:bg-[#18181b] rounded-2xl overflow-hidden border shadow-sm hover:shadow-xl hover:shadow-gray-200/60 dark:hover:shadow-none hover:-translate-y-1 transition-all duration-300 cursor-pointer ${
         selected
           ? "border-blue-600 ring-2 ring-blue-600 ring-offset-2 dark:ring-offset-[#0b0b0c]"
           : "border-gray-100 dark:border-neutral-800"
@@ -44,6 +46,17 @@ export default function EventCard({
           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent" />
+
+        {/* Huy hiệu quyền xem (top-left); ẩn khi rê chuột / đang chọn để nhường chỗ cho ô chọn */}
+        <div
+          className={`absolute top-3 left-3 transition-opacity duration-150 ${
+            onSelect ? "group-hover:opacity-0" : ""
+          } ${selected ? "opacity-0" : ""}`}
+        >
+          <span className={`text-[10px] font-semibold px-2 py-1 rounded-full ${badge.cls}`}>
+            {badge.label}
+          </span>
+        </div>
 
         {/* Select (top-left) */}
         {onSelect && (
@@ -88,7 +101,7 @@ export default function EventCard({
       </div>
 
       {/* Body */}
-      <div className="p-4">
+      <div className="p-4 flex flex-col flex-1">
         <div className="flex items-center gap-1.5 text-gray-400 text-xs mb-2">
           <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" opacity=".5">
             <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z" />
@@ -102,7 +115,7 @@ export default function EventCard({
           </p>
         )}
 
-        <div className="flex items-center justify-between pt-3 border-t border-gray-100 dark:border-neutral-800">
+        <div className="mt-auto flex items-center justify-between pt-3 border-t border-gray-100 dark:border-neutral-800">
           <div className="flex items-center gap-1 text-xs text-gray-400">
             <svg width="12" height="12" viewBox="0 0 24 24" fill="none">
               <rect x="3" y="4" width="18" height="18" rx="2" stroke="currentColor" strokeWidth="2" />

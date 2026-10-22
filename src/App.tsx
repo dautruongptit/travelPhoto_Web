@@ -23,6 +23,7 @@ import {
 } from "./lib/paymentApi"
 import {
   listEvents,
+  getEvent,
   createEvent as apiCreateEvent,
   deleteEvent as apiDeleteEvent,
   type EventResponse,
@@ -51,6 +52,7 @@ function mapEventResponse(
     coverImage: dto.coverImageUrl || FALLBACK_COVER_IMAGE,
     thumbnails: dto.previewImageUrls ?? [],
     hasCover: !!dto.coverImageUrl,
+    visibility: dto.visibility ?? "private",
     photos,
     photoCount: dto.photoCount,
     totalSizeBytes: dto.totalSize,
@@ -387,6 +389,20 @@ export default function App() {
     )
   }
 
+  // Sau khi tạo link chia sẻ / bật tắt công khai: lấy lại quyền xem của 1 event để huy hiệu cập nhật ngay.
+  const refreshEventVisibility = async (id: string) => {
+    try {
+      const dto = await getEvent(Number(id))
+      setEvents((prev) =>
+        prev.map((e) =>
+          e.id === id ? { ...e, visibility: dto.visibility ?? e.visibility } : e,
+        ),
+      )
+    } catch {
+      // bỏ qua: huy hiệu sẽ cập nhật ở lần tải danh sách tiếp theo
+    }
+  }
+
   const handleCreateEvent = async (data: EventFormData, coverFile?: File) => {
     const dto = await apiCreateEvent(data, coverFile)
     const newEvent = mapEventResponse(dto)
@@ -541,6 +557,7 @@ export default function App() {
                 onUpload={handleNavbarUpload}
                 onDeletePhotos={handleDeletePhotos}
                 onToast={addToast}
+                onVisibilityChanged={refreshEventVisibility}
               />
             )}
 

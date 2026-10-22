@@ -1,6 +1,6 @@
 // src/api/events.ts
 
-import { apiGet, apiDelete, apiPostForm, apiPutForm } from "./client"
+import { apiGet, apiDelete, apiPut, apiPostForm, apiPutForm } from "./client"
 
 export interface EventResponse {
   id: number
@@ -22,6 +22,8 @@ export interface EventResponse {
   coverImageUrl: string
 
   previewImageUrls?: string[]
+
+  visibility?: "private" | "link" | "public"
 
   photoCount: number
 
@@ -99,3 +101,7 @@ export const updateEvent = (
 
 export const eventCoverUrl = (id: number) =>
   `${import.meta.env.VITE_API_BASE_URL}/events/${id}/cover`
+
+/** Chủ album bật/tắt "Công khai" (mọi người đã đăng nhập xem được, chỉ đọc). */
+export const setEventPublic = (id: number, publicAlbum: boolean) =>
+  apiPut<EventResponse>(`/events/${id}/public`, { public: publicAlbum })
