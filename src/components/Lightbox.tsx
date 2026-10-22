@@ -1,245 +1,526 @@
-import { useEffect, useRef, useState, useCallback } from 'react';
-import type { Photo } from '../types';
-import { formatFileSize, formatDate } from '../utils';
+import { useEffect, useRef, useState, useCallback } from "react"
+import type { Photo, FlickrPhoto } from "../types"
+import { formatFileSize, formatDate } from "../utils"
+import AuthImg, { downloadAuthed } from "./AuthImg"
 
 interface Props {
-  photos: Photo[];
-  initialIndex: number;
-  location?: string;
-  photographerName?: string;
-  selected: Set<string>;
-  onToggleSelect: (id: string) => void;
-  onClose: () => void;
+  photos: (Photo | FlickrPhoto)[]
+  initialIndex: number
+  location?: string
+  photographerName?: string
+  selected: Set<string>
+  onToggleSelect: (id: string) => void
+  onClose: () => void
 }
 
-const ZOOM_LEVELS = [1, 1.5, 2, 2.5];
+const ZOOM_LEVELS = [1, 1.4, 1.8, 2.5]
 
-export default function Lightbox({ photos, initialIndex, location, photographerName, selected, onToggleSelect, onClose }: Props) {
-  const [index, setIndex] = useState(initialIndex);
-  const [zoomStep, setZoomStep] = useState(0);
-  const [showInfo, setShowInfo] = useState(true);
-  const stripRef = useRef<HTMLDivElement>(null);
-  const touchStartX = useRef<number>(0);
-  const photo = photos[index];
-  const isSelected = selected.has(photo.id);
-  const zoomed = zoomStep > 0;
+export default function Lightbox({
+  photos,
+  initialIndex,
+  location,
+  photographerName,
+  selected,
+  onToggleSelect,
+  onClose,
+}: Props) {
+  const [index, setIndex] = useState(initialIndex)
+  const [zoomStep, setZoomStep] = useState(0)
+  const [showInfo, setShowInfo] = useState(false)
+  const [likedMap, setLikedMap] = useState<Record<string, boolean>>({})
+  const stripRef = useRef<HTMLDivElement>(null)
+  const touchStartX = useRef<number>(0)
 
-  const prev = useCallback(() => { setZoomStep(0); setIndex((i) => Math.max(0, i - 1)); }, []);
-  const next = useCallback(() => { setZoomStep(0); setIndex((i) => Math.min(photos.length - 1, i + 1)); }, [photos.length]);
-  const zoomIn = () => setZoomStep((z) => Math.min(ZOOM_LEVELS.length - 1, z + 1));
-  const zoomOut = () => setZoomStep((z) => Math.max(0, z - 1));
+  const photo = photos[index]
+  const isSelected = selected.has(photo.id)
+  const zoomed = zoomStep > 0
+  const isLiked =
+    likedMap[photo.id] ?? ("isLiked" in photo ? Boolean(photo.isLiked) : false)
+
+  const prev = useCallback(() => {
+    setZoomStep(0)
+    setIndex((i) => Math.max(0, i - 1))
+  }, [])
+
+  const next = useCallback(() => {
+    setZoomStep(0)
+    setIndex((i) => Math.min(photos.length - 1, i + 1))
+  }, [photos.length])
+
+  const zoomIn = () =>
+    setZoomStep((z) => Math.min(ZOOM_LEVELS.length - 1, z + 1))
+  const zoomOut = () => setZoomStep((z) => Math.max(0, z - 1))
 
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {
-      if (e.key === 'ArrowLeft') prev();
-      else if (e.key === 'ArrowRight') next();
-      else if (e.key === 'Escape') onClose();
-      else if (e.key === 'i') setShowInfo((v) => !v);
-      else if (e.key === '+' || e.key === '=') zoomIn();
-      else if (e.key === '-') zoomOut();
-    };
-    window.addEventListener('keydown', handler);
-    return () => window.removeEventListener('keydown', handler);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [prev, next, onClose]);
+      if (e.key === "ArrowLeft") prev()
+      else if (e.key === "ArrowRight") next()
+      else if (e.key === "Escape") onClose()
+      else if (e.key.toLowerCase() === "i") setShowInfo((v) => !v)
+      else if (e.key === "+" || e.key === "=") zoomIn()
+      else if (e.key === "-") zoomOut()
+      else if (e.key.toLowerCase() === "f") {
+        // Toggle like shortcut
+        setLikedMap((m) => ({ ...m, [photo.id]: !m[photo.id] }))
+      }
+    }
+    window.addEventListener("keydown", handler)
+    return () => window.removeEventListener("keydown", handler)
+  }, [prev, next, onClose, photo?.id])
 
-  // Scroll thumbnail strip to active thumb
+  // Cuộn thanh thumbnail tới ảnh hiện tại
   useEffect(() => {
-    const strip = stripRef.current;
-    if (!strip) return;
-    const thumb = strip.children[index] as HTMLElement;
-    if (thumb) thumb.scrollIntoView({ block: 'nearest', inline: 'center', behavior: 'smooth' });
-  }, [index]);
+    const strip = stripRef.current
+    if (!strip) return
+    const thumb = strip.children[index] as HTMLElement
+    if (thumb) {
+      thumb.scrollIntoView({
+        block: "nearest",
+        inline: "center",
+        behavior: "smooth",
+      })
+    }
+  }, [index])
 
-  const handleTouchStart = (e: React.TouchEvent) => { touchStartX.current = e.touches[0].clientX; };
+  const handleTouchStart = (e: React.TouchEvent) => {
+    touchStartX.current = e.touches[0].clientX
+  }
+
   const handleTouchEnd = (e: React.TouchEvent) => {
-    const dx = touchStartX.current - e.changedTouches[0].clientX;
-    if (Math.abs(dx) > 50) dx > 0 ? next() : prev();
-  };
+    const dx = touchStartX.current - e.changedTouches[0].clientX
+    if (Math.abs(dx) > 50) {
+      if (dx > 0) next()
+      else prev()
+    }
+  }
 
-  const infoItems = [
-    { label: 'Kích thước', value: formatFileSize(photo.size) },
-    { label: 'Ngày chụp', value: formatDate(photo.uploadedAt) },
-    { label: 'Độ phân giải', value: `${photo.width} × ${photo.height}` },
-    { label: 'Địa điểm', value: location || '—' },
-    { label: 'Người chụp', value: photographerName || '—' },
-  ];
+  const toggleLike = () => {
+    setLikedMap((m) => ({ ...m, [photo.id]: !isLiked }))
+  }
+
+  // Mock / read camera EXIF data
+  const flickrPhoto = photo as FlickrPhoto
+  const camera = flickrPhoto.cameraModel || "Sony Alpha 7 IV"
+  const focalLength = flickrPhoto.focalLength || "35mm"
+  const aperture = flickrPhoto.fNumber || "f/2.8"
+  const shutter = flickrPhoto.shutterSpeed || "1/500s"
+  const iso = flickrPhoto.iso || 100
 
   return (
     <div
-      className="fixed inset-0 z-[100] bg-black/95 flex flex-col fade-in"
+      className="fixed inset-0 z-[100] bg-[#0b0b0c] text-white flex flex-col fade-in select-none"
       onTouchStart={handleTouchStart}
       onTouchEnd={handleTouchEnd}
     >
-      {/* Top bar */}
-      <div className="flex items-start justify-between gap-4 px-4 sm:px-5 py-3.5 bg-black/60 backdrop-blur-sm flex-shrink-0">
-        <div className="min-w-0">
-          <button onClick={onClose} className="inline-flex items-center gap-2 text-gray-400 hover:text-white transition-colors mb-1 sm:hidden">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
-              <path d="M18 6L6 18M6 6l12 12" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+      {/* Top Header Bar */}
+      <div className="flex items-center justify-between gap-4 px-4 sm:px-6 h-14 bg-black/60 backdrop-blur-md border-b border-neutral-800/60 z-20">
+        <div className="flex items-center gap-3 min-w-0">
+          <button
+            onClick={onClose}
+            className="w-8 h-8 rounded-full flex items-center justify-center text-neutral-400 hover:text-white hover:bg-white/10 transition-colors cursor-pointer"
+            title="Đóng (Esc)"
+          >
+            <svg
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+            >
+              <path
+                d="M18 6L6 18M6 6l12 12"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
             </svg>
           </button>
-          <p className="text-white font-semibold text-base truncate max-w-[60vw]">{photo.name}</p>
-          <p className="text-gray-400 text-xs mt-0.5">{index + 1} / {photos.length}</p>
+
+          <div className="min-w-0">
+            <h2 className="text-sm sm:text-base font-semibold truncate max-w-[45vw] text-neutral-100">
+              {photo.name}
+            </h2>
+            <p className="text-[11px] text-neutral-400">
+              {index + 1} / {photos.length} · by{" "}
+              <span className="text-neutral-200">
+                {photographerName || photo.uploadedBy || "Thành viên"}
+              </span>
+            </p>
+          </div>
         </div>
 
-        <div className="flex items-center gap-1.5 flex-shrink-0">
-          {/* Select toggle */}
+        {/* Top Right Actions */}
+        <div className="flex items-center gap-1.5 sm:gap-2 flex-shrink-0">
+          {/* Select Toggle Button */}
           <button
             onClick={() => onToggleSelect(photo.id)}
-            className={`hidden sm:flex items-center gap-1.5 h-9 px-3 rounded-xl text-sm font-medium transition-colors ${
-              isSelected ? 'bg-blue-600 text-white' : 'text-gray-300 hover:text-white hover:bg-white/10'
+            className={`flex items-center gap-1.5 h-8 px-3 rounded-full text-xs font-medium transition-all cursor-pointer ${
+              isSelected
+                ? "bg-[#0063dc] text-white shadow-sm"
+                : "bg-white/10 text-neutral-300 hover:text-white hover:bg-white/20"
             }`}
-            title={isSelected ? 'Bỏ chọn ảnh này' : 'Chọn ảnh này'}
           >
             {isSelected ? (
-              <svg width="15" height="15" viewBox="0 0 24 24" fill="none">
-                <path d="M5 13l4 4L19 7" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
+              <svg
+                width="14"
+                height="14"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2.5"
+              >
+                <polyline points="20 6 9 17 4 12" />
               </svg>
             ) : (
-              <div className="w-3.5 h-3.5 rounded-[3px] border-2 border-current" />
+              <span className="w-3 h-3 rounded-[2px] border border-neutral-400" />
             )}
-            {isSelected ? 'Đã chọn' : 'Chọn'}
+            <span className="hidden sm:inline">
+              {isSelected ? "Đã chọn" : "Chọn ảnh"}
+            </span>
           </button>
 
+          {/* Like Button (Flickr Pink) */}
+          <button
+            onClick={toggleLike}
+            className={`h-8 px-3 rounded-full text-xs font-semibold flex items-center gap-1.5 transition-all cursor-pointer ${
+              isLiked
+                ? "bg-[#ff0084] text-white shadow-sm"
+                : "bg-white/10 text-neutral-300 hover:text-white hover:bg-white/20"
+            }`}
+            title="Thích ảnh (F)"
+          >
+            <svg
+              className={`w-3.5 h-3.5 ${isLiked ? "text-white" : ""}`}
+              viewBox="0 0 24 24"
+              fill={isLiked ? "currentColor" : "none"}
+              stroke="currentColor"
+              strokeWidth="2"
+            >
+              <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
+            </svg>
+            <span className="hidden sm:inline">
+              {isLiked ? "Đã thích" : "Thích"}
+            </span>
+          </button>
+
+          {/* Toggle EXIF Info Panel */}
           <button
             onClick={() => setShowInfo((v) => !v)}
-            className={`w-9 h-9 flex items-center justify-center rounded-xl transition-colors ${showInfo ? 'bg-white/20 text-white' : 'text-gray-400 hover:text-white hover:bg-white/10'}`}
-            title="Thông tin ảnh (i)"
+            className={`w-8 h-8 rounded-full flex items-center justify-center transition-colors cursor-pointer ${
+              showInfo
+                ? "bg-white text-neutral-900"
+                : "text-neutral-300 hover:text-white hover:bg-white/10"
+            }`}
+            title="Thông số kỹ thuật & EXIF (i)"
           >
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
-              <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="2"/>
-              <path d="M12 16v-4M12 8h.01" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+            <svg
+              width="17"
+              height="17"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+            >
+              <circle cx="12" cy="12" r="10" />
+              <path d="M12 16v-4M12 8h.01" strokeLinecap="round" />
             </svg>
           </button>
 
-          <div className="hidden sm:flex items-center">
+          {/* Zoom In / Out Controls */}
+          <div className="hidden sm:flex items-center bg-white/10 rounded-full p-0.5">
             <button
               onClick={zoomOut}
               disabled={zoomStep === 0}
-              className="w-9 h-9 flex items-center justify-center rounded-xl text-gray-400 hover:text-white hover:bg-white/10 transition-colors disabled:opacity-30 disabled:hover:bg-transparent"
+              className="w-7 h-7 flex items-center justify-center rounded-full text-neutral-300 hover:text-white disabled:opacity-30 cursor-pointer"
               title="Thu nhỏ (-)"
             >
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
-                <circle cx="11" cy="11" r="8" stroke="currentColor" strokeWidth="2"/>
-                <path d="m21 21-4.35-4.35M8 11h6" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
-              </svg>
+              -
             </button>
+            <span className="text-[10px] px-1 text-neutral-400 font-mono">
+              {ZOOM_LEVELS[zoomStep]}x
+            </span>
             <button
               onClick={zoomIn}
               disabled={zoomStep === ZOOM_LEVELS.length - 1}
-              className="w-9 h-9 flex items-center justify-center rounded-xl text-gray-400 hover:text-white hover:bg-white/10 transition-colors disabled:opacity-30 disabled:hover:bg-transparent"
+              className="w-7 h-7 flex items-center justify-center rounded-full text-neutral-300 hover:text-white disabled:opacity-30 cursor-pointer"
               title="Phóng to (+)"
             >
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
-                <circle cx="11" cy="11" r="8" stroke="currentColor" strokeWidth="2"/>
-                <path d="m21 21-4.35-4.35M11 8v6M8 11h6" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
-              </svg>
+              +
             </button>
           </div>
 
+          {/* Direct Download Button */}
           <a
             href={photo.url}
             download={photo.name}
-            className="flex items-center gap-1.5 h-9 px-3.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold transition-colors"
-            title="Tải xuống"
+            onClick={(e) => {
+              e.preventDefault()
+              downloadAuthed(photo.url, photo.name).catch(() => {})
+            }}
+            className="flex items-center gap-1.5 h-8 px-3 rounded-full bg-[#0063dc] hover:bg-[#0052b8] text-white text-xs font-semibold transition-colors cursor-pointer"
+            title="Tải ảnh gốc"
           >
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none">
-              <path d="M12 3v13M8 12l4 4 4-4M3 21h18" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+            <svg
+              width="13"
+              height="13"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2.5"
+            >
+              <path
+                d="M12 3v13M8 12l4 4 4-4M3 21h18"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
             </svg>
             <span className="hidden sm:inline">Tải về</span>
           </a>
-
-          <button onClick={onClose} className="hidden sm:flex w-9 h-9 items-center justify-center rounded-xl text-gray-300 hover:text-white hover:bg-white/10 transition-colors">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
-              <path d="M18 6L6 18M6 6l12 12" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
-            </svg>
-          </button>
         </div>
       </div>
 
-      {/* Main photo area */}
-      <div className="flex-1 flex items-center justify-center relative overflow-auto min-h-0">
-        {/* Prev */}
-        {index > 0 && (
-          <button
-            onClick={prev}
-            className="absolute left-3 z-10 w-11 h-11 flex items-center justify-center bg-black/50 hover:bg-black/70 backdrop-blur-sm rounded-full text-white transition-all duration-200 hover:scale-110"
+      {/* Main View Area: Image + Optional EXIF Side Panel */}
+      <div className="flex-1 flex overflow-hidden relative">
+        {/* Main Photo Center Canvas */}
+        <div className="flex-1 flex items-center justify-center relative overflow-hidden p-2 sm:p-4">
+          {/* Previous Arrow Button */}
+          {index > 0 && (
+            <button
+              onClick={prev}
+              aria-label="Ảnh trước"
+              className="absolute left-4 z-10 w-11 h-11 flex items-center justify-center bg-black/50 hover:bg-black/80 backdrop-blur-md rounded-full text-white transition-all duration-150 hover:scale-105 border border-white/10 cursor-pointer"
+            >
+              <svg
+                width="22"
+                height="22"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2.5"
+              >
+                <path
+                  d="M15 18l-6-6 6-6"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              </svg>
+            </button>
+          )}
+
+          {/* Image Canvas */}
+          <div
+            className={`w-full h-full flex items-center justify-center transition-all duration-300 ${
+              zoomed ? "cursor-zoom-out overflow-auto" : "cursor-zoom-in"
+            }`}
+            onClick={() => (zoomed ? setZoomStep(0) : zoomIn())}
           >
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-              <path d="M15 18l-6-6 6-6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-            </svg>
-          </button>
-        )}
-
-        {/* Photo */}
-        <div
-          className={`transition-all duration-300 ${zoomed ? 'cursor-zoom-out' : 'cursor-zoom-in'}`}
-          onClick={() => (zoomed ? setZoomStep(0) : zoomIn())}
-        >
-          <img
-            key={photo.id}
-            src={photo.url}
-            alt={photo.name}
-            className="max-w-full object-contain transition-transform duration-300"
-            style={{
-              maxHeight: 'calc(100vh - 220px)',
-              transform: `scale(${ZOOM_LEVELS[zoomStep]})`,
-            }}
-            draggable={false}
-          />
-        </div>
-
-        {/* Next */}
-        {index < photos.length - 1 && (
-          <button
-            onClick={next}
-            className="absolute right-3 z-10 w-11 h-11 flex items-center justify-center bg-black/50 hover:bg-black/70 backdrop-blur-sm rounded-full text-white transition-all duration-200 hover:scale-110"
-          >
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-              <path d="M9 18l6-6-6-6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-            </svg>
-          </button>
-        )}
-      </div>
-
-      {/* Bottom info bar */}
-      {showInfo && (
-        <div className="flex-shrink-0 bg-black/60 backdrop-blur-sm border-t border-white/10 px-4 sm:px-6 py-3 slide-up">
-          <div className="flex flex-wrap items-center gap-x-8 gap-y-2 max-w-screen-lg mx-auto justify-center sm:justify-start">
-            {infoItems.map(({ label, value }) => (
-              <div key={label} className="min-w-0">
-                <p className="text-gray-400 text-[11px]">{label}</p>
-                <p className="text-white text-sm mt-0.5 truncate max-w-[160px]">{value}</p>
-              </div>
-            ))}
+            <AuthImg
+              key={photo.id}
+              src={photo.url}
+              alt={photo.name}
+              className="max-w-full max-h-full object-contain transition-transform duration-200 select-none drop-shadow-2xl"
+              style={{
+                transform: `scale(${ZOOM_LEVELS[zoomStep]})`,
+              }}
+              draggable={false}
+            />
           </div>
-        </div>
-      )}
 
-      {/* Thumbnail strip */}
-      <div className="flex-shrink-0 bg-black/60 backdrop-blur-sm px-4 py-3">
+          {/* Next Arrow Button */}
+          {index < photos.length - 1 && (
+            <button
+              onClick={next}
+              aria-label="Ảnh sau"
+              className="absolute right-4 z-10 w-11 h-11 flex items-center justify-center bg-black/50 hover:bg-black/80 backdrop-blur-md rounded-full text-white transition-all duration-150 hover:scale-105 border border-white/10 cursor-pointer"
+            >
+              <svg
+                width="22"
+                height="22"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2.5"
+              >
+                <path
+                  d="M9 18l6-6-6-6"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              </svg>
+            </button>
+          )}
+        </div>
+
+        {/* Flickr EXIF & Metadata Right Drawer Panel */}
+        {showInfo && (
+          <aside className="w-80 sm:w-96 flex-shrink-0 bg-[#18181b]/95 backdrop-blur-xl border-l border-neutral-800 p-5 overflow-y-auto z-20 flex flex-col gap-6 slide-right">
+            <div className="flex items-center justify-between pb-3 border-b border-neutral-800">
+              <h3 className="font-semibold text-sm text-neutral-100 flex items-center gap-2">
+                <svg
+                  width="16"
+                  height="16"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="#0063dc"
+                  strokeWidth="2"
+                >
+                  <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z" />
+                  <circle cx="12" cy="13" r="4" />
+                </svg>
+                Thông tin & EXIF
+              </h3>
+              <button
+                onClick={() => setShowInfo(false)}
+                className="text-neutral-400 hover:text-white text-xs cursor-pointer"
+              >
+                ✕ Đóng
+              </button>
+            </div>
+
+            {/* Photo Title & Description */}
+            <div>
+              <h4 className="text-base font-bold text-white tracking-tight">
+                {photo.name}
+              </h4>
+              <p className="text-xs text-neutral-400 mt-1">
+                Tải lên vào {formatDate(photo.uploadedAt)} bởi{" "}
+                <strong className="text-neutral-200">
+                  {photo.uploadedBy || "Thành viên"}
+                </strong>
+              </p>
+            </div>
+
+            {/* Camera Specs / Settings (Flickr Signature Block) */}
+            <div className="bg-[#222226] p-4 rounded-xl border border-neutral-800">
+              <div className="flex items-center gap-2 text-sm font-semibold text-white mb-3">
+                <span>📷</span>
+                <span>{camera}</span>
+              </div>
+              <div className="grid grid-cols-2 gap-3 text-xs">
+                <div className="bg-neutral-800/60 p-2.5 rounded-lg">
+                  <p className="text-neutral-400 text-[10px] uppercase font-mono">
+                    Tiêu cự
+                  </p>
+                  <p className="font-semibold text-neutral-200 mt-0.5">
+                    {focalLength}
+                  </p>
+                </div>
+                <div className="bg-neutral-800/60 p-2.5 rounded-lg">
+                  <p className="text-neutral-400 text-[10px] uppercase font-mono">
+                    Khẩu độ
+                  </p>
+                  <p className="font-semibold text-neutral-200 mt-0.5">
+                    {aperture}
+                  </p>
+                </div>
+                <div className="bg-neutral-800/60 p-2.5 rounded-lg">
+                  <p className="text-neutral-400 text-[10px] uppercase font-mono">
+                    Tốc độ màn trập
+                  </p>
+                  <p className="font-semibold text-neutral-200 mt-0.5">
+                    {shutter}
+                  </p>
+                </div>
+                <div className="bg-neutral-800/60 p-2.5 rounded-lg">
+                  <p className="text-neutral-400 text-[10px] uppercase font-mono">
+                    ISO
+                  </p>
+                  <p className="font-semibold text-neutral-200 mt-0.5">{iso}</p>
+                </div>
+              </div>
+            </div>
+
+            {/* Technical Specifications */}
+            <div className="space-y-2.5 text-xs">
+              <div className="flex justify-between py-1.5 border-b border-neutral-800/80">
+                <span className="text-neutral-400">Độ phân giải</span>
+                <span className="font-mono text-neutral-200">
+                  {photo.width} × {photo.height} px
+                </span>
+              </div>
+              <div className="flex justify-between py-1.5 border-b border-neutral-800/80">
+                <span className="text-neutral-400">Dung lượng</span>
+                <span className="font-mono text-neutral-200">
+                  {formatFileSize(photo.size)}
+                </span>
+              </div>
+              {location && (
+                <div className="flex justify-between py-1.5 border-b border-neutral-800/80">
+                  <span className="text-neutral-400">Địa điểm</span>
+                  <span className="text-neutral-200 font-medium">
+                    {location}
+                  </span>
+                </div>
+              )}
+            </div>
+
+            {/* Keyboard Shortcuts Hint */}
+            <div className="mt-auto pt-4 border-t border-neutral-800 text-[11px] text-neutral-400 space-y-1">
+              <p>
+                Phím tắt:{" "}
+                <kbd className="px-1.5 py-0.5 bg-neutral-800 rounded font-mono">
+                  ←
+                </kbd>{" "}
+                <kbd className="px-1.5 py-0.5 bg-neutral-800 rounded font-mono">
+                  →
+                </kbd>{" "}
+                chuyển ảnh
+              </p>
+              <p>
+                <kbd className="px-1.5 py-0.5 bg-neutral-800 rounded font-mono">
+                  F
+                </kbd>{" "}
+                thích ·{" "}
+                <kbd className="px-1.5 py-0.5 bg-neutral-800 rounded font-mono">
+                  I
+                </kbd>{" "}
+                bật/tắt EXIF ·{" "}
+                <kbd className="px-1.5 py-0.5 bg-neutral-800 rounded font-mono">
+                  Esc
+                </kbd>{" "}
+                thoát
+              </p>
+            </div>
+          </aside>
+        )}
+      </div>
+
+      {/* Flickr Filmstrip Thumbnails Bar at Bottom */}
+      <div className="h-16 flex-shrink-0 bg-black/80 backdrop-blur-md border-t border-neutral-800/60 px-4 flex items-center justify-center z-20">
         <div
           ref={stripRef}
-          className="flex gap-2 overflow-x-auto no-scrollbar justify-center"
+          className="flex items-center gap-2 overflow-x-auto no-scrollbar max-w-full py-1"
         >
           {photos.map((ph, i) => (
             <button
               key={ph.id}
-              onClick={() => { setZoomStep(0); setIndex(i); }}
-              className={`relative flex-shrink-0 w-14 h-14 rounded-lg overflow-hidden border-2 transition-all duration-200 ${
-                i === index ? 'border-white scale-110 shadow-lg' : 'border-transparent opacity-50 hover:opacity-80'
+              onClick={() => {
+                setZoomStep(0)
+                setIndex(i)
+              }}
+              className={`relative flex-shrink-0 w-11 h-11 rounded-lg overflow-hidden border-2 transition-all duration-150 cursor-pointer ${
+                i === index
+                  ? "border-[#0063dc] scale-110 shadow-lg ring-1 ring-[#0063dc]"
+                  : "border-transparent opacity-40 hover:opacity-90"
               }`}
             >
-              <img
-                src={ph.url.replace('w=1920', 'w=120')}
+              <AuthImg
+                src={ph.url}
                 alt={ph.name}
                 className="w-full h-full object-cover"
+                loading="lazy"
               />
               {selected.has(ph.id) && (
-                <div className="absolute top-1 left-1 w-3.5 h-3.5 rounded-[3px] bg-blue-600 flex items-center justify-center">
-                  <svg width="9" height="9" viewBox="0 0 24 24" fill="none">
-                    <path d="M5 13l4 4L19 7" stroke="white" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"/>
+                <div className="absolute top-0.5 left-0.5 w-3.5 h-3.5 rounded-sm bg-[#0063dc] flex items-center justify-center">
+                  <svg
+                    width="8"
+                    height="8"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="white"
+                    strokeWidth="3"
+                  >
+                    <polyline points="20 6 9 17 4 12" />
                   </svg>
                 </div>
               )}
@@ -248,5 +529,5 @@ export default function Lightbox({ photos, initialIndex, location, photographerN
         </div>
       </div>
     </div>
-  );
+  )
 }

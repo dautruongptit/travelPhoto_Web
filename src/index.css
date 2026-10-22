@@ -6,6 +6,8 @@
 
 @theme {
   --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+  --color-flickr-blue: #0063dc;
+  --color-flickr-pink: #ff0084;
 }
 
 html,
@@ -20,8 +22,8 @@ body {
 
 html.dark,
 html.dark body {
-  background-color: #0f172a;
-  color: #f1f5f9;
+  background-color: #0b0b0c;
+  color: #f4f4f5;
 }
 
 *,
@@ -49,11 +51,11 @@ html.dark body {
 }
 
 html.dark ::-webkit-scrollbar-thumb {
-  background: #475569;
+  background: #27272a;
 }
 
 html.dark ::-webkit-scrollbar-thumb:hover {
-  background: #64748b;
+  background: #3f3f46;
 }
 
 .no-scrollbar::-webkit-scrollbar {
@@ -89,7 +91,7 @@ html.dark ::-webkit-scrollbar-thumb:hover {
 
 /* Checkbox custom */
 input[type='checkbox'] {
-  accent-color: #2563eb;
+  accent-color: #0063dc;
   cursor: pointer;
 }
 

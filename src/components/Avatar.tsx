@@ -1,9 +1,11 @@
-import { useState } from 'react';
+import { useState } from "react"
 
 interface Props {
-  src: string;
-  name: string;
-  className?: string;
+  src: string
+
+  name: string
+
+  className?: string
 }
 
 /**
@@ -13,9 +15,11 @@ interface Props {
  * `referrerPolicy="no-referrer"` vì Google khuyến nghị khi nhúng ảnh profile
  * (googleusercontent.com đôi khi từ chối request kèm Referer header của trang gọi tới).
  */
-export default function Avatar({ src, name, className = '' }: Props) {
-  const [failed, setFailed] = useState(false);
-  const initial = name.trim().charAt(0).toUpperCase() || '?';
+
+export default function Avatar({ src, name, className = "" }: Props) {
+  const [failed, setFailed] = useState(false)
+
+  const initial = name.trim().charAt(0).toUpperCase() || "?"
 
   if (!src || failed) {
     return (
@@ -26,7 +30,7 @@ export default function Avatar({ src, name, className = '' }: Props) {
       >
         {initial}
       </div>
-    );
+    )
   }
 
   return (
@@ -37,5 +41,5 @@ export default function Avatar({ src, name, className = '' }: Props) {
       onError={() => setFailed(true)}
       className={`object-cover ${className}`}
     />
-  );
+  )
 }

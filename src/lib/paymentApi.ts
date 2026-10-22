@@ -1,37 +1,47 @@
-import { apiFetch } from './apiClient';
-import type { PaymentOrder, StoragePlan } from '../types';
-import { generateId } from '../utils';
+import { apiFetch } from "./apiClient"
 
-const PAYMENT_MODE = import.meta.env.VITE_PAYMENT_MODE ?? 'mock';
+import type { PaymentOrder, StoragePlan } from "../types"
+
+import { generateId } from "../utils"
+
+const PAYMENT_MODE = import.meta.env.VITE_PAYMENT_MODE ?? "mock"
 
 interface CreatePaymentResponse {
-  paymentUrl: string;
-  orderId: string;
+  paymentUrl: string
+
+  orderId: string
 }
 
 export interface VnpayReturnResult {
-  success: boolean;
-  orderId: string;
-  planId?: string;
-  message: string;
-  amount?: number;
-  transactionNo?: string;
-  payDate?: string;
+  success: boolean
+
+  orderId: string
+
+  planId?: string
+
+  message: string
+
+  amount?: number
+
+  transactionNo?: string
+
+  payDate?: string
 }
 
-const PENDING_ORDER_KEY = 'phototrip-pending-order';
+const PENDING_ORDER_KEY = "phototrip-pending-order"
 
 export function savePendingOrder(order: PaymentOrder) {
-  sessionStorage.setItem(PENDING_ORDER_KEY, JSON.stringify(order));
+  sessionStorage.setItem(PENDING_ORDER_KEY, JSON.stringify(order))
 }
 
 export function readPendingOrder(): PaymentOrder | null {
-  const raw = sessionStorage.getItem(PENDING_ORDER_KEY);
-  return raw ? (JSON.parse(raw) as PaymentOrder) : null;
+  const raw = sessionStorage.getItem(PENDING_ORDER_KEY)
+
+  return raw ? JSON.parse(raw) as PaymentOrder : null
 }
 
 export function clearPendingOrder() {
-  sessionStorage.removeItem(PENDING_ORDER_KEY);
+  sessionStorage.removeItem(PENDING_ORDER_KEY)
 }
 
 /**
@@ -50,19 +60,34 @@ export function clearPendingOrder() {
  * Chế độ "mock": không gọi backend, chỉ tạo orderId giả để hiển thị màn hình mô
  * phỏng VNPay ngay trong app — dùng khi chưa có backend/tài khoản merchant thật.
  */
-export async function createVnpayPayment(plan: StoragePlan): Promise<CreatePaymentResponse | { orderId: string }> {
-  if (PAYMENT_MODE === 'mock') {
-    const orderId = `MOCK${Date.now()}${generateId().slice(0, 4).toUpperCase()}`;
-    savePendingOrder({ orderId, planId: plan.id, amount: plan.totalPrice });
-    return { orderId };
+
+export async function createVnpayPayment(
+  plan: StoragePlan,
+): Promise<CreatePaymentResponse | { orderId: string }> {
+  if (PAYMENT_MODE === "mock") {
+    const orderId = `MOCK${Date.now()}${generateId().slice(0, 4).toUpperCase()}`
+
+    savePendingOrder({ orderId, planId: plan.id, amount: plan.totalPrice })
+
+    return { orderId }
   }
 
-  const res = await apiFetch<CreatePaymentResponse>('/payments/vnpay/create-payment', {
-    method: 'POST',
-    body: { planId: plan.id },
-  });
-  savePendingOrder({ orderId: res.orderId, planId: plan.id, amount: plan.totalPrice });
-  return res;
+  const res = await apiFetch<CreatePaymentResponse>(
+    "/payments/vnpay/create-payment",
+    {
+      method: "POST",
+
+      body: { planId: plan.id },
+    },
+  )
+
+  savePendingOrder({
+    orderId: res.orderId,
+    planId: plan.id,
+    amount: plan.totalPrice,
+  })
+
+  return res
 }
 
 /**
@@ -82,8 +107,13 @@ export async function createVnpayPayment(plan: StoragePlan): Promise<CreatePayme
  * duy nhất để thực sự cộng dung lượng là endpoint IPN (server-to-server) — xem
  * backend-reference/README.md.
  */
-export async function verifyVnpayReturn(queryString: string): Promise<VnpayReturnResult> {
-  return apiFetch<VnpayReturnResult>(`/payments/vnpay/return${queryString}`, { method: 'GET' });
+
+export async function verifyVnpayReturn(
+  queryString: string,
+): Promise<VnpayReturnResult> {
+  return apiFetch<VnpayReturnResult>(`/payments/vnpay/return${queryString}`, {
+    method: "GET",
+  })
 }
 
-export const isMockPaymentMode = PAYMENT_MODE === 'mock';
+export const isMockPaymentMode = PAYMENT_MODE === "mock"

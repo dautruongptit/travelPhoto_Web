@@ -1,0 +1,56 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Đang đăng nhập…</title>
+    <style>
+      body {
+        margin: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 100vh;
+        font-family: Inter, system-ui, sans-serif;
+        background: #0b0b0c;
+        color: #fff;
+      }
+      .spinner {
+        width: 36px;
+        height: 36px;
+        border: 3px solid rgba(255,255,255,.2);
+        border-top-color: #0063DC;
+        border-radius: 50%;
+        animation: spin .7s linear infinite;
+      }
+      @keyframes spin { to { transform: rotate(360deg); } }
+    </style>
+  </head>
+  <body>
+    <div class="spinner"></div>
+    <script>
+      (function () {
+        var params = new URLSearchParams(window.location.search);
+        var token = params.get("token");
+        var error = params.get("error");
+
+        if (window.opener && !window.opener.closed) {
+          window.opener.postMessage(
+            token ? { type: "GOOGLE_AUTH_SUCCESS", token: token }
+                  : { type: "GOOGLE_AUTH_ERROR",   error: error || "unknown" },
+            window.location.origin
+          );
+          window.close();
+        } else {
+          // Fallback: nếu không có opener (vd: popup bị block, mở trực tiếp)
+          // thì chuyển hướng về trang chính với token trong query string để
+          // App.tsx tự xử lý như flow redirect cũ.
+          if (token) {
+            window.location.replace("/?token=" + encodeURIComponent(token));
+          } else {
+            window.location.replace("/?error=" + encodeURIComponent(error || "unknown"));
+          }
+        }
+      })();
+    </script>
+  </body>
+</html>
