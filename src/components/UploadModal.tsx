@@ -10,7 +10,6 @@ import {
 import { uploadPhotos } from "../api/photos"
 import {
   extractExifFromBlob,
-  compressImage,
   type ExtractedExif,
 } from "../utils/imageProcessing"
 
@@ -48,7 +47,6 @@ export default function UploadModal({
   const [isDragging, setIsDragging] = useState(false)
   const [isUploading, setIsUploading] = useState(false)
   const [done, setDone] = useState(false)
-  const [autoCompress, setAutoCompress] = useState(true)
   const [isPublic, setIsPublic] = useState(true)
   const [uploadError, setUploadError] = useState<string | null>(null)
 
@@ -188,50 +186,12 @@ export default function UploadModal({
     )
     const uploadableIds = new Set(uploadable.map((e) => e.id))
 
-    // Nén ảnh nếu bật autoCompress
-    let processedFiles: File[] = []
-
-    if (autoCompress) {
-      setEntries((prev) =>
-        prev.map((e) =>
-          uploadableIds.has(e.id)
-            ? { ...e, status: "compressing", progress: 20 }
-            : e,
-        ),
-      )
-
-      for (const entry of uploadable) {
-        const compressed = await compressImage(entry.file, 2560, 0.88)
-        const fileToSend =
-          entry.isDuplicate &&
-          entry.duplicateAction === "rename" &&
-          entry.newName
-            ? new File([compressed.file], entry.newName, {
-                type: compressed.file.type,
-              })
-            : compressed.file
-
-        processedFiles.push(fileToSend)
-
-        setEntries((prev) =>
-          prev.map((e) =>
-            e.id === entry.id
-              ? {
-                  ...e,
-                  compressedSize: compressed.compressedSize,
-                  progress: 40,
-                }
-              : e,
-          ),
-        )
-      }
-    } else {
-      processedFiles = uploadable.map((entry) =>
-        entry.isDuplicate && entry.duplicateAction === "rename" && entry.newName
-          ? new File([entry.file], entry.newName, { type: entry.file.type })
-          : entry.file,
-      )
-    }
+    // Luôn gửi ẢNH GỐC nguyên vẹn (không nén, không đổi kích thước) để không mất chất lượng.
+    const processedFiles: File[] = uploadable.map((entry) =>
+      entry.isDuplicate && entry.duplicateAction === "rename" && entry.newName
+        ? new File([entry.file], entry.newName, { type: entry.file.type })
+        : entry.file,
+    )
 
     setEntries((prev) =>
       prev.map((e) =>
@@ -332,7 +292,7 @@ export default function UploadModal({
                 </span>
               </h2>
               <p className="text-xs text-neutral-500 dark:text-neutral-400 mt-0.5">
-                Hỗ trợ chụp tức thời, tự đọc EXIF và nén thông minh
+                Hỗ trợ chụp tức thời, tự đọc EXIF, giữ nguyên chất lượng gốc
               </p>
             </div>
             {!isUploading && (
@@ -438,17 +398,11 @@ export default function UploadModal({
               />
             </div>
 
-            {/* Tùy chọn Nén ảnh & Quyền riêng tư */}
+            {/* Ghi chú chất lượng & Quyền riêng tư */}
             <div className="flex items-center justify-between mt-3 text-xs text-neutral-600 dark:text-neutral-400 px-1">
-              <label className="flex items-center gap-2 cursor-pointer select-none">
-                <input
-                  type="checkbox"
-                  checked={autoCompress}
-                  onChange={(e) => setAutoCompress(e.target.checked)}
-                  className="rounded text-[#0063dc] focus:ring-0"
-                />
-                <span>Tối ưu nén ảnh client-side (Tải nhanh gấp 3x)</span>
-              </label>
+              <span className="text-neutral-500 dark:text-neutral-400">
+                Ảnh được tải lên nguyên bản, không nén
+              </span>
 
               <label className="flex items-center gap-2 cursor-pointer select-none">
                 <input
