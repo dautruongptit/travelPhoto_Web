@@ -1,7 +1,7 @@
 import { useState } from "react"
 import type { LayoutPhoto } from "../../hooks/useJustifiedLayout"
 import AuthImg from "../AuthImg"
-import { displayUrl } from "../../utils"
+import { displayUrl, formatFileSize, formatDate } from "../../utils"
 
 interface PhotoCardProps {
   photo: LayoutPhoto
@@ -130,6 +130,11 @@ export default function PhotoCard({
           <h3 className="text-white text-sm font-medium tracking-tight truncate drop-shadow-sm">
             {photo.title || photo.name}
           </h3>
+          <p className="text-[11px] text-neutral-300 mt-0.5 truncate">
+            {formatFileSize(photo.size)}
+            {photo.width && photo.height ? ` · ${photo.width}×${photo.height}` : ""}
+            {photo.uploadedAt ? ` · ${formatDate(photo.uploadedAt)}` : ""}
+          </p>
           <div className="flex items-center justify-between text-xs text-neutral-300 mt-1">
             <span className="truncate max-w-[65%] hover:text-white transition-colors">
               by{" "}

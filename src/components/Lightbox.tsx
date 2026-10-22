@@ -98,13 +98,14 @@ export default function Lightbox({
     setLikedMap((m) => ({ ...m, [photo.id]: !isLiked }))
   }
 
-  // Mock / read camera EXIF data
+  // EXIF thật (nếu có). Không còn giá trị giả "Sony Alpha 7 IV / 35mm / f/2.8" nữa.
   const flickrPhoto = photo as FlickrPhoto
-  const camera = flickrPhoto.cameraModel || "Sony Alpha 7 IV"
-  const focalLength = flickrPhoto.focalLength || "35mm"
-  const aperture = flickrPhoto.fNumber || "f/2.8"
-  const shutter = flickrPhoto.shutterSpeed || "1/500s"
-  const iso = flickrPhoto.iso || 100
+  const camera = flickrPhoto.cameraModel
+  const focalLength = flickrPhoto.focalLength
+  const aperture = flickrPhoto.fNumber
+  const shutter = flickrPhoto.shutterSpeed
+  const iso = flickrPhoto.iso
+  const hasExif = Boolean(camera || focalLength || aperture || shutter || iso)
 
   return (
     <div
@@ -391,6 +392,7 @@ export default function Lightbox({
             </div>
 
             {/* Camera Specs / Settings (Flickr Signature Block) */}
+            {hasExif && (
             <div className="bg-[#222226] p-4 rounded-xl border border-neutral-800">
               <div className="flex items-center gap-2 text-sm font-semibold text-white mb-3">
                 <span>📷</span>
@@ -429,6 +431,7 @@ export default function Lightbox({
                 </div>
               </div>
             </div>
+            )}
 
             {/* Technical Specifications */}
             <div className="space-y-2.5 text-xs">
