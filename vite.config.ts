@@ -1,5 +1,6 @@
 import {
   defineConfig,
+  loadEnv,
   type HtmlTagDescriptor,
   type Plugin,
   type ProxyOptions,
@@ -23,6 +24,11 @@ export default defineConfig(({ mode }) => {
   // .figma/make/deploy-preview passes `--mode development` for cached-preview builds.
 
   const emitSourcemaps = mode === "development"
+
+  // Backend mà dev server proxy tới. Mặc định API chạy local (8310); đặt VITE_PROXY_TARGET
+  // trong .env để dùng API thật, vd https://travelphoto-api.thongtinchinhhieu.site
+  const apiTarget =
+    loadEnv(mode, process.cwd(), "").VITE_PROXY_TARGET || "http://localhost:8310"
 
   return {
     base: process.env.FIGMA_PUBLIC_URL
@@ -72,8 +78,9 @@ export default defineConfig(({ mode }) => {
 
       proxy: {
         "/api": {
-          target: "http://localhost:8310",
+          target: apiTarget,
           changeOrigin: true,
+          secure: true,
           configure: withOfflineFallback(),
         },
 
@@ -81,14 +88,16 @@ export default defineConfig(({ mode }) => {
         // Uses a regex key so sub-paths are matched. We do NOT proxy "/oauth2/callback"
         // because that is handled client-side by the SPA (served as static HTML).
         "^/oauth2/authorization": {
-          target: "http://localhost:8310",
+          target: apiTarget,
           changeOrigin: true,
+          secure: true,
           configure: withOfflineFallback(),
         },
 
         "/login/oauth2": {
-          target: "http://localhost:8310",
+          target: apiTarget,
           changeOrigin: true,
+          secure: true,
           configure: withOfflineFallback(),
         },
       },

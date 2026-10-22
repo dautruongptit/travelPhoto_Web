@@ -173,7 +173,7 @@ export default function AlbumPage({
     <main className="min-h-screen pb-16">
       {/* Flickr Sub-header & Album Cover banner */}
       <div className="bg-white dark:bg-[#0b0b0c] border-b border-neutral-200/80 dark:border-neutral-800/80 transition-colors">
-        <div className="max-w-[1920px] mx-auto px-4 sm:px-8 lg:px-14 xl:px-24 py-4">
+        <div className="max-w-screen-2xl mx-auto px-4 sm:px-6 py-4">
           {/* Breadcrumb */}
           <div className="flex items-center gap-2 text-xs sm:text-sm text-neutral-500 dark:text-neutral-400 mb-3">
             <button
@@ -333,7 +333,7 @@ export default function AlbumPage({
         </div>
       </div>
 
-      <div className="max-w-[1920px] mx-auto px-4 sm:px-8 lg:px-14 xl:px-24 py-5">
+      <div className="max-w-screen-2xl mx-auto px-4 sm:px-6 py-5">
         {activeTab === "photos" && (
           <>
         {/* Toolbar */}

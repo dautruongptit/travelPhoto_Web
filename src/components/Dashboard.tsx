@@ -126,7 +126,7 @@ export default function Dashboard({
   }
 
   return (
-    <main className="max-w-[1920px] mx-auto px-3 sm:px-6 py-6 pb-20">
+    <main className="max-w-screen-2xl mx-auto px-4 sm:px-6 py-8 pb-20">
       {/* Flickr Slim Hero Bar */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6 pb-5 border-b border-neutral-200/80 dark:border-neutral-800/80">
         <div>
