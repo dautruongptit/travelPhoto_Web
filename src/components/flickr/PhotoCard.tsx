@@ -1,6 +1,7 @@
 import { useState } from "react"
 import type { LayoutPhoto } from "../../hooks/useJustifiedLayout"
 import AuthImg from "../AuthImg"
+import { displayUrl } from "../../utils"
 
 interface PhotoCardProps {
   photo: LayoutPhoto
@@ -58,7 +59,7 @@ export default function PhotoCard({
 
       {/* Ảnh chính với lazy load và fade-in */}
       <AuthImg
-        src={photo.url}
+        src={displayUrl(photo)}
         alt={photo.title || photo.name}
         loading="lazy"
         onLoad={() => setIsLoaded(true)}

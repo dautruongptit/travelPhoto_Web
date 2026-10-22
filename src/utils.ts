@@ -66,6 +66,21 @@ export const ACCEPTED_TYPES = [
   "image/heic",
 ]
 
-export const MAX_FILE_SIZE = 10 * 1024 * 1024 // 10 MB
+export const MAX_FILE_SIZE = 50 * 1024 * 1024 // 50 MB (khớp backend + nginx)
+
+// Ảnh RAW: backend giữ file gốc + tự tạo JPEG xem trước (xem api/docs/STORAGE_NAMING.md)
+export const RAW_EXTENSIONS = [
+  ".cr2", ".cr3", ".crw", ".nef", ".nrw", ".arw", ".srf", ".sr2", ".dng",
+  ".orf", ".rw2", ".raf", ".pef", ".srw", ".3fr", ".iiq", ".rwl",
+]
+
+/** URL ảnh dùng để HIỂN THỊ: ưu tiên previewUrl (RAW -> JPEG xem trước), không có thì dùng url gốc. */
+export const displayUrl = (p: { url: string; previewUrl?: string }): string =>
+  p.previewUrl || p.url
+
+export const isRawFileName = (name: string): boolean => {
+  const lower = name.toLowerCase()
+  return RAW_EXTENSIONS.some((ext) => lower.endsWith(ext))
+}
 
 export const FREE_STORAGE_BYTES = 2 * 1024 * 1024 * 1024 // 2 GB miễn phí

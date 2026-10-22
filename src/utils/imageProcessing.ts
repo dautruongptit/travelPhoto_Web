@@ -192,7 +192,7 @@ export async function compressImage(
   file: File,
   maxDimension = 2560,
   quality = 0.86,
-): Promise<{ file: File originalSize: number compressedSize: number }> {
+): Promise<{ file: File; originalSize: number; compressedSize: number }> {
   // Không cần nén nếu ảnh dung lượng nhỏ hơn 800KB hoặc không phải JPEG/PNG/WEBP
   if (
     file.size < 800 * 1024 ||

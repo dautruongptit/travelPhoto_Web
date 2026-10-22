@@ -27,15 +27,15 @@ export interface StorageOverviewResponse {
 
   usedPercentage: number
 
-  topUsers: { userId: number fullName: string storageUsedBytes: number }[]
+  topUsers: { userId: number; fullName: string; storageUsedBytes: number }[]
 }
 
 export interface StatisticsResponse {
   uploadsToday: number
 
-  uploadsByMonth: { month: string count: number }[]
+  uploadsByMonth: { month: string; count: number }[]
 
-  topUsers: { userId: number fullName: string uploadCount: number }[]
+  topUsers: { userId: number; fullName: string; uploadCount: number }[]
 }
 
 export interface AuditLogResponse {

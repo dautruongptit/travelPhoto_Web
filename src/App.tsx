@@ -63,6 +63,8 @@ function mapPhotoResponse(dto: PhotoResponse): Photo {
     id: String(dto.id),
     name: dto.originalName,
     url: dto.url,
+    previewUrl: dto.previewUrl,
+    raw: dto.raw,
     size: dto.size,
     width: dto.width,
     height: dto.height,

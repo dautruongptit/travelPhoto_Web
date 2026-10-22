@@ -73,7 +73,7 @@ export default function Navbar({
     return () => document.removeEventListener("mousedown", handler)
   }, [])
 
-  const navTabs: { id: FlickrNavTab label: string }[] = [
+  const navTabs: { id: FlickrNavTab; label: string }[] = [
     { id: "explore", label: "Explore" },
     { id: "photostream", label: "Photostream" },
     { id: "albums", label: "Albums" },

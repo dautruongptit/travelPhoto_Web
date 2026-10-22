@@ -4,6 +4,8 @@ import {
   formatFileSize,
   ACCEPTED_TYPES,
   MAX_FILE_SIZE,
+  RAW_EXTENSIONS,
+  isRawFileName,
 } from "../utils"
 import { uploadPhotos } from "../api/photos"
 import {
@@ -34,7 +36,7 @@ interface Props {
   onUploaded: (uploadedCount: number) => void
 }
 
-const ACCEPTED_EXT = [".jpg", ".jpeg", ".png", ".webp", ".heic"]
+const ACCEPTED_EXT = [".jpg", ".jpeg", ".png", ".webp", ".heic", ...RAW_EXTENSIONS]
 
 export default function UploadModal({
   eventId,
@@ -69,12 +71,13 @@ export default function UploadModal({
         ) {
           error = "Định dạng không được hỗ trợ."
         } else if (f.size > MAX_FILE_SIZE) {
-          error = "Ảnh vượt quá 10MB."
+          error = "Ảnh vượt quá 50MB."
         } else if (existingPhotoNames.includes(f.name)) {
           isDuplicate = true
         }
 
-        const preview = URL.createObjectURL(f)
+        // RAW: trình duyệt không hiển thị được -> không tạo preview (hiện nhãn "RAW")
+        const preview = isRawFileName(f.name) ? "" : URL.createObjectURL(f)
         const entry: FileEntry = {
           id,
           file: f,
@@ -405,7 +408,7 @@ export default function UploadModal({
               </div>
 
               <p className="text-xs text-neutral-400">
-                hoặc kéo thả nhiều ảnh trực tiếp vào đây (JPG, PNG, WEBP, HEIC)
+                hoặc kéo thả nhiều ảnh trực tiếp vào đây (JPG, PNG, WEBP, RAW: CR2, NEF, ARW, DNG... — tối đa 50MB/ảnh)
               </p>
 
               {/* Input file bình thường */}
@@ -413,7 +416,7 @@ export default function UploadModal({
                 ref={fileRef}
                 type="file"
                 multiple
-                accept="image/*,.heic"
+                accept={"image/*,.heic," + RAW_EXTENSIONS.join(",")}
                 hidden
                 onChange={(e) => {
                   if (e.target.files) addFiles(e.target.files)
@@ -470,11 +473,17 @@ export default function UploadModal({
               >
                 {/* Thumbnail */}
                 <div className="w-12 h-12 rounded-lg overflow-hidden bg-neutral-200 dark:bg-neutral-700 flex-shrink-0 relative">
-                  <img
-                    src={entry.preview}
-                    alt={entry.file.name}
-                    className="w-full h-full object-cover"
-                  />
+                  {entry.preview ? (
+                    <img
+                      src={entry.preview}
+                      alt={entry.file.name}
+                      className="w-full h-full object-cover"
+                    />
+                  ) : (
+                    <div className="w-full h-full flex items-center justify-center text-[10px] font-bold text-neutral-500 dark:text-neutral-300">
+                      RAW
+                    </div>
+                  )}
                 </div>
 
                 {/* File Details & EXIF */}

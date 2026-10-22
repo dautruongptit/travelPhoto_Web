@@ -9,6 +9,9 @@ export interface Photo {
   id: string
   name: string
   url: string
+  /** URL để hiển thị (RAW -> JPEG xem trước). Nếu thiếu thì dùng url. */
+  previewUrl?: string
+  raw?: boolean
   size: number
   width: number
   height: number

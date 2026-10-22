@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState, useCallback } from "react"
 import type { Photo, FlickrPhoto } from "../types"
-import { formatFileSize, formatDate } from "../utils"
+import { formatFileSize, formatDate, displayUrl } from "../utils"
 import AuthImg, { downloadAuthed } from "./AuthImg"
 
 interface Props {
@@ -316,7 +316,7 @@ export default function Lightbox({
           >
             <AuthImg
               key={photo.id}
-              src={photo.url}
+              src={displayUrl(photo)}
               alt={photo.name}
               className="max-w-full max-h-full object-contain transition-transform duration-200 select-none drop-shadow-2xl"
               style={{
@@ -505,7 +505,7 @@ export default function Lightbox({
               }`}
             >
               <AuthImg
-                src={ph.url}
+                src={displayUrl(ph)}
                 alt={ph.name}
                 className="w-full h-full object-cover"
                 loading="lazy"

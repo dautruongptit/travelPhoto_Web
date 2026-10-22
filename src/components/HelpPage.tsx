@@ -4,7 +4,7 @@ interface Props {
   onBack: () => void
 }
 
-const FAQ: { q: string a: string }[] = [
+const FAQ: { q: string; a: string }[] = [
   {
     q: "Làm sao để tải nhiều ảnh lên cùng lúc?",
 
