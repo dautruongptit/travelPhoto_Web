@@ -63,6 +63,14 @@ export default function LoginPage({
 
       {/* Left hero panel */}
       <div className="flex h-[220px] lg:h-auto lg:w-3/5 relative overflow-hidden bg-[#1b1646]">
+        {/* Nền: chính ảnh đó phóng lớn + làm mờ, lấp phần thừa khi ảnh không phủ kín panel */}
+        <img
+          src="/images/login-hero.webp"
+          alt=""
+          aria-hidden="true"
+          className="absolute inset-0 w-full h-full object-cover scale-125 blur-2xl"
+        />
+        {/* Ảnh chính: hiển thị trọn vẹn (không cắt Hà Giang / Phú Quốc), mép trái-phải mờ dần vào nền */}
         <picture>
           <source srcSet="/images/login-hero.avif" type="image/avif" />
           <source srcSet="/images/login-hero.webp" type="image/webp" />
@@ -72,8 +80,14 @@ export default function LoginPage({
             aria-hidden="true"
             loading="eager"
             decoding="async"
-            style={{ objectPosition: "center top" }}
-            className="hero-zoom absolute inset-0 w-full h-full object-cover"
+            style={{
+              objectPosition: "center top",
+              WebkitMaskImage:
+                "linear-gradient(to right, transparent 0, #000 6%, #000 94%, transparent 100%)",
+              maskImage:
+                "linear-gradient(to right, transparent 0, #000 6%, #000 94%, transparent 100%)",
+            }}
+            className="hero-zoom absolute inset-0 w-full h-full object-cover lg:object-contain"
           />
         </picture>
         {/* Lớp phủ dưới lên: đậm ở dark, ~50% ở light */}
@@ -109,7 +123,7 @@ export default function LoginPage({
             </span>
           </div>
           {/* Quote */}
-          <div className="max-w-[480px]">
+          <div className="max-w-[480px] self-end">
             <h1
               className="hero-in text-[#FFF3E0] text-2xl lg:text-5xl xl:text-6xl font-extrabold leading-tight tracking-tight lg:mb-6"
               style={{ filter: "drop-shadow(0 2px 12px rgba(17,24,39,0.5))" }}
