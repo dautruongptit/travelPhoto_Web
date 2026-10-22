@@ -73,27 +73,45 @@ export function useGoogleLoginPopup({
     setLoading(true)
 
     /** Xử lý message từ oauth2-callback.html */
+    let handled = false
+    const handleData = (data: unknown) => {
+      if (handled || !data || typeof data !== "object") return
+      const d = data as { type?: string; token?: string; error?: string }
+      if (d.type === "GOOGLE_AUTH_SUCCESS" && d.token) {
+        handled = true
+        done()
+        onSuccess(d.token)
+      } else if (d.type === "GOOGLE_AUTH_ERROR") {
+        handled = true
+        done()
+        onError(mapOAuthError(d.error || "unknown"))
+      }
+    }
+
     const handleMessage = (event: MessageEvent) => {
       // Chỉ nhận message từ cùng origin (bảo mật)
       if (event.origin !== window.location.origin) return
+      handleData(event.data)
+    }
 
-      const data = event.data as GoogleAuthResult | undefined
-      if (!data) return
-
-      if (data.type === "GOOGLE_AUTH_SUCCESS") {
-        done()
-        onSuccess(data.token)
-      } else if (data.type === "GOOGLE_AUTH_ERROR") {
-        done()
-        onError(mapOAuthError(data.error))
-      }
+    // Dự phòng khi window.opener bị mất (Google COOP): trang callback gửi qua
+    // BroadcastChannel — kênh này chỉ liên lạc được trong cùng origin.
+    let channel: BroadcastChannel | null = null
+    if ("BroadcastChannel" in window) {
+      channel = new BroadcastChannel("travelphoto-auth")
+      channel.onmessage = (e) => handleData(e.data)
     }
 
     /** Polling: phát hiện người dùng tự đóng popup */
     const poll = setInterval(() => {
       if (popup.closed) {
-        done()
-        onError("Đăng nhập bị hủy. Vui lòng thử lại.")
+        // Popup tự đóng ngay sau khi gửi token: chờ một nhịp để message kịp tới
+        // rồi mới coi là người dùng hủy.
+        setTimeout(() => {
+          if (handled) return
+          done()
+          onError("Đăng nhập bị hủy. Vui lòng thử lại.")
+        }, 700)
       }
     }, 500)
 
@@ -103,6 +121,7 @@ export function useGoogleLoginPopup({
     cleanup.current = () => {
       clearInterval(poll)
       window.removeEventListener("message", handleMessage)
+      channel?.close()
     }
 
     function done() {

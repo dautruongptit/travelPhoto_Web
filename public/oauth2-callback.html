@@ -32,23 +32,46 @@
         var params = new URLSearchParams(window.location.search);
         var token = params.get("token");
         var error = params.get("error");
+        var msg = token
+          ? { type: "GOOGLE_AUTH_SUCCESS", token: token }
+          : { type: "GOOGLE_AUTH_ERROR", error: error || "unknown" };
 
-        if (window.opener && !window.opener.closed) {
-          window.opener.postMessage(
-            token ? { type: "GOOGLE_AUTH_SUCCESS", token: token }
-                  : { type: "GOOGLE_AUTH_ERROR",   error: error || "unknown" },
-            window.location.origin
-          );
-          window.close();
-        } else {
-          // Fallback: nếu không có opener (vd: popup bị block, mở trực tiếp)
-          // thì chuyển hướng về trang chính với token trong query string để
-          // App.tsx tự xử lý như flow redirect cũ.
-          if (token) {
-            window.location.replace("/?token=" + encodeURIComponent(token));
-          } else {
-            window.location.replace("/?error=" + encodeURIComponent(error || "unknown"));
+        // Xóa token khỏi URL/lịch sử ngay (tránh để token nằm lại trong history của popup).
+        try { window.history.replaceState({}, "", window.location.pathname); } catch (e) {}
+
+        var delivered = false;
+
+        // Cách 1: postMessage tới cửa sổ mở popup.
+        try {
+          if (window.opener && !window.opener.closed) {
+            window.opener.postMessage(msg, window.location.origin);
+            delivered = true;
           }
+        } catch (e) {}
+
+        // Cách 2 (dự phòng): Google có thể làm mất window.opener (COOP) -> gửi qua
+        // BroadcastChannel (chỉ cùng origin), cửa sổ chính cũng đang lắng nghe kênh này.
+        try {
+          if ("BroadcastChannel" in window) {
+            var bc = new BroadcastChannel("travelphoto-auth");
+            bc.postMessage(msg);
+            bc.close();
+            delivered = true;
+          }
+        } catch (e) {}
+
+        if (delivered) {
+          window.close();
+          // Nếu trình duyệt không cho tự đóng, nhắc người dùng thay vì load cả app trong popup.
+          setTimeout(function () {
+            document.body.innerHTML =
+              '<p style="font-family:system-ui;text-align:center">Đăng nhập xong. Bạn có thể đóng cửa sổ này.</p>';
+          }, 600);
+        } else if (token) {
+          // Không có opener lẫn BroadcastChannel (mở trực tiếp): đăng nhập ngay tại tab này.
+          window.location.replace("/?token=" + encodeURIComponent(token));
+        } else {
+          window.location.replace("/?error=" + encodeURIComponent(error || "unknown"));
         }
       })();
     </script>
