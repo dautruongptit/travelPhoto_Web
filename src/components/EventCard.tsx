@@ -1,7 +1,7 @@
 import type { TravelEvent, User } from "../types"
 import { formatDateRange, formatTimeAgo } from "../utils"
 import AuthImg from "./AuthImg"
-import { VISIBILITY_BADGE } from "../visibility"
+import { badgeOf } from "../visibility"
 
 interface Props {
   event: TravelEvent
@@ -20,7 +20,7 @@ export default function EventCard({
   onClick,
 }: Props) {
   const totalPhotos = event.photoCount ?? event.photos.length
-  const badge = VISIBILITY_BADGE[event.visibility ?? "private"]
+  const badge = badgeOf(event.visibility)
   // Ưu tiên ảnh bìa riêng; chưa có thì dùng ảnh đầu tiên trong album
   const cover = event.hasCover
     ? event.coverImage

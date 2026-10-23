@@ -12,3 +12,10 @@ export const VISIBILITY_INFO: Record<Visibility, { label: string; color: string;
   link: { label: "Chia sẻ qua link", color: "text-yellow-700 bg-yellow-50", icon: "🔗" },
   public: { label: "Công khai", color: "text-green-700 bg-green-50", icon: "🌐" },
 }
+
+// Chưa biết quyền xem (backend chưa trả về / không tải được): hiển thị trung tính, KHÔNG giả định "riêng tư".
+const UNKNOWN_BADGE = { label: "Chưa rõ", cls: "bg-gray-100 text-gray-400" }
+const UNKNOWN_INFO = { label: "Chưa rõ", color: "text-gray-400 bg-gray-100", icon: "❔" }
+
+export const badgeOf = (v?: Visibility) => (v ? VISIBILITY_BADGE[v] : UNKNOWN_BADGE)
+export const infoOf = (v?: Visibility) => (v ? VISIBILITY_INFO[v] : UNKNOWN_INFO)

@@ -6,7 +6,7 @@ import ShareModal from "./ShareModal"
 import AuthImg from "./AuthImg"
 import JustifiedGallery from "./flickr/JustifiedGallery"
 import PhotoMasonry from "./PhotoMasonry"
-import { VISIBILITY_INFO } from "../visibility"
+import { infoOf } from "../visibility"
 
 interface Props {
   event: TravelEvent
@@ -147,7 +147,7 @@ export default function AlbumPage({
   }, [event.photos, q, sort])
 
   const totalSize = event.photos.reduce((s, p) => s + p.size, 0)
-  const vis = VISIBILITY_INFO[event.visibility ?? "private"]
+  const vis = infoOf(event.visibility)
   const isOwner = !!user && String(event.ownerId) === String(user.id)
   const photoTotal = event.photoCount ?? event.photos.length
 

@@ -52,7 +52,7 @@ function mapEventResponse(
     coverImage: dto.coverImageUrl || FALLBACK_COVER_IMAGE,
     thumbnails: dto.previewImageUrls ?? [],
     hasCover: !!dto.coverImageUrl,
-    visibility: dto.visibility ?? "private",
+    visibility: dto.visibility, // thiếu = chưa rõ (không giả định "riêng tư")
     photos,
     photoCount: dto.photoCount,
     totalSizeBytes: dto.totalSize,
@@ -394,12 +394,14 @@ export default function App() {
     try {
       const dto = await getEvent(Number(id))
       setEvents((prev) =>
-        prev.map((e) =>
-          e.id === id ? { ...e, visibility: dto.visibility ?? e.visibility } : e,
-        ),
+        prev.map((e) => (e.id === id ? { ...e, visibility: dto.visibility } : e)),
       )
     } catch {
-      // bỏ qua: huy hiệu sẽ cập nhật ở lần tải danh sách tiếp theo
+      // Không lấy được trạng thái thật: đánh dấu "chưa rõ" thay vì giữ nhãn cũ có thể sai
+      setEvents((prev) =>
+        prev.map((e) => (e.id === id ? { ...e, visibility: undefined } : e)),
+      )
+      addToast("warning", "Không cập nhật được quyền xem của album. Hãy tải lại trang.")
     }
   }
 

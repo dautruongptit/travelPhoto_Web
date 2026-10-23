@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
 
 import { QRCodeSVG } from "qrcode.react"
 
@@ -6,7 +6,7 @@ import type { TravelEvent } from "../types"
 
 import { createShareLink } from "../api/share"
 
-import { setEventPublic } from "../api/events"
+import { getEvent, setEventPublic } from "../api/events"
 
 interface Props {
   event: TravelEvent
@@ -25,11 +25,30 @@ export default function ShareModal({
   onToast,
   onChanged,
 }: Props) {
-  const [isPublic, setIsPublic] = useState(event.visibility === "public")
+  // null = chưa biết trạng thái thật từ server -> công tắc bị khóa (không đoán "riêng tư")
+  const [isPublic, setIsPublic] = useState<boolean | null>(null)
+
+  useEffect(() => {
+    let cancelled = false
+
+    getEvent(Number(event.id))
+      .then((dto) => {
+        if (!cancelled && dto.visibility) setIsPublic(dto.visibility === "public")
+      })
+      .catch(() => {
+        // giữ null: công tắc khóa, người dùng thấy thông báo bên dưới
+      })
+
+    return () => {
+      cancelled = true
+    }
+  }, [event.id])
 
   const [savingPublic, setSavingPublic] = useState(false)
 
   const handleTogglePublic = async () => {
+    if (isPublic === null) return
+
     const next = !isPublic
 
     setSavingPublic(true)
@@ -131,13 +150,19 @@ export default function ShareModal({
                 Mọi người đã đăng nhập đều xem được album này (chỉ xem, không
                 sửa hay xóa).
               </p>
+              {isPublic === null && (
+                <p className="text-xs text-amber-600 mt-1">
+                  Đang kiểm tra trạng thái hiện tại… (nếu không hiện, hãy tải lại
+                  trang)
+                </p>
+              )}
             </div>
             <button
               type="button"
               role="switch"
-              aria-checked={isPublic}
+              aria-checked={isPublic === true}
               aria-label="Công khai album"
-              disabled={savingPublic}
+              disabled={savingPublic || isPublic === null}
               onClick={handleTogglePublic}
               className={`relative w-11 h-6 rounded-full flex-shrink-0 transition-colors disabled:opacity-50 cursor-pointer ${
                 isPublic ? "bg-green-500" : "bg-gray-300 dark:bg-gray-600"
