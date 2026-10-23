@@ -30,6 +30,8 @@ export interface EventResponse {
   totalSize: number // bytes
 
   createdAt: string // ISO datetime
+
+  userRole?: "owner" | "editor" | "viewer" | null
 }
 
 export interface EventFormData {

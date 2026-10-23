@@ -6,6 +6,7 @@ import ShareModal from "./ShareModal"
 import AuthImg from "./AuthImg"
 import JustifiedGallery from "./flickr/JustifiedGallery"
 import PhotoMasonry from "./PhotoMasonry"
+import ShareTab from "./ShareTab"
 import { infoOf } from "../visibility"
 
 interface Props {
@@ -149,6 +150,11 @@ export default function AlbumPage({
   const totalSize = event.photos.reduce((s, p) => s + p.size, 0)
   const vis = infoOf(event.visibility)
   const isOwner = !!user && String(event.ownerId) === String(user.id)
+  const role = event.userRole ?? (isOwner ? "owner" : null)
+  const canUpload = role === "owner" || role === "editor"
+  const canDelete = (photo: Photo) =>
+    role === "owner" || (role === "editor" && !!user && photo.uploadedBy === user.id)
+  const canSelect = canUpload
   const photoTotal = event.photoCount ?? event.photos.length
 
   const TABS: { key: AlbumTab; label: string }[] = [
@@ -301,7 +307,7 @@ export default function AlbumPage({
                   <span className="hidden sm:inline">Chia sẻ</span>
                 </button>
               )}
-              {isOwner && (
+              {canUpload && (
                 <button
                   onClick={onUpload}
                   className="flex items-center gap-1.5 h-9 px-4 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-xl transition-all text-sm shadow-sm hover:shadow-md hover:shadow-blue-200 cursor-pointer"
@@ -477,7 +483,7 @@ export default function AlbumPage({
               )}
             </div>
 
-            {photos.length > 0 && isOwner && (
+            {photos.length > 0 && canSelect && (
               <button
                 onClick={
                   selected.size === photos.length ? clearSelect : selectAll
@@ -510,7 +516,7 @@ export default function AlbumPage({
                 ? `Không có ảnh khớp với "${q}".`
                 : "Tải ảnh lên để bắt đầu lưu giữ kỷ niệm chuyến đi này."}
             </p>
-            {isOwner && !q && (
+            {canUpload && !q && (
               <button
                 onClick={onUpload}
                 className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold px-5 py-2.5 rounded-xl transition-colors shadow-lg shadow-blue-200 dark:shadow-none cursor-pointer"
@@ -537,7 +543,7 @@ export default function AlbumPage({
             <PhotoMasonry
               photos={photos}
               selectedIds={selected}
-              onSelectPhoto={isOwner ? (id) => toggleSelect(id) : () => {}}
+              onSelectPhoto={canSelect ? (id) => toggleSelect(id) : () => {}}
               onPhotoClick={(_photo, index) => {
                 setSlideshow(false)
                 setLightboxIndex(index)
@@ -548,7 +554,7 @@ export default function AlbumPage({
           <JustifiedGallery
             photos={photos}
             selectedIds={selected}
-            onSelectPhoto={isOwner ? (id) => toggleSelect(id) : () => {}}
+            onSelectPhoto={canSelect ? (id) => toggleSelect(id) : () => {}}
             onPhotoClick={(_photo, index) => {
               setSlideshow(false)
               setLightboxIndex(index)
@@ -606,21 +612,10 @@ export default function AlbumPage({
 
         {/* SHARED TAB (chỉ chủ album) */}
         {activeTab === "shared" && isOwner && (
-          <div className="max-w-xl py-10 text-center mx-auto">
-            <div className="text-4xl mb-3">🔗</div>
-            <h3 className="text-base font-semibold text-neutral-900 dark:text-white mb-2">
-              Chia sẻ album
-            </h3>
-            <p className="text-sm text-neutral-500 dark:text-neutral-400 mb-5">
-              Tạo link chia sẻ hoặc quản lý những người có thể xem album này.
-            </p>
-            <button
-              onClick={() => setShowShareModal(true)}
-              className="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold px-5 py-2.5 rounded-xl transition-colors cursor-pointer"
-            >
-              Cài đặt chia sẻ
-            </button>
-          </div>
+          <ShareTab
+            eventId={Number(event.id)}
+            onOpenShareModal={() => setShowShareModal(true)}
+          />
         )}
       </div>
 
@@ -637,7 +632,7 @@ export default function AlbumPage({
           >
             {selected.size === photos.length ? "Bỏ chọn" : "Tất cả"}
           </button>
-          {isOwner && (
+          {canSelect && (
             <button
               onClick={() => setShowDeleteConfirm(true)}
               className="px-2.5 py-1 text-xs text-red-400 hover:text-red-300 rounded-full transition-colors cursor-pointer"
@@ -674,17 +669,18 @@ export default function AlbumPage({
                 }
               : undefined
           }
-          onDelete={
-            isOwner
-              ? (photoId) => {
-                  // Đóng Lightbox rồi mở hộp thoại xác nhận xóa (nằm dưới Lightbox về z-index)
-                  setSelected(new Set([photoId]))
-                  setLightboxIndex(null)
-                  setSlideshow(false)
-                  setShowDeleteConfirm(true)
-                }
-              : undefined
-          }
+          onDelete={(() => {
+            if (!canSelect) return undefined
+            const currentPhoto =
+              lightboxIndex != null ? photos[lightboxIndex] : undefined
+            if (!currentPhoto || !canDelete(currentPhoto)) return undefined
+            return (photoId: string) => {
+              setSelected(new Set([photoId]))
+              setLightboxIndex(null)
+              setSlideshow(false)
+              setShowDeleteConfirm(true)
+            }
+          })()}
           onClose={() => {
             setLightboxIndex(null)
             setSlideshow(false)

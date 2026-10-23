@@ -52,6 +52,7 @@ export interface TravelEvent {
   createdBy: string
   ownerId: string
   createdAt: string
+  userRole?: "owner" | "editor" | "viewer" | null
 }
 
 export interface ToastItem {

@@ -27,6 +27,7 @@ export function mapEventResponse(
     createdBy: dto.ownerName,
     ownerId: String(dto.ownerId),
     createdAt: dto.createdAt,
+    userRole: dto.userRole,
   }
 }
 

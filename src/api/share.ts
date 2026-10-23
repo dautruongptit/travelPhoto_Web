@@ -1,6 +1,6 @@
 // src/api/share.ts
 
-import { apiGet, apiPost, apiDelete } from "./client"
+import { apiGet, apiPost, apiPut, apiDelete } from "./client"
 
 import type { EventResponse } from "./events"
 
@@ -14,6 +14,8 @@ import type { PhotoResponse } from "./photos"
 export type EventMemberRole = "VIEWER" | "EDITOR"
 
 export interface ShareLinkResponse {
+  id: number
+
   token: string
 
   shareUrl: string
@@ -23,6 +25,18 @@ export interface ShareLinkResponse {
   active: boolean
 
   role: EventMemberRole
+
+  createdAt: string // ISO datetime
+}
+
+export interface MemberResponse {
+  id: number
+  userId: number
+  userName: string
+  email: string
+  avatarUrl: string | null
+  role: EventMemberRole
+  joinedAt: string // ISO datetime
 }
 
 interface Page<T> {
@@ -65,3 +79,21 @@ export const revokeShareLink = (token: string) =>
 
 export const joinShareLink = (token: string) =>
   apiPost<number>(`/share/${token}/join`)
+
+export const listShareLinks = (eventId: number) =>
+  apiGet<ShareLinkResponse[]>(`/events/${eventId}/shares`)
+
+export const revokeShareLinkById = (eventId: number, linkId: number) =>
+  apiDelete<void>(`/events/${eventId}/shares/${linkId}`)
+
+export const listMembers = (eventId: number) =>
+  apiGet<MemberResponse[]>(`/events/${eventId}/members`)
+
+export const removeMember = (eventId: number, userId: number) =>
+  apiDelete<void>(`/events/${eventId}/members/${userId}`)
+
+export const changeMemberRole = (
+  eventId: number,
+  userId: number,
+  role: EventMemberRole,
+) => apiPut<void>(`/events/${eventId}/members/${userId}/role?role=${role}`)
