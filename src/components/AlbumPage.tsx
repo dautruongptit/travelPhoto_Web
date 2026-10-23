@@ -301,7 +301,7 @@ export default function AlbumPage({
                   <span className="hidden sm:inline">Chia sẻ</span>
                 </button>
               )}
-              {user && (
+              {isOwner && (
                 <button
                   onClick={onUpload}
                   className="flex items-center gap-1.5 h-9 px-4 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-xl transition-all text-sm shadow-sm hover:shadow-md hover:shadow-blue-200 cursor-pointer"
@@ -477,7 +477,7 @@ export default function AlbumPage({
               )}
             </div>
 
-            {photos.length > 0 && (
+            {photos.length > 0 && isOwner && (
               <button
                 onClick={
                   selected.size === photos.length ? clearSelect : selectAll
@@ -510,7 +510,7 @@ export default function AlbumPage({
                 ? `Không có ảnh khớp với "${q}".`
                 : "Tải ảnh lên để bắt đầu lưu giữ kỷ niệm chuyến đi này."}
             </p>
-            {user && !q && (
+            {isOwner && !q && (
               <button
                 onClick={onUpload}
                 className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold px-5 py-2.5 rounded-xl transition-colors shadow-lg shadow-blue-200 dark:shadow-none cursor-pointer"
@@ -537,7 +537,7 @@ export default function AlbumPage({
             <PhotoMasonry
               photos={photos}
               selectedIds={selected}
-              onSelectPhoto={(id) => toggleSelect(id)}
+              onSelectPhoto={isOwner ? (id) => toggleSelect(id) : () => {}}
               onPhotoClick={(_photo, index) => {
                 setSlideshow(false)
                 setLightboxIndex(index)
@@ -548,7 +548,7 @@ export default function AlbumPage({
           <JustifiedGallery
             photos={photos}
             selectedIds={selected}
-            onSelectPhoto={(id) => toggleSelect(id)}
+            onSelectPhoto={isOwner ? (id) => toggleSelect(id) : () => {}}
             onPhotoClick={(_photo, index) => {
               setSlideshow(false)
               setLightboxIndex(index)
@@ -637,7 +637,7 @@ export default function AlbumPage({
           >
             {selected.size === photos.length ? "Bỏ chọn" : "Tất cả"}
           </button>
-          {user && (
+          {isOwner && (
             <button
               onClick={() => setShowDeleteConfirm(true)}
               className="px-2.5 py-1 text-xs text-red-400 hover:text-red-300 rounded-full transition-colors cursor-pointer"
@@ -675,7 +675,7 @@ export default function AlbumPage({
               : undefined
           }
           onDelete={
-            user
+            isOwner
               ? (photoId) => {
                   // Đóng Lightbox rồi mở hộp thoại xác nhận xóa (nằm dưới Lightbox về z-index)
                   setSelected(new Set([photoId]))
