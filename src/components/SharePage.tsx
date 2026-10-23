@@ -72,11 +72,9 @@ export default function SharePage({
         )
         setState("ready")
       })
-      .catch((err) => {
+      .catch((err: any) => {
         if (cancelled) return
-        const msg = err instanceof Error ? err.message : ""
-        if (!user && (msg.includes("Access denied") || msg.includes("đăng nhập"))) {
-          setLinkRole("EDITOR")
+        if (!user && err?.status === 403) {
           setState("auth_required")
         } else {
           setState("error")

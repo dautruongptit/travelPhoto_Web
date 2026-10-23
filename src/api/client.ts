@@ -61,11 +61,14 @@ async function request<T>(path: string, options: RequestInit = {}): Promise<T> {
 
     // tầng hạ tầng (nginx/proxy) — message đó không phải do backend soạn cho người dùng.
 
-    throw new Error(
+    const err = new Error(
       isGatewayErrorStatus(res.status)
         ? friendlyStatusMessage(res.status)
         : (body.message ?? "Request failed"),
-    )
+    ) as Error & { status?: number; code?: string }
+    err.status = res.status
+    err.code = body.errorCode
+    throw err
   }
 
   return body.data as T

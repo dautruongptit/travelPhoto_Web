@@ -29,28 +29,38 @@ export default function ShareModal({
   // null = chưa biết trạng thái thật từ server -> công tắc bị khóa (không đoán "riêng tư")
   const [isPublic, setIsPublic] = useState<boolean | null>(null)
   const [existingLinks, setExistingLinks] = useState<ShareLinkResponse[]>([])
+  const [linksLoaded, setLinksLoaded] = useState(false)
 
   useEffect(() => {
     let cancelled = false
 
-    Promise.all([
-      getEvent(Number(event.id)),
-      listShareLinks(Number(event.id)),
-    ])
-      .then(([dto, links]) => {
-        if (cancelled) return
-        if (dto.visibility) setIsPublic(dto.visibility === "public")
-        setExistingLinks(links)
+    getEvent(Number(event.id))
+      .then((dto) => {
+        if (!cancelled && dto.visibility) setIsPublic(dto.visibility === "public")
       })
       .catch(() => {})
+
+    listShareLinks(Number(event.id))
+      .then((links) => {
+        if (!cancelled) {
+          setExistingLinks(links)
+          setLinksLoaded(true)
+        }
+      })
+      .catch(() => {
+        if (!cancelled) setLinksLoaded(false)
+      })
 
     return () => {
       cancelled = true
     }
   }, [event.id])
 
-  const hasViewerLink = existingLinks.some((l) => l.role === "VIEWER")
-  const hasEditorLink = existingLinks.some((l) => l.role === "EDITOR")
+  const liveLinks = existingLinks.filter(
+    (l) => l.active && new Date(l.expiredAt).getTime() > Date.now(),
+  )
+  const hasViewerLink = liveLinks.some((l) => l.role === "VIEWER")
+  const hasEditorLink = liveLinks.some((l) => l.role === "EDITOR")
 
   const [savingPublic, setSavingPublic] = useState(false)
 
@@ -86,11 +96,6 @@ export default function ShareModal({
 
   const [role, setRole] = useState<"VIEWER" | "EDITOR">("VIEWER")
 
-  useEffect(() => {
-    if (hasViewerLink && !hasEditorLink) setRole("EDITOR")
-    else if (!hasViewerLink) setRole("VIEWER")
-  }, [hasViewerLink, hasEditorLink])
-
   const [shareUrl, setShareUrl] = useState<string | null>(null)
 
   const [loading, setLoading] = useState(false)
@@ -105,6 +110,7 @@ export default function ShareModal({
 
       const updatedLinks = await listShareLinks(Number(event.id))
       setExistingLinks(updatedLinks)
+      setLinksLoaded(true)
 
       onChanged?.()
 
@@ -194,7 +200,12 @@ export default function ShareModal({
 
           {!shareUrl ? (
             <div className="space-y-4">
-              {hasViewerLink && hasEditorLink && (
+              {!linksLoaded && (
+                <div className="p-3 rounded-xl bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 text-sm text-amber-700 dark:text-amber-300">
+                  Không thể kiểm tra link hiện có. Thử tải lại trang.
+                </div>
+              )}
+              {linksLoaded && hasViewerLink && hasEditorLink && (
                 <div className="p-3 rounded-xl bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 text-sm text-amber-700 dark:text-amber-300">
                   Đã tạo đủ link cho cả 2 quyền. Thu hồi link cũ trong tab Chia sẻ để tạo link mới.
                 </div>
@@ -268,7 +279,7 @@ export default function ShareModal({
 
               <button
                 type="button"
-                disabled={loading || (hasViewerLink && hasEditorLink)}
+                disabled={loading || !linksLoaded || (role === "VIEWER" && hasViewerLink) || (role === "EDITOR" && hasEditorLink)}
                 onClick={handleGenerateLink}
                 className="w-full h-11 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-xl shadow-lg shadow-blue-200/50 dark:shadow-none flex items-center justify-center gap-2 transition-colors disabled:opacity-50"
               >
