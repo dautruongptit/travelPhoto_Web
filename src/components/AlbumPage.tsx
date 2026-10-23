@@ -177,7 +177,7 @@ export default function AlbumPage({
   return (
     <main className="min-h-screen pb-16">
       {/* Flickr Sub-header & Album Cover banner */}
-      <div className="bg-white dark:bg-[#0b0b0c] border-b border-neutral-200/80 dark:border-neutral-800/80 transition-colors">
+      <div data-glass="panel" className="bg-white dark:bg-[#0b0b0c] border-b border-neutral-200/80 dark:border-neutral-800/80 transition-colors">
         <div className="max-w-screen-2xl mx-auto px-4 sm:px-6 py-4">
           {/* Breadcrumb */}
           <div className="flex items-center gap-2 text-xs sm:text-sm text-neutral-500 dark:text-neutral-400 mb-3">
@@ -456,7 +456,7 @@ export default function AlbumPage({
                 {SORT_LABELS[sort]}
               </button>
               {showSortMenu && (
-                <div className="slide-up absolute right-0 top-full mt-1 w-36 bg-white dark:bg-[#18181b] rounded-xl shadow-xl border border-neutral-100 dark:border-neutral-800 py-1 z-20 text-xs">
+                <div data-glass="dropdown" className="slide-up absolute right-0 top-full mt-1 w-36 bg-white dark:bg-[#18181b] rounded-xl shadow-xl border border-neutral-100 dark:border-neutral-800 py-1 z-20 text-xs">
                   {(Object.keys(SORT_LABELS) as SortOption[]).map((s) => (
                     <button
                       key={s}

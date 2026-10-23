@@ -28,6 +28,7 @@ export default function EventCard({
 
   return (
     <article
+      data-glass="event-card"
       onClick={onClick}
       className={`group flex flex-col h-full bg-white dark:bg-[#18181b] rounded-2xl overflow-hidden border shadow-sm hover:shadow-xl hover:shadow-gray-200/60 dark:hover:shadow-none hover:-translate-y-1 transition-all duration-300 cursor-pointer ${
         selected
@@ -53,7 +54,11 @@ export default function EventCard({
             onSelect ? "group-hover:opacity-0" : ""
           } ${selected ? "opacity-0" : ""}`}
         >
-          <span className={`text-[10px] font-semibold px-2 py-1 rounded-full ${badge.cls}`}>
+          <span
+            data-glass="chip"
+            data-vis={event.visibility}
+            className={`text-[10px] font-semibold px-2 py-1 rounded-full ${badge.cls}`}
+          >
             {badge.label}
           </span>
         </div>
@@ -83,7 +88,7 @@ export default function EventCard({
         )}
 
         {/* Photo count */}
-        <div className="absolute top-3 right-3 flex items-center gap-1.5 bg-black/50 backdrop-blur-sm text-white text-xs font-medium px-2.5 py-1 rounded-full">
+        <div data-glass="chip" className="absolute top-3 right-3 flex items-center gap-1.5 bg-black/50 backdrop-blur-sm text-white text-xs font-medium px-2.5 py-1 rounded-full">
           <svg width="11" height="11" viewBox="0 0 24 24" fill="none">
             <rect x="3" y="3" width="18" height="18" rx="2" stroke="white" strokeWidth="2" />
             <circle cx="8.5" cy="8.5" r="1.5" fill="white" />
@@ -101,7 +106,7 @@ export default function EventCard({
       </div>
 
       {/* Body */}
-      <div className="p-4 flex flex-col flex-1">
+      <div data-glass="event-body" className="p-4 flex flex-col flex-1">
         <div className="flex items-center gap-1.5 text-gray-400 text-xs mb-2">
           <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" opacity=".5">
             <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z" />

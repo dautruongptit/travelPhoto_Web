@@ -81,7 +81,7 @@ export default function Navbar({
   ]
 
   return (
-    <header className="sticky top-0 z-40 w-full bg-white/95 dark:bg-[#0b0b0c]/95 backdrop-blur-md border-b border-neutral-200/80 dark:border-neutral-800/80 transition-colors">
+    <header data-glass="navbar" className="sticky top-0 z-40 w-full bg-white/95 dark:bg-[#0b0b0c]/95 backdrop-blur-md border-b border-neutral-200/80 dark:border-neutral-800/80 transition-colors">
       <div className="max-w-screen-2xl mx-auto px-4 sm:px-6 h-14 sm:h-16 flex items-center justify-between gap-3 sm:gap-6">
         {/* TRÁI: Logo Flickr Style + Tabs */}
         <div className="flex items-center gap-6 sm:gap-8">
@@ -106,6 +106,8 @@ export default function Navbar({
               return (
                 <button
                   key={tab.id}
+                  data-glass="tab"
+                  data-active={isActive}
                   onClick={() => onSelectTab?.(tab.id)}
                   className={`px-3.5 py-1.5 rounded-full transition-all cursor-pointer ${
                     isActive
@@ -136,6 +138,7 @@ export default function Navbar({
               </svg>
               <input
                 ref={searchInputRef}
+                data-glass="search"
                 type="text"
                 value={searchQuery}
                 onChange={(e) => onSearchChange(e.target.value)}
@@ -200,6 +203,7 @@ export default function Navbar({
           {/* Nút Upload Flickr Pink Signature */}
           {onOpenUpload && (
             <button
+              data-glass="upload"
               onClick={onOpenUpload}
               className="flex items-center gap-1.5 px-3.5 sm:px-4 py-1.5 sm:py-2 text-sm font-semibold rounded-full bg-[#ff0084] hover:bg-[#e00074] text-white shadow-sm hover:shadow transition-all active:scale-95 cursor-pointer"
             >
@@ -235,7 +239,7 @@ export default function Navbar({
               </button>
 
               {profileOpen && (
-                <div className="absolute right-0 mt-2 w-64 bg-white dark:bg-[#18181b] rounded-2xl shadow-2xl border border-neutral-100 dark:border-neutral-800 p-2 z-50 text-neutral-800 dark:text-neutral-200">
+                <div data-glass="dropdown" className="absolute right-0 mt-2 w-64 bg-white dark:bg-[#18181b] rounded-2xl shadow-2xl border border-neutral-100 dark:border-neutral-800 p-2 z-50 text-neutral-800 dark:text-neutral-200">
                   <div className="px-3 py-2 border-b border-neutral-100 dark:border-neutral-800">
                     <p className="font-semibold text-sm truncate">
                       {user.name}

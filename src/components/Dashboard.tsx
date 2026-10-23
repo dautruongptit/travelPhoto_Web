@@ -168,6 +168,7 @@ export default function Dashboard({
         ].map(({ label, value, icon }) => (
           <div
             key={label}
+            data-glass="stat"
             className="bg-neutral-50 dark:bg-[#18181b] rounded-2xl p-4 border border-neutral-200/60 dark:border-neutral-800 flex items-center justify-between"
           >
             <div>
@@ -246,6 +247,7 @@ export default function Dashboard({
             ))}
             {!searchQuery && (
               <button
+                data-glass="create"
                 onClick={onCreateEvent}
                 className="group min-h-[220px] rounded-2xl border-2 border-dashed border-gray-200 dark:border-neutral-700 hover:border-blue-400 hover:bg-blue-50/40 dark:hover:bg-neutral-900 flex flex-col items-center justify-center gap-2 text-gray-400 hover:text-blue-600 transition-all cursor-pointer"
               >
