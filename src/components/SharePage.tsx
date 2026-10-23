@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from "react"
 import type { Photo, TravelEvent, User } from "../types"
-import { getSharedEvent, getSharedPhotos, joinShareLink } from "../api/share"
+import type { EventMemberRole } from "../api/share"
+import { getShareInfo, getSharedPhotos, joinShareLink } from "../api/share"
 import { mapEventResponse, mapPhotoResponse } from "../mappers"
 import { useGoogleLoginPopup } from "../hooks/useGoogleLoginPopup"
 import { formatDateRange, formatFileSize } from "../utils"
@@ -25,9 +26,11 @@ const withShareToken = (url: string | undefined, token: string) =>
 
 const NO_SELECTION = new Set<string>()
 
-// Trang xem album qua link chia sẻ: /share/{token}.
-// - Chưa đăng nhập: xem được album (chỉ xem) + nút đăng nhập Google để tham gia.
-// - Đã đăng nhập: nút "Tham gia album" -> trở thành thành viên, album hiện trong danh sách của bạn.
+const roleLabelVi: Record<EventMemberRole, string> = {
+  EDITOR: "Biên tập viên",
+  VIEWER: "Người xem",
+}
+
 export default function SharePage({
   token,
   user,
@@ -39,6 +42,7 @@ export default function SharePage({
 }: Props) {
   const [event, setEvent] = useState<TravelEvent | null>(null)
   const [photos, setPhotos] = useState<Photo[]>([])
+  const [linkRole, setLinkRole] = useState<EventMemberRole>("VIEWER")
   const [state, setState] = useState<"loading" | "ready" | "error">("loading")
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null)
   const [joining, setJoining] = useState(false)
@@ -51,10 +55,11 @@ export default function SharePage({
   useEffect(() => {
     let cancelled = false
     setState("loading")
-    Promise.all([getSharedEvent(token), getSharedPhotos(token, 0, 500)])
-      .then(([eventDto, page]) => {
+    Promise.all([getShareInfo(token), getSharedPhotos(token, 0, 500)])
+      .then(([info, page]) => {
         if (cancelled) return
-        setEvent(mapEventResponse(eventDto))
+        setEvent(mapEventResponse(info.event))
+        setLinkRole(info.linkRole)
         setPhotos(
           page.content.map((dto) => {
             const p = mapPhotoResponse(dto)
@@ -80,11 +85,15 @@ export default function SharePage({
     [photos],
   )
 
+  const isAlreadyMember =
+    user && event && event.userRole != null
+  const isOwner =
+    user && event && String(event.ownerId) === String(user.id)
+
   const handleJoin = async () => {
     setJoining(true)
     try {
       const eventId = await joinShareLink(token)
-      // Tải lại ở trang album thật (danh sách sự kiện của bạn đã gồm album này)
       window.location.assign(`/events/${eventId}`)
     } catch (err) {
       setJoining(false)
@@ -93,6 +102,54 @@ export default function SharePage({
         err instanceof Error ? err.message : "Không thể tham gia album này.",
       )
     }
+  }
+
+  const renderActionButton = () => {
+    if (!event) return null
+
+    if (isOwner) {
+      return (
+        <a
+          href={`/events/${event.id}`}
+          className="h-10 px-5 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-xl text-sm transition-colors inline-flex items-center"
+        >
+          Mở album của bạn
+        </a>
+      )
+    }
+
+    if (isAlreadyMember) {
+      return (
+        <a
+          href={`/events/${event.id}`}
+          className="h-10 px-5 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-xl text-sm transition-colors inline-flex items-center"
+        >
+          Đi đến album
+        </a>
+      )
+    }
+
+    if (user) {
+      return (
+        <button
+          onClick={handleJoin}
+          disabled={joining}
+          className="h-10 px-5 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-xl text-sm transition-colors disabled:opacity-60 cursor-pointer"
+        >
+          {joining ? "Đang tham gia…" : "Tham gia album"}
+        </button>
+      )
+    }
+
+    return (
+      <button
+        onClick={signIn}
+        disabled={signingIn}
+        className="h-10 px-5 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-xl text-sm transition-colors disabled:opacity-60 cursor-pointer"
+      >
+        {signingIn ? "Đang xác thực…" : "Đăng nhập Google để tham gia"}
+      </button>
+    )
   }
 
   return (
@@ -186,27 +243,25 @@ export default function SharePage({
                     {formatFileSize(event.totalSizeBytes ?? totalSize)}
                   </span>
                 </div>
+                {/* Role badge */}
+                <div className="mt-2">
+                  <span
+                    className={`inline-flex items-center text-xs font-medium px-2 py-0.5 rounded-full ${
+                      linkRole === "EDITOR"
+                        ? "bg-green-100 dark:bg-green-900/40 text-green-700 dark:text-green-300"
+                        : "bg-blue-100 dark:bg-blue-900/40 text-blue-700 dark:text-blue-300"
+                    }`}
+                  >
+                    {isOwner
+                      ? "Chủ album"
+                      : isAlreadyMember
+                        ? `Đã tham gia · ${roleLabelVi[event.userRole === "editor" ? "EDITOR" : "VIEWER"]}`
+                        : `Quyền khi tham gia: ${roleLabelVi[linkRole]}`}
+                  </span>
+                </div>
               </div>
 
-              <div className="flex-shrink-0">
-                {user ? (
-                  <button
-                    onClick={handleJoin}
-                    disabled={joining}
-                    className="h-10 px-5 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-xl text-sm transition-colors disabled:opacity-60 cursor-pointer"
-                  >
-                    {joining ? "Đang tham gia…" : "Tham gia album"}
-                  </button>
-                ) : (
-                  <button
-                    onClick={signIn}
-                    disabled={signingIn}
-                    className="h-10 px-5 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-xl text-sm transition-colors disabled:opacity-60 cursor-pointer"
-                  >
-                    {signingIn ? "Đang xác thực…" : "Đăng nhập Google để tham gia"}
-                  </button>
-                )}
-              </div>
+              <div className="flex-shrink-0">{renderActionButton()}</div>
             </div>
 
             {photos.length === 0 ? (

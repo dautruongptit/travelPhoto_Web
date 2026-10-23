@@ -58,10 +58,15 @@ export const createShareLink = (eventId: number, role?: EventMemberRole) =>
     `/events/${eventId}/share${role ? `?role=${role}` : ""}`,
   )
 
+export interface ShareInfoResponse {
+  event: EventResponse
+  linkRole: EventMemberRole
+}
+
 /** Public — không cần đăng nhập */
 
-export const getSharedEvent = (token: string) =>
-  apiGet<EventResponse>(`/share/${token}`)
+export const getShareInfo = (token: string) =>
+  apiGet<ShareInfoResponse>(`/share/${token}`)
 
 export const getSharedPhotos = (token: string, page = 0, size = 20) =>
   apiGet<Page<PhotoResponse>>(
