@@ -61,6 +61,7 @@ export const createShareLink = (eventId: number, role?: EventMemberRole) =>
 export interface ShareInfoResponse {
   event: EventResponse
   linkRole: EventMemberRole
+  requiresAuth: boolean
 }
 
 /** Public — không cần đăng nhập */

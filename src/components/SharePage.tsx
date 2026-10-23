@@ -43,7 +43,7 @@ export default function SharePage({
   const [event, setEvent] = useState<TravelEvent | null>(null)
   const [photos, setPhotos] = useState<Photo[]>([])
   const [linkRole, setLinkRole] = useState<EventMemberRole>("VIEWER")
-  const [state, setState] = useState<"loading" | "ready" | "error">("loading")
+  const [state, setState] = useState<"loading" | "ready" | "error" | "auth_required">("loading")
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null)
   const [joining, setJoining] = useState(false)
 
@@ -72,13 +72,20 @@ export default function SharePage({
         )
         setState("ready")
       })
-      .catch(() => {
-        if (!cancelled) setState("error")
+      .catch((err) => {
+        if (cancelled) return
+        const msg = err instanceof Error ? err.message : ""
+        if (!user && (msg.includes("Access denied") || msg.includes("đăng nhập"))) {
+          setLinkRole("EDITOR")
+          setState("auth_required")
+        } else {
+          setState("error")
+        }
       })
     return () => {
       cancelled = true
     }
-  }, [token])
+  }, [token, user])
 
   const totalSize = useMemo(
     () => photos.reduce((sum, p) => sum + p.size, 0),
@@ -194,6 +201,26 @@ export default function SharePage({
         {state === "loading" && (
           <div className="flex justify-center py-24">
             <div className="w-8 h-8 border-2 border-[#0063dc] border-t-transparent rounded-full animate-spin" />
+          </div>
+        )}
+
+        {state === "auth_required" && (
+          <div className="max-w-md mx-auto text-center py-24">
+            <div className="text-4xl mb-3">🔒</div>
+            <h1 className="text-lg font-semibold text-neutral-900 dark:text-white mb-2">
+              Link này yêu cầu đăng nhập
+            </h1>
+            <p className="text-sm text-neutral-500 dark:text-neutral-400 mb-6">
+              Đây là link chia sẻ với quyền Cộng tác (Editor). Bạn cần đăng nhập
+              để xem và tham gia album.
+            </p>
+            <button
+              onClick={signIn}
+              disabled={signingIn}
+              className="inline-flex items-center bg-blue-600 hover:bg-blue-700 text-white font-semibold px-5 py-2.5 rounded-xl transition-colors disabled:opacity-60 cursor-pointer"
+            >
+              {signingIn ? "Đang xác thực…" : "Đăng nhập Google để tiếp tục"}
+            </button>
           </div>
         )}
 

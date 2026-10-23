@@ -4,7 +4,8 @@ import { QRCodeSVG } from "qrcode.react"
 
 import type { TravelEvent } from "../types"
 
-import { createShareLink } from "../api/share"
+import type { ShareLinkResponse } from "../api/share"
+import { createShareLink, listShareLinks } from "../api/share"
 
 import { getEvent, setEventPublic } from "../api/events"
 
@@ -27,22 +28,29 @@ export default function ShareModal({
 }: Props) {
   // null = chưa biết trạng thái thật từ server -> công tắc bị khóa (không đoán "riêng tư")
   const [isPublic, setIsPublic] = useState<boolean | null>(null)
+  const [existingLinks, setExistingLinks] = useState<ShareLinkResponse[]>([])
 
   useEffect(() => {
     let cancelled = false
 
-    getEvent(Number(event.id))
-      .then((dto) => {
-        if (!cancelled && dto.visibility) setIsPublic(dto.visibility === "public")
+    Promise.all([
+      getEvent(Number(event.id)),
+      listShareLinks(Number(event.id)),
+    ])
+      .then(([dto, links]) => {
+        if (cancelled) return
+        if (dto.visibility) setIsPublic(dto.visibility === "public")
+        setExistingLinks(links)
       })
-      .catch(() => {
-        // giữ null: công tắc khóa, người dùng thấy thông báo bên dưới
-      })
+      .catch(() => {})
 
     return () => {
       cancelled = true
     }
   }, [event.id])
+
+  const hasViewerLink = existingLinks.some((l) => l.role === "VIEWER")
+  const hasEditorLink = existingLinks.some((l) => l.role === "EDITOR")
 
   const [savingPublic, setSavingPublic] = useState(false)
 
@@ -78,6 +86,11 @@ export default function ShareModal({
 
   const [role, setRole] = useState<"VIEWER" | "EDITOR">("VIEWER")
 
+  useEffect(() => {
+    if (hasViewerLink && !hasEditorLink) setRole("EDITOR")
+    else if (!hasViewerLink) setRole("VIEWER")
+  }, [hasViewerLink, hasEditorLink])
+
   const [shareUrl, setShareUrl] = useState<string | null>(null)
 
   const [loading, setLoading] = useState(false)
@@ -89,6 +102,9 @@ export default function ShareModal({
       const res = await createShareLink(Number(event.id), role)
 
       setShareUrl(res.shareUrl)
+
+      const updatedLinks = await listShareLinks(Number(event.id))
+      setExistingLinks(updatedLinks)
 
       onChanged?.()
 
@@ -178,6 +194,11 @@ export default function ShareModal({
 
           {!shareUrl ? (
             <div className="space-y-4">
+              {hasViewerLink && hasEditorLink && (
+                <div className="p-3 rounded-xl bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 text-sm text-amber-700 dark:text-amber-300">
+                  Đã tạo đủ link cho cả 2 quyền. Thu hồi link cũ trong tab Chia sẻ để tạo link mới.
+                </div>
+              )}
               <div>
                 <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
                   Vai trò của người nhận liên kết
@@ -185,48 +206,61 @@ export default function ShareModal({
                 <div className="grid grid-cols-2 gap-3">
                   <button
                     type="button"
+                    disabled={hasViewerLink}
                     onClick={() => setRole("VIEWER")}
                     className={`p-3.5 rounded-2xl border text-left transition-all ${
-                      role === "VIEWER"
-                        ? "border-blue-600 bg-blue-50/50 dark:bg-blue-950/20 ring-2 ring-blue-500/10"
-                        : "border-gray-200 dark:border-gray-700 hover:border-gray-300"
+                      hasViewerLink
+                        ? "border-gray-200 dark:border-gray-700 opacity-50 cursor-not-allowed"
+                        : role === "VIEWER"
+                          ? "border-blue-600 bg-blue-50/50 dark:bg-blue-950/20 ring-2 ring-blue-500/10"
+                          : "border-gray-200 dark:border-gray-700 hover:border-gray-300"
                     }`}
                   >
                     <p
                       className={`text-sm font-semibold ${
-                        role === "VIEWER"
-                          ? "text-blue-600 dark:text-blue-400"
-                          : "text-gray-900 dark:text-white"
+                        hasViewerLink
+                          ? "text-gray-400 dark:text-gray-500"
+                          : role === "VIEWER"
+                            ? "text-blue-600 dark:text-blue-400"
+                            : "text-gray-900 dark:text-white"
                       }`}
                     >
                       Chỉ xem (Viewer)
                     </p>
                     <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
-                      Chỉ được xem ảnh, không có quyền tải ảnh lên hoặc chỉnh
-                      sửa.
+                      {hasViewerLink
+                        ? "Đã có link cho quyền này"
+                        : "Chỉ được xem ảnh, không có quyền tải ảnh lên hoặc chỉnh sửa."}
                     </p>
                   </button>
 
                   <button
                     type="button"
+                    disabled={hasEditorLink}
                     onClick={() => setRole("EDITOR")}
                     className={`p-3.5 rounded-2xl border text-left transition-all ${
-                      role === "EDITOR"
-                        ? "border-blue-600 bg-blue-50/50 dark:bg-blue-950/20 ring-2 ring-blue-500/10"
-                        : "border-gray-200 dark:border-gray-700 hover:border-gray-300"
+                      hasEditorLink
+                        ? "border-gray-200 dark:border-gray-700 opacity-50 cursor-not-allowed"
+                        : role === "EDITOR"
+                          ? "border-blue-600 bg-blue-50/50 dark:bg-blue-950/20 ring-2 ring-blue-500/10"
+                          : "border-gray-200 dark:border-gray-700 hover:border-gray-300"
                     }`}
                   >
                     <p
                       className={`text-sm font-semibold ${
-                        role === "EDITOR"
-                          ? "text-blue-600 dark:text-blue-400"
-                          : "text-gray-900 dark:text-white"
+                        hasEditorLink
+                          ? "text-gray-400 dark:text-gray-500"
+                          : role === "EDITOR"
+                            ? "text-blue-600 dark:text-blue-400"
+                            : "text-gray-900 dark:text-white"
                       }`}
                     >
                       Cộng tác (Editor)
                     </p>
                     <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
-                      Được quyền tải ảnh lên và cộng tác đóng góp album.
+                      {hasEditorLink
+                        ? "Đã có link cho quyền này"
+                        : "Được quyền tải ảnh lên và cộng tác đóng góp album. Yêu cầu đăng nhập."}
                     </p>
                   </button>
                 </div>
@@ -234,7 +268,7 @@ export default function ShareModal({
 
               <button
                 type="button"
-                disabled={loading}
+                disabled={loading || (hasViewerLink && hasEditorLink)}
                 onClick={handleGenerateLink}
                 className="w-full h-11 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-xl shadow-lg shadow-blue-200/50 dark:shadow-none flex items-center justify-center gap-2 transition-colors disabled:opacity-50"
               >

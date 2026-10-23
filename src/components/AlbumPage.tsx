@@ -307,26 +307,6 @@ export default function AlbumPage({
                   <span className="hidden sm:inline">Chia sẻ</span>
                 </button>
               )}
-              {canUpload && (
-                <button
-                  onClick={onUpload}
-                  className="flex items-center gap-1.5 h-9 px-4 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-xl transition-all text-sm shadow-sm hover:shadow-md hover:shadow-blue-200 cursor-pointer"
-                >
-                  <svg
-                    width="15"
-                    height="15"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="white"
-                    strokeWidth="2.5"
-                  >
-                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" strokeLinecap="round" />
-                    <polyline points="17 8 12 3 7 8" strokeLinecap="round" strokeLinejoin="round" />
-                    <line x1="12" y1="3" x2="12" y2="15" strokeLinecap="round" />
-                  </svg>
-                  <span className="hidden sm:inline">Tải ảnh</span>
-                </button>
-              )}
             </div>
           </div>
 
