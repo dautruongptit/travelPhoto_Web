@@ -12,8 +12,8 @@ interface Props {
 
 /** Thumbnail nhỏ (JPEG ~480px) cho lưới; không có thì dùng ảnh hiển thị. Ảnh đầy đủ chỉ tải ở Lightbox. */
 function thumbUrl(p: Photo): string {
-  const m = p.url.match(/^(.*\/api\/photos)\/download\/(\d+)/)
-  return m ? `${m[1]}/${m[2]}/thumbnail` : p.previewUrl || p.url
+  const m = p.url.match(/^(.*\/api\/photos)\/download\/(\d+)(\?.*)?$/)
+  return m ? `${m[1]}/${m[2]}/thumbnail${m[3] ?? ""}` : p.previewUrl || p.url
 }
 
 // Bố cục masonry kiểu thiết kế: CSS columns (class "photo-masonry"), mỗi ảnh giữ tỉ lệ gốc.

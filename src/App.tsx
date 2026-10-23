@@ -4,14 +4,17 @@ import type {
   StoragePlan,
   TravelEvent,
   ToastItem,
-  Photo,
   User,
   FlickrNavTab,
 } from "./types"
 import { storagePlans } from "./mockData"
 import { generateId, formatTotalSize, FREE_STORAGE_BYTES } from "./utils"
 import { useTheme } from "./hooks/useTheme"
-import { useHistoryNavigation, parsePath } from "./hooks/useHistoryNavigation"
+import {
+  useHistoryNavigation,
+  parsePath,
+  parseShareToken,
+} from "./hooks/useHistoryNavigation"
 import { getToken, setToken, clearToken } from "./lib/apiClient"
 import { fetchCurrentUser, logout as apiLogout } from "./lib/authApi"
 import {
@@ -26,65 +29,15 @@ import {
   getEvent,
   createEvent as apiCreateEvent,
   deleteEvent as apiDeleteEvent,
-  type EventResponse,
   type EventFormData,
 } from "./api/events"
 import {
   listPhotosByEvent,
   deletePhoto as apiDeletePhoto,
-  type PhotoResponse,
 } from "./api/photos"
 
-const FALLBACK_COVER_IMAGE =
-  "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800&h=500&fit=crop&auto=format"
-
-function mapEventResponse(
-  dto: EventResponse,
-  photos: Photo[] = [],
-): TravelEvent {
-  return {
-    id: String(dto.id),
-    name: dto.name,
-    description: dto.description ?? "",
-    startDate: dto.startDate,
-    endDate: dto.endDate || dto.startDate,
-    location: dto.location,
-    coverImage: dto.coverImageUrl || FALLBACK_COVER_IMAGE,
-    thumbnails: dto.previewImageUrls ?? [],
-    hasCover: !!dto.coverImageUrl,
-    visibility: dto.visibility, // thiếu = chưa rõ (không giả định "riêng tư")
-    photos,
-    photoCount: dto.photoCount,
-    totalSizeBytes: dto.totalSize,
-    createdBy: dto.ownerName,
-    ownerId: String(dto.ownerId),
-    createdAt: dto.createdAt,
-  }
-}
-
-function mapPhotoResponse(dto: PhotoResponse): Photo {
-  return {
-    id: String(dto.id),
-    name: dto.originalName,
-    url: dto.url,
-    previewUrl: dto.previewUrl,
-    cameraModel: dto.cameraModel ?? undefined,
-    lensModel: dto.lensModel ?? undefined,
-    focalLength: dto.focalLength ?? undefined,
-    focalLength35mm: dto.focalLength35mm ?? undefined,
-    fNumber: dto.aperture ?? undefined,
-    shutterSpeed: dto.shutterSpeed ?? undefined,
-    iso: dto.iso ?? undefined,
-    takenAt: dto.takenAt ?? undefined,
-    raw: dto.raw,
-    size: dto.size,
-    width: dto.width,
-    height: dto.height,
-    uploadedAt: dto.uploadedTime,
-    uploadedBy: dto.uploadedBy,
-  }
-}
-
+import { mapEventResponse, mapPhotoResponse } from "./mappers"
+import SharePage from "./components/SharePage"
 import LoginPage from "./components/LoginPage"
 import Navbar from "./components/flickr/Navbar"
 import Dashboard from "./components/Dashboard"
@@ -104,6 +57,8 @@ export default function App() {
   const [user, setUser] = useState<User | null>(null)
   const [checkingSession, setCheckingSession] = useState(true)
   const [view, setView] = useState<AppView>("login")
+  // Đang mở link chia sẻ /share/{token}: hiển thị SharePage, KHÔNG ép về dashboard/login
+  const [shareToken] = useState(() => parseShareToken(window.location.pathname))
   const [activeNavTab, setActiveNavTab] = useState<FlickrNavTab>("explore")
   const [events, setEvents] = useState<TravelEvent[]>([])
   const [selectedEventId, setSelectedEventId] = useState<string | null>(null)
@@ -203,8 +158,10 @@ export default function App() {
       fetchCurrentUser()
         .then((loggedInUser) => {
           setUser(loggedInUser)
-          setView("dashboard")
-          replace({ view: "dashboard" })
+          if (!shareToken) {
+            setView("dashboard")
+            replace({ view: "dashboard" })
+          }
           addToast(
             "success",
             `Xin chào, ${loggedInUser.name}! Đăng nhập thành công.`,
@@ -221,7 +178,7 @@ export default function App() {
         })
         .finally(() => setCheckingSession(false))
     },
-    [addToast, loadEvents, replace],
+    [addToast, loadEvents, replace, shareToken],
   )
 
   const handleLoginError = useCallback(
@@ -271,6 +228,21 @@ export default function App() {
 
     // Khôi phục session từ token đã lưu
     const token = getToken()
+    if (shareToken) {
+      // Trang chia sẻ: chỉ cần biết đã đăng nhập hay chưa; giữ nguyên URL /share/{token}
+      if (!token) {
+        setCheckingSession(false)
+        return
+      }
+      fetchCurrentUser()
+        .then((u) => {
+          setUser(u)
+          loadEvents()
+        })
+        .catch(() => clearToken())
+        .finally(() => setCheckingSession(false))
+      return
+    }
     if (!token) {
       replace({ view: "login" })
       setCheckingSession(false)
@@ -502,6 +474,23 @@ export default function App() {
     return (
       <div className="min-h-screen flex items-center justify-center bg-white dark:bg-[#0b0b0c]">
         <div className="w-8 h-8 border-2 border-[#0063dc] border-t-transparent rounded-full animate-spin" />
+      </div>
+    )
+  }
+
+  if (shareToken) {
+    return (
+      <div className="min-h-screen flex flex-col bg-white dark:bg-[#0b0b0c] text-neutral-900 dark:text-neutral-100 transition-colors">
+        <SharePage
+          token={shareToken}
+          user={user}
+          theme={theme}
+          onToggleTheme={toggleTheme}
+          onLogin={handleLoginSuccess}
+          onLoginError={handleLoginError}
+          onToast={addToast}
+        />
+        <Toast toasts={toasts} onRemove={removeToast} />
       </div>
     )
   }

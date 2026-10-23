@@ -25,6 +25,12 @@ export function parsePath(pathname: string): NavState {
   return { view: "dashboard" }
 }
 
+/** Link chia sẻ công khai: /share/{token} -> trả về token (không phải màn hình trong NavState). */
+export function parseShareToken(pathname: string): string | null {
+  const m = pathname.match(/^\/share\/([A-Za-z0-9_-]{8,128})\/?$/)
+  return m ? m[1] : null
+}
+
 interface Options {
   onNavigate: (state: NavState) => void
 }
