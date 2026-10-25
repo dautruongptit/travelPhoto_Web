@@ -200,30 +200,6 @@ export default function Navbar({
             )}
           </button>
 
-          {/* Nút Upload Flickr Pink Signature */}
-          {onOpenUpload && (
-            <button
-              data-glass="upload"
-              onClick={onOpenUpload}
-              className="flex items-center gap-1.5 px-3.5 sm:px-4 py-1.5 sm:py-2 text-sm font-semibold rounded-full bg-[#ff0084] hover:bg-[#e00074] text-white shadow-sm hover:shadow transition-all active:scale-95 cursor-pointer"
-            >
-              <svg
-                className="w-4 h-4"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-                strokeWidth="2.5"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M12 4v16m8-8H4"
-                />
-              </svg>
-              <span className="hidden sm:inline">Upload</span>
-            </button>
-          )}
-
           {/* User Profile Popover */}
           {user ? (
             <div className="relative" ref={dropRef}>
