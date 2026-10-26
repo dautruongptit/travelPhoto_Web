@@ -520,7 +520,6 @@ export default function App() {
             onToggleTheme={toggleTheme}
             usedBytes={storageUsedBytes}
             limitBytes={storageLimitBytes}
-            onOpenUpload={handleNavbarUpload}
             onOpenProfile={() => setShowProfileModal(true)}
             onOpenSettings={() => setShowSettingsModal(true)}
             onOpenHelp={handleOpenHelp}

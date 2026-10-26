@@ -17,7 +17,6 @@ interface NavbarProps {
   onToggleTheme: () => void
   usedBytes: number
   limitBytes: number
-  onOpenUpload?: () => void
   onOpenProfile: () => void
   onOpenSettings: () => void
   onOpenHelp?: () => void
@@ -37,7 +36,6 @@ export default function Navbar({
   onToggleTheme,
   usedBytes,
   limitBytes,
-  onOpenUpload,
   onOpenProfile,
   onOpenSettings,
   onOpenHelp,
