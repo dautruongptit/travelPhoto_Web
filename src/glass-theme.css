@@ -63,14 +63,30 @@ body::before {
 [data-glass="create"],
 [data-glass="footer"],
 [data-glass="panel"],
-[data-glass="dropdown"],
-[class*="fixed inset-0"] > .slide-up {
+[data-glass="dropdown"] {
   background: var(--g-bg);
   -webkit-backdrop-filter: var(--g-blur);
   backdrop-filter: var(--g-blur);
   border: 1px solid var(--g-border);
   box-shadow: var(--g-shadow);
   color: var(--g-text);
+}
+
+/* ── Modal / Popup: Nền trắng sáng (Solid White), bo góc mềm mại, đổ bóng nổi bật chuẩn CasaOS ─── */
+[class*="fixed inset-0"] > .slide-up {
+  background: #ffffff !important;
+  -webkit-backdrop-filter: none !important;
+  backdrop-filter: none !important;
+  border: 1px solid rgba(0, 0, 0, 0.08) !important;
+  box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.35), 0 0 0 1px rgba(0, 0, 0, 0.05) !important;
+  color: #111827 !important;
+}
+
+html.dark [class*="fixed inset-0"] > .slide-up {
+  background: #18181b !important;
+  border-color: rgba(255, 255, 255, 0.12) !important;
+  box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.7) !important;
+  color: #f3f4f6 !important;
 }
 
 /* Thanh ngang: không bo, chỉ có đường kẻ mảnh */
@@ -172,8 +188,7 @@ body::before {
 [data-glass="event-body"] :is(.text-gray-600, .text-neutral-300, .text-neutral-900, .text-white),
 [data-glass="footer"] :is(.text-gray-900, .text-gray-800, .text-gray-700, .text-white),
 [data-glass="panel"] :is(.text-neutral-900, .text-neutral-800, .text-white),
-[data-glass="dropdown"] :is(.text-neutral-900, .text-neutral-800, .text-neutral-700, .text-white),
-[class*="fixed inset-0"] > .slide-up :is(.text-gray-900, .text-gray-800, .text-neutral-900, .text-neutral-800, .text-white) {
+[data-glass="dropdown"] :is(.text-neutral-900, .text-neutral-800, .text-neutral-700, .text-white) {
   color: var(--g-text);
 }
 [data-glass="navbar"] :is(.text-neutral-400, .text-neutral-500, .text-neutral-600, .text-gray-400, .text-gray-500, .text-gray-600),
@@ -181,8 +196,7 @@ body::before {
 [data-glass="event-body"] :is(.text-gray-400, .text-gray-500),
 [data-glass="footer"] :is(.text-gray-400, .text-gray-500, .text-gray-600),
 [data-glass="panel"] :is(.text-neutral-400, .text-neutral-500),
-[data-glass="dropdown"] :is(.text-neutral-400, .text-neutral-500, .text-neutral-600),
-[class*="fixed inset-0"] > .slide-up :is(.text-gray-400, .text-gray-500, .text-gray-600, .text-neutral-400, .text-neutral-500, .text-neutral-600) {
+[data-glass="dropdown"] :is(.text-neutral-400, .text-neutral-500, .text-neutral-600) {
   color: var(--g-text-2);
 }
 
