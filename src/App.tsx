@@ -520,8 +520,6 @@ export default function App() {
             searchQuery={searchQuery}
             onSearchChange={setSearchQuery}
             showSearch={view === "dashboard" || view === "album"}
-            theme={theme}
-            onToggleTheme={toggleTheme}
             usedBytes={storageUsedBytes}
             limitBytes={storageLimitBytes}
             onOpenProfile={() => setShowProfileModal(true)}

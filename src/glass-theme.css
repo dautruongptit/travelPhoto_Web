@@ -1,42 +1,34 @@
-/* glass-theme.css — hiệu ứng glassmorphism (CHỈ đổi giao diện, không đổi bố cục/vị trí/kích thước).
- * Import cuối cùng trong main.tsx. File không nằm trong @layer nên thắng các class tiện ích của
- * Tailwind (nằm trong @layer utilities) mà không cần !important.
- * Các phần tử được đánh dấu bằng thuộc tính data-glass="..." (không ảnh hưởng bố cục).
- * Theme: sáng = :root, tối = html.dark (nút đổi theme giữ nguyên). */
+/* glass-theme.css — Giao diện trong suốt CasaOS (CHỈ CÓ 1 GIAO DIỆN DUY NHẤT, KHÔNG CÓ NGÀY ĐÊM).
+ * Nền: Ảnh núi đêm wallpaper02.
+ * Thẻ/Thanh công cụ: Kính mờ trong suốt (Dark Glassmorphism).
+ * Cửa sổ bật lên (Modal/Popup): Luôn giữ màu TRẮNG SÁNG (Solid White) chuẩn CasaOS Storage Manager / Add link. */
 
-:root {
+:root,
+html,
+html.dark {
   --g-wallpaper: url("/images/wallpaper.jpg");
-  --g-blur: blur(16px) saturate(140%);
-  --g-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
-  --g-shadow-hover: 0 12px 40px rgba(0, 0, 0, 0.32);
-  --g-bg: rgba(255, 255, 255, 0.55);
-  --g-bg-hover: rgba(255, 255, 255, 0.7);
-  --g-border: rgba(255, 255, 255, 0.7);
-  --g-border-hover: rgba(255, 255, 255, 0.95);
-  --g-text: #111;
-  --g-text-2: rgba(17, 17, 17, 0.65);
-  --g-overlay: rgba(255, 255, 255, 0.25);
-  --g-dash: rgba(17, 17, 17, 0.35);
-  --g-chip-bg: rgba(255, 255, 255, 0.18);
+  --g-blur: blur(20px) saturate(150%);
+  --g-shadow: 0 8px 32px rgba(0, 0, 0, 0.35);
+  --g-shadow-hover: 0 12px 40px rgba(0, 0, 0, 0.45);
+  --g-bg: rgba(18, 22, 36, 0.65);
+  --g-bg-hover: rgba(255, 255, 255, 0.12);
+  --g-border: rgba(255, 255, 255, 0.12);
+  --g-border-hover: rgba(255, 255, 255, 0.28);
+  --g-text: #ffffff;
+  --g-text-2: rgba(255, 255, 255, 0.7);
+  --g-overlay: rgba(6, 9, 20, 0.35);
+  --g-dash: rgba(255, 255, 255, 0.35);
+  --g-chip-bg: rgba(255, 255, 255, 0.15);
   --g-chip-border: rgba(255, 255, 255, 0.25);
 }
 
-html.dark {
-  --g-bg: rgba(255, 255, 255, 0.07);
-  --g-bg-hover: rgba(255, 255, 255, 0.12);
-  --g-border: rgba(255, 255, 255, 0.14);
-  --g-border-hover: rgba(255, 255, 255, 0.32);
-  --g-text: #fff;
-  --g-text-2: rgba(255, 255, 255, 0.65);
-  --g-overlay: rgba(8, 10, 25, 0.45);
-  --g-dash: rgba(255, 255, 255, 0.35);
-}
-
-/* ── Nền trang: ảnh du lịch toàn màn hình + lớp phủ ─────────────────────────── */
-html body {
-  background: var(--g-wallpaper) center / cover fixed no-repeat;
-  background-color: #1b1646;
+/* ── Nền trang: ảnh núi đêm toàn màn hình + lớp phủ mờ tối ─────────────────── */
+html,
+body {
+  background: var(--g-wallpaper) center / cover fixed no-repeat !important;
+  background-color: #0b0f19 !important;
   color: var(--g-text);
+  min-height: 100vh;
 }
 
 body::before {
@@ -48,14 +40,14 @@ body::before {
   pointer-events: none;
 }
 
-/* Vùng gốc của app có nền đặc (bg-white / bg-[#0b0b0c]) -> trong suốt để thấy ảnh nền */
-/* (chỉ khung app chính có class bg-white; trang đăng nhập có nền riêng nên không bị ảnh hưởng) */
-#root > div.bg-white {
-  background: transparent;
+/* Khung gốc app: trong suốt để thấy ảnh nền */
+#root > div.bg-white,
+#root > div {
+  background: transparent !important;
   color: var(--g-text);
 }
 
-/* ── Bề mặt kính ────────────────────────────────────────────────────────────── */
+/* ── Bề mặt kính trong suốt (Navbar, Thẻ sự kiện, Tìm kiếm, Footer...) ─────── */
 [data-glass="navbar"],
 [data-glass="stat"],
 [data-glass="search"],
@@ -64,132 +56,99 @@ body::before {
 [data-glass="footer"],
 [data-glass="panel"],
 [data-glass="dropdown"] {
-  background: var(--g-bg);
-  -webkit-backdrop-filter: var(--g-blur);
-  backdrop-filter: var(--g-blur);
-  border: 1px solid var(--g-border);
-  box-shadow: var(--g-shadow);
-  color: var(--g-text);
-}
-
-/* ── Modal / Popup: Nền trắng sáng (Solid White), bo góc mềm mại, đổ bóng nổi bật chuẩn CasaOS ─── */
-[class*="fixed inset-0"] > .slide-up {
-  background: #ffffff !important;
-  -webkit-backdrop-filter: none !important;
-  backdrop-filter: none !important;
-  border: 1px solid rgba(0, 0, 0, 0.08) !important;
-  box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.35), 0 0 0 1px rgba(0, 0, 0, 0.05) !important;
-  color: #111827 !important;
-}
-
-html.dark [class*="fixed inset-0"] > .slide-up {
-  background: #18181b !important;
-  border-color: rgba(255, 255, 255, 0.12) !important;
-  box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.7) !important;
-  color: #f3f4f6 !important;
+  background: var(--g-bg) !important;
+  -webkit-backdrop-filter: var(--g-blur) !important;
+  backdrop-filter: var(--g-blur) !important;
+  border: 1px solid var(--g-border) !important;
+  box-shadow: var(--g-shadow) !important;
+  color: var(--g-text) !important;
 }
 
 /* Thanh ngang: không bo, chỉ có đường kẻ mảnh */
 [data-glass="navbar"],
 [data-glass="footer"],
 [data-glass="panel"] {
-  border-radius: 0;
-  border-left: 0;
-  border-right: 0;
+  border-radius: 0 !important;
+  border-left: 0 !important;
+  border-right: 0 !important;
 }
 [data-glass="navbar"] {
-  border-top: 0;
+  border-top: 0 !important;
 }
 [data-glass="footer"] {
-  border-bottom: 0;
+  border-bottom: 0 !important;
 }
 
-/* Ô tìm kiếm / thẻ thống kê: hover sáng hơn */
+/* Ô tìm kiếm & thẻ thống kê: hover sáng hơn */
 [data-glass="stat"]:hover,
 [data-glass="create"]:hover {
-  background: var(--g-bg-hover);
-  border-color: var(--g-border-hover);
-  box-shadow: var(--g-shadow-hover);
+  background: var(--g-bg-hover) !important;
+  border-color: var(--g-border-hover) !important;
+  box-shadow: var(--g-shadow-hover) !important;
 }
 [data-glass="search"] {
-  box-shadow: none;
-  color: var(--g-text);
+  box-shadow: none !important;
+  color: var(--g-text) !important;
 }
 [data-glass="search"]::placeholder {
-  color: var(--g-text-2);
+  color: var(--g-text-2) !important;
 }
 
-/* ── Thẻ sự kiện: ảnh bìa giữ nguyên, kính chỉ ở phần thông tin bên dưới ───────── */
+/* ── Thẻ sự kiện ───────────────────────────────────────────────────────────── */
 [data-glass="event-card"] {
-  background: transparent;
-  border: 1px solid var(--g-border);
-  box-shadow: var(--g-shadow);
-  color: var(--g-text);
+  background: rgba(18, 22, 36, 0.45) !important;
+  -webkit-backdrop-filter: var(--g-blur) !important;
+  backdrop-filter: var(--g-blur) !important;
+  border: 1px solid var(--g-border) !important;
+  box-shadow: var(--g-shadow) !important;
+  color: var(--g-text) !important;
 }
 [data-glass="event-card"]:hover {
-  border-color: var(--g-border-hover);
-  box-shadow: var(--g-shadow-hover);
-  translate: none; /* hover KHÔNG dịch chuyển */
-}
-[data-glass="event-card"]:hover img {
-  transform: none; /* ảnh bìa không phóng to khi hover */
+  border-color: var(--g-border-hover) !important;
+  box-shadow: var(--g-shadow-hover) !important;
 }
 [data-glass="event-body"] {
-  border: 0;
-  border-radius: 0;
-  box-shadow: none;
+  border: 0 !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
 }
 [data-glass="event-card"]:hover [data-glass="event-body"] {
-  background: var(--g-bg-hover);
+  background: var(--g-bg-hover) !important;
 }
 
 /* ── Thẻ "Tạo sự kiện": viền đứt + nền kính ─────────────────────────────────── */
 [data-glass="create"] {
-  border: 2px dashed var(--g-dash);
-  color: var(--g-text-2);
+  border: 2px dashed var(--g-dash) !important;
+  color: var(--g-text-2) !important;
 }
 [data-glass="create"]:hover {
-  color: var(--g-text);
+  color: var(--g-text) !important;
 }
 
-/* ── Huy hiệu & số ảnh trên ảnh bìa: viên kính nhỏ ───────────────────────────── */
+/* ── Huy hiệu nhỏ ──────────────────────────────────────────────────────────── */
 [data-glass="chip"] {
-  background: var(--g-chip-bg);
-  -webkit-backdrop-filter: blur(8px);
-  backdrop-filter: blur(8px);
-  border: 1px solid var(--g-chip-border);
-  color: #fff;
-}
-[data-glass="chip"][data-vis="public"] {
-  border-color: rgba(74, 222, 128, 0.7);
-}
-[data-glass="chip"][data-vis="link"] {
-  border-color: rgba(250, 204, 21, 0.7);
+  background: var(--g-chip-bg) !important;
+  -webkit-backdrop-filter: blur(8px) !important;
+  backdrop-filter: blur(8px) !important;
+  border: 1px solid var(--g-chip-border) !important;
+  color: #fff !important;
 }
 
-/* ── Tab đang chọn trên thanh điều hướng: viên kính sáng hơn ─────────────────── */
+/* ── Tab đang chọn ─────────────────────────────────────────────────────────── */
 [data-glass="tab"][data-active="true"] {
-  background: var(--g-bg-hover);
-  border: 1px solid var(--g-border);
-  color: var(--g-text);
+  background: var(--g-bg-hover) !important;
+  border: 1px solid var(--g-border) !important;
+  color: var(--g-text) !important;
 }
 
-/* ── Nút Upload: giữ màu hồng, thêm quầng sáng ───────────────────────────────── */
-[data-glass="upload"] {
-  box-shadow: 0 4px 20px rgba(255, 20, 110, 0.35);
-}
-[data-glass="upload"]:hover {
-  box-shadow: 0 6px 24px rgba(255, 20, 110, 0.5);
-}
-
-/* ── Màu chữ trong các bề mặt kính (đạt AA trên cả hai theme) ───────────────── */
+/* ── Màu chữ trong các bề mặt kính ─────────────────────────────────────────── */
 [data-glass="navbar"] :is(.text-neutral-900, .text-neutral-800, .text-neutral-700, .text-white, .text-gray-900, .text-gray-800, .text-gray-700),
 [data-glass="stat"] :is(.text-neutral-900, .text-neutral-800, .text-white),
 [data-glass="event-body"] :is(.text-gray-600, .text-neutral-300, .text-neutral-900, .text-white),
 [data-glass="footer"] :is(.text-gray-900, .text-gray-800, .text-gray-700, .text-white),
 [data-glass="panel"] :is(.text-neutral-900, .text-neutral-800, .text-white),
 [data-glass="dropdown"] :is(.text-neutral-900, .text-neutral-800, .text-neutral-700, .text-white) {
-  color: var(--g-text);
+  color: var(--g-text) !important;
 }
 [data-glass="navbar"] :is(.text-neutral-400, .text-neutral-500, .text-neutral-600, .text-gray-400, .text-gray-500, .text-gray-600),
 [data-glass="stat"] :is(.text-neutral-400, .text-neutral-500),
@@ -197,28 +156,77 @@ html.dark [class*="fixed inset-0"] > .slide-up {
 [data-glass="footer"] :is(.text-gray-400, .text-gray-500, .text-gray-600),
 [data-glass="panel"] :is(.text-neutral-400, .text-neutral-500),
 [data-glass="dropdown"] :is(.text-neutral-400, .text-neutral-500, .text-neutral-600) {
-  color: var(--g-text-2);
+  color: var(--g-text-2) !important;
 }
 
-/* Đường kẻ nội bộ trong thẻ kính */
-[data-glass="event-body"] .border-t,
-[data-glass="footer"] .border-t {
-  border-color: var(--g-border);
+/* ============================================================================
+ * ── MODAL / POPUP: MÀU TRẮNG ĐẶC (SOLID WHITE) CHUẨN CASAOS ─────────────────
+ * ============================================================================ */
+
+/* Lớp phủ nền sau popup: làm mờ & tối nền kính để popup trắng nổi bật */
+[class*="fixed inset-0"] > :is([class*="bg-black"], [class*="backdrop-blur"]) {
+  background-color: rgba(0, 0, 0, 0.65) !important;
+  -webkit-backdrop-filter: blur(4px) !important;
+  backdrop-filter: blur(4px) !important;
 }
 
-/* Trình duyệt không hỗ trợ backdrop-filter: tăng độ đặc để chữ vẫn đọc được */
-@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
-  :root {
-    --g-bg: rgba(255, 255, 255, 0.9);
-  }
-  html.dark {
-    --g-bg: rgba(24, 24, 27, 0.92);
-  }
+/* Khung popup chính: Màu trắng sáng đặc, bo góc lớn 24px, đổ bóng sâu nổi bật */
+[class*="fixed inset-0"] > .slide-up,
+[class*="fixed inset-0"] > .slide-up :is(.bg-white, [class*="dark:bg-"]) {
+  background-color: #ffffff !important;
+  -webkit-backdrop-filter: none !important;
+  backdrop-filter: none !important;
 }
 
-/* Người dùng chọn giảm chuyển động: bỏ chuyển đổi nền/đổ bóng */
-@media (prefers-reduced-motion: reduce) {
-  [data-glass] {
-    transition: none !important;
-  }
+[class*="fixed inset-0"] > .slide-up {
+  border: 1px solid rgba(0, 0, 0, 0.08) !important;
+  box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(0, 0, 0, 0.05) !important;
+  color: #111827 !important;
+  border-radius: 1.5rem !important; /* rounded-3xl */
+}
+
+/* Tiêu đề & chữ chính trong modal luôn màu đen/xám đậm */
+[class*="fixed inset-0"] > .slide-up :is(h1, h2, h3, h4, .text-neutral-900, .text-gray-900, [class*="dark:text-white"]) {
+  color: #111827 !important;
+}
+
+/* Chữ phụ / mô tả / label trong modal */
+[class*="fixed inset-0"] > .slide-up :is(p, span, label, [class*="dark:text-neutral-300"], [class*="dark:text-neutral-400"], [class*="dark:text-gray-300"], [class*="dark:text-gray-400"]) {
+  color: #4b5563;
+}
+
+/* Các nút chính (Xanh CasaOS / Đỏ xóa): Giữ màu chữ trắng */
+[class*="fixed inset-0"] > .slide-up :is(
+  button.bg-blue-600,
+  button.bg-red-600,
+  button.bg-\[\#ff0084\],
+  .bg-blue-600,
+  .bg-red-600,
+  .bg-blue-500,
+  .text-white
+) {
+  color: #ffffff !important;
+}
+
+/* Đường kẻ viền bên trong modal màu xám nhạt */
+[class*="fixed inset-0"] > .slide-up :is([class*="border-gray-"], [class*="border-neutral-"], [class*="dark:border-"]) {
+  border-color: #f3f4f6 !important;
+}
+
+/* Ô nhập liệu input / select / textarea bên trong modal */
+[class*="fixed inset-0"] > .slide-up :is(input, select, textarea, [class*="dark:bg-gray-800"], [class*="dark:bg-neutral-800"]) {
+  background-color: #f9fafb !important;
+  border: 1px solid #e5e7eb !important;
+  color: #111827 !important;
+}
+[class*="fixed inset-0"] > .slide-up input::placeholder {
+  color: #9ca3af !important;
+}
+
+/* Nút phụ / Hủy / Đóng bên trong modal */
+[class*="fixed inset-0"] > .slide-up button:has(svg):not(.bg-blue-600):not(.bg-red-600):hover,
+[class*="fixed inset-0"] > .slide-up button.text-gray-400:hover,
+[class*="fixed inset-0"] > .slide-up button.text-neutral-400:hover {
+  background-color: #f3f4f6 !important;
+  color: #111827 !important;
 }
