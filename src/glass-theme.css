@@ -66,7 +66,6 @@ body::before {
 
 /* Thanh ngang: không bo, chỉ có đường kẻ mảnh */
 [data-glass="navbar"],
-[data-glass="footer"],
 [data-glass="panel"] {
   border-radius: 0 !important;
   border-left: 0 !important;
@@ -75,8 +74,18 @@ body::before {
 [data-glass="navbar"] {
   border-top: 0 !important;
 }
+
+/* ── Footer: Kính trong suốt, cách trái phải 20-50px, bo góc mềm mại chuẩn CasaOS ── */
 [data-glass="footer"] {
-  border-bottom: 0 !important;
+  background: rgba(18, 22, 36, 0.55) !important;
+  -webkit-backdrop-filter: var(--g-blur) !important;
+  backdrop-filter: var(--g-blur) !important;
+  border: 1px solid rgba(255, 255, 255, 0.12) !important;
+  box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5) !important;
+  border-radius: 1.25rem !important; /* bo tròn 20px */
+  margin-left: clamp(20px, 3.5vw, 50px) !important;
+  margin-right: clamp(20px, 3.5vw, 50px) !important;
+  margin-bottom: 24px !important;
 }
 
 /* Ô tìm kiếm & thẻ thống kê: hover sáng hơn */
