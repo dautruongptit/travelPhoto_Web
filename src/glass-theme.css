@@ -5,7 +5,7 @@
  * Theme: sáng = :root, tối = html.dark (nút đổi theme giữ nguyên). */
 
 :root {
-  --g-wallpaper: url("https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=2000&auto=format&q=80");
+  --g-wallpaper: url("/images/wallpaper.jpg");
   --g-blur: blur(16px) saturate(140%);
   --g-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
   --g-shadow-hover: 0 12px 40px rgba(0, 0, 0, 0.32);
