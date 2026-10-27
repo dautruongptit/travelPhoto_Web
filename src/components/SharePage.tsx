@@ -58,8 +58,10 @@ export default function SharePage({
     Promise.all([getShareInfo(token), getSharedPhotos(token, 0, 500)])
       .then(([info, page]) => {
         if (cancelled) return
-        setEvent(mapEventResponse(info.event))
+        const ev = mapEventResponse(info.event)
+        setEvent(ev)
         setLinkRole(info.linkRole)
+        document.title = `${ev.name} - Travel Photo`
         setPhotos(
           page.content.map((dto) => {
             const p = mapPhotoResponse(dto)
@@ -82,6 +84,7 @@ export default function SharePage({
       })
     return () => {
       cancelled = true
+      document.title = "Travel Photo - Chia sẻ khoảnh khắc chuyến đi"
     }
   }, [token, user])
 

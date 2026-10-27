@@ -6,7 +6,9 @@ dist/
 dist-ssr/
 
 # Figma Make (environment-specific, auto-generated, not committed)
-.figma/
+.figma/**
+!.figma/make/
+!.figma/make/site.json
 
 # Env files
 .env

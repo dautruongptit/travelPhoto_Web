@@ -1,7 +1,11 @@
 {
-  "description": "Effortlessly create, manage, and share travel photo albums with a modern interface, allowing users to upload, organize, and view photos across devices.",
+  "title": "Travel Photo - Chia sẻ khoảnh khắc chuyến đi",
+  "description": "Nền tảng chia sẻ và lưu trữ album ảnh du lịch chất lượng cao, dễ dàng quản lý và kết nối khoảnh khắc cùng bạn bè.",
+  "openGraph": {
+    "image": "/images/login-hero.png"
+  },
   "robots": {
-    "index": false
+    "index": true
   },
   "accessibility": {
     "addBypassLinks": false,

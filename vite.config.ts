@@ -242,15 +242,17 @@ function figmaSiteConfiguration(config: FigmaSiteConfiguration): Plugin {
     return html.replace(`<!-- ${slotName} -->`, content)
   }
 
-  const title = config.title ?? "Figma Make App"
+  const title = config.title || "Travel Photo - Chia sẻ khoảnh khắc chuyến đi"
 
-  const description = config.description ?? ""
+  const description =
+    config.description ||
+    "Nền tảng chia sẻ và lưu trữ album ảnh du lịch chất lượng cao, dễ dàng quản lý và kết nối khoảnh khắc cùng bạn bè."
 
   const favicon = config.icons?.icon ?? ""
 
-  const socialImage = config.openGraph?.image ?? ""
+  const socialImage = config.openGraph?.image || "/images/login-hero.png"
 
-  const language = sanitizeHtmlValue(config.language) || "en"
+  const language = sanitizeHtmlValue(config.language) || "vi"
 
   const googleAnalyticsId = sanitizeHtmlValue(
     config.analytics?.googleAnalyticsId,
@@ -341,10 +343,21 @@ function figmaSiteConfiguration(config: FigmaSiteConfiguration): Plugin {
           })
         }
 
+        tags.push({
+          tag: "meta",
+          attrs: { property: "og:type", content: "website" },
+          injectTo: "head",
+        })
+
         if (title) {
           tags.push({
             tag: "meta",
             attrs: { property: "og:title", content: title },
+            injectTo: "head",
+          })
+          tags.push({
+            tag: "meta",
+            attrs: { name: "twitter:title", content: title },
             injectTo: "head",
           })
         }
@@ -353,6 +366,11 @@ function figmaSiteConfiguration(config: FigmaSiteConfiguration): Plugin {
           tags.push({
             tag: "meta",
             attrs: { property: "og:description", content: description },
+            injectTo: "head",
+          })
+          tags.push({
+            tag: "meta",
+            attrs: { name: "twitter:description", content: description },
             injectTo: "head",
           })
         }
