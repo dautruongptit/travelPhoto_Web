@@ -98,6 +98,7 @@ export default function AlbumPage({
   const [showSortMenu, setShowSortMenu] = useState(false)
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false)
   const [showShareModal, setShowShareModal] = useState(false)
+  const [shareRefreshKey, setShareRefreshKey] = useState(0)
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null)
   const [slideshow, setSlideshow] = useState(false)
   const [viewMode, setViewMode] = useState<ViewMode>(() => {
@@ -602,6 +603,8 @@ export default function AlbumPage({
           <ShareTab
             eventId={Number(event.id)}
             onOpenShareModal={() => setShowShareModal(true)}
+            onToast={onToast}
+            refreshTrigger={shareRefreshKey}
           />
         )}
       </div>
@@ -713,7 +716,10 @@ export default function AlbumPage({
           event={event}
           onClose={() => setShowShareModal(false)}
           onToast={onToast}
-          onChanged={() => onVisibilityChanged?.(event.id)}
+          onChanged={() => {
+            setShareRefreshKey((k) => k + 1)
+            onVisibilityChanged?.(event.id)
+          }}
         />
       )}
     </main>

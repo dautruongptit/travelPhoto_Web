@@ -108,6 +108,11 @@ export default function ShareModal({
 
       setShareUrl(res.shareUrl)
 
+      try {
+        localStorage.setItem(`share_token_${res.id}`, res.shareUrl)
+        localStorage.setItem(`share_token_${event.id}_${role}`, res.shareUrl)
+      } catch {}
+
       const updatedLinks = await listShareLinks(Number(event.id))
       setExistingLinks(updatedLinks)
       setLinksLoaded(true)
