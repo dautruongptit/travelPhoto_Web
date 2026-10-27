@@ -7,19 +7,20 @@
 html,
 html.dark {
   --g-wallpaper: url("/images/wallpaper.jpg");
-  --g-blur: blur(20px) saturate(150%);
+  --g-blur: blur(20px) saturate(140%);
   --g-shadow: 0 8px 32px rgba(0, 0, 0, 0.35);
-  --g-shadow-hover: 0 12px 40px rgba(0, 0, 0, 0.45);
-  --g-bg: rgba(18, 22, 36, 0.65);
-  --g-bg-hover: rgba(255, 255, 255, 0.12);
-  --g-border: rgba(255, 255, 255, 0.12);
-  --g-border-hover: rgba(255, 255, 255, 0.28);
+  --g-shadow-hover: 0 14px 44px rgba(0, 0, 0, 0.45);
+  /* Sắc xanh chàm đêm Midnight Indigo chuẩn CasaOS */
+  --g-bg: rgba(24, 30, 54, 0.52);
+  --g-bg-hover: rgba(36, 45, 80, 0.65);
+  --g-border: rgba(255, 255, 255, 0.09);
+  --g-border-hover: rgba(255, 255, 255, 0.22);
   --g-text: #ffffff;
-  --g-text-2: rgba(255, 255, 255, 0.7);
-  --g-overlay: rgba(6, 9, 20, 0.35);
-  --g-dash: rgba(255, 255, 255, 0.35);
-  --g-chip-bg: rgba(255, 255, 255, 0.15);
-  --g-chip-border: rgba(255, 255, 255, 0.25);
+  --g-text-2: rgba(226, 232, 240, 0.72);
+  --g-overlay: rgba(8, 12, 26, 0.16); /* Lớp phủ nhẹ giúp rực rỡ ráng hoàng hôn và bầu trời sao */
+  --g-dash: rgba(255, 255, 255, 0.28);
+  --g-chip-bg: rgba(255, 255, 255, 0.12);
+  --g-chip-border: rgba(255, 255, 255, 0.20);
 }
 
 /* ── Nền trang: ảnh núi đêm toàn màn hình + lớp phủ mờ tối ─────────────────── */
@@ -73,14 +74,16 @@ body::before {
 }
 [data-glass="navbar"] {
   border-top: 0 !important;
+  background: rgba(18, 23, 44, 0.60) !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08) !important;
 }
 
 /* ── Footer: Kính trong suốt, cách trái phải 20-50px, bo góc mềm mại chuẩn CasaOS ── */
 [data-glass="footer"] {
-  background: rgba(18, 22, 36, 0.55) !important;
+  background: rgba(22, 28, 52, 0.52) !important;
   -webkit-backdrop-filter: var(--g-blur) !important;
   backdrop-filter: var(--g-blur) !important;
-  border: 1px solid rgba(255, 255, 255, 0.12) !important;
+  border: 1px solid rgba(255, 255, 255, 0.10) !important;
   box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5) !important;
   border-radius: 1.25rem !important; /* bo tròn 20px */
   margin-left: clamp(20px, 3.5vw, 50px) !important;
@@ -96,6 +99,8 @@ body::before {
   box-shadow: var(--g-shadow-hover) !important;
 }
 [data-glass="search"] {
+  background: rgba(26, 33, 60, 0.50) !important;
+  border: 1px solid rgba(255, 255, 255, 0.10) !important;
   box-shadow: none !important;
   color: var(--g-text) !important;
 }
@@ -105,7 +110,7 @@ body::before {
 
 /* ── Thẻ sự kiện ───────────────────────────────────────────────────────────── */
 [data-glass="event-card"] {
-  background: rgba(18, 22, 36, 0.45) !important;
+  background: rgba(24, 30, 54, 0.48) !important;
   -webkit-backdrop-filter: var(--g-blur) !important;
   backdrop-filter: var(--g-blur) !important;
   border: 1px solid var(--g-border) !important;
@@ -113,6 +118,7 @@ body::before {
   color: var(--g-text) !important;
 }
 [data-glass="event-card"]:hover {
+  background: rgba(32, 40, 72, 0.60) !important;
   border-color: var(--g-border-hover) !important;
   box-shadow: var(--g-shadow-hover) !important;
 }
