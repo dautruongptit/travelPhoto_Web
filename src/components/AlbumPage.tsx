@@ -511,8 +511,15 @@ export default function AlbumPage({
         ) : viewMode === "masonry" ? (
           photos.length === 0 ? (
             event.photos.length === 0 ? (
-              <div className="flex justify-center py-20">
-                <div className="w-8 h-8 border-2 border-blue-600 border-t-transparent rounded-full animate-spin" />
+              /* Skeleton loading grid khi đang tải ảnh từ backend */
+              <div className="columns-2 sm:columns-3 lg:columns-4 xl:columns-5 gap-3 p-4">
+                {Array.from({ length: 12 }).map((_, i) => (
+                  <div
+                    key={i}
+                    className="mb-3 break-inside-avoid rounded-xl overflow-hidden bg-neutral-200 dark:bg-neutral-800 animate-pulse"
+                    style={{ height: `${[160, 220, 180, 250, 140, 200, 170, 240, 190, 150, 210, 165][i % 12]}px` }}
+                  />
+                ))}
               </div>
             ) : (
               <p className="py-20 text-center text-sm text-neutral-500">

@@ -9,6 +9,7 @@ interface Props {
   user: User
   events: TravelEvent[]
   searchQuery: string
+  loadingEventId?: string | null
   onOpenEvent: (id: string) => void
   onCreateEvent: () => void
   onDeleteEvents: (ids: string[]) => void
@@ -67,6 +68,7 @@ export default function Dashboard({
   user,
   events,
   searchQuery,
+  loadingEventId,
   onOpenEvent,
   onCreateEvent,
   onDeleteEvents,
@@ -241,6 +243,7 @@ export default function Dashboard({
                 event={event}
                 user={null}
                 selected={selected.has(event.id)}
+                isLoading={loadingEventId === event.id}
                 onSelect={() => toggleSelect(event.id)}
                 onClick={() => onOpenEvent(event.id)}
               />

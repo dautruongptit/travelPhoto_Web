@@ -64,6 +64,7 @@ export default function App() {
   const [selectedEventId, setSelectedEventId] = useState<string | null>(null)
   const [showCreateModal, setShowCreateModal] = useState(false)
   const [showUploadModal, setShowUploadModal] = useState(false)
+  const [loadingAlbumId, setLoadingAlbumId] = useState<string | null>(null)
   const [showProfileModal, setShowProfileModal] = useState(false)
   const [showSettingsModal, setShowSettingsModal] = useState(false)
   const [showUpgradeModal, setShowUpgradeModal] = useState(false)
@@ -122,6 +123,8 @@ export default function App() {
           "error",
           err instanceof Error ? err.message : "Không thể tải ảnh của sự kiện.",
         )
+      } finally {
+        setLoadingAlbumId(null)
       }
     },
     [addToast],
@@ -331,6 +334,7 @@ export default function App() {
     setSelectedEventId(id)
     setView("album")
     setSearchQuery("")
+    setLoadingAlbumId(id)
     push({ view: "album", eventId: id })
     loadEventPhotos(id)
   }
@@ -532,6 +536,7 @@ export default function App() {
                 user={user!}
                 events={events}
                 searchQuery={searchQuery}
+                loadingEventId={loadingAlbumId}
                 onOpenEvent={handleOpenEvent}
                 onCreateEvent={() => setShowCreateModal(true)}
                 onDeleteEvents={handleDeleteEvents}

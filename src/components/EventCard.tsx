@@ -7,6 +7,7 @@ interface Props {
   event: TravelEvent
   user: User | null
   selected?: boolean
+  isLoading?: boolean
   onSelect?: () => void
   onClick: () => void
 }
@@ -16,6 +17,7 @@ interface Props {
 export default function EventCard({
   event,
   selected = false,
+  isLoading = false,
   onSelect,
   onClick,
 }: Props) {
@@ -47,6 +49,14 @@ export default function EventCard({
           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent" />
+
+        {/* Loading overlay khi đang tải ảnh album */}
+        {isLoading && (
+          <div className="absolute inset-0 bg-black/40 backdrop-blur-[2px] flex flex-col items-center justify-center gap-2 z-10">
+            <div className="w-8 h-8 border-2 border-white border-t-transparent rounded-full animate-spin" />
+            <span className="text-white text-xs font-medium">Đang tải...</span>
+          </div>
+        )}
 
         {/* Huy hiệu quyền xem (top-left); ẩn khi rê chuột / đang chọn để nhường chỗ cho ô chọn */}
         <div
