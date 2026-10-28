@@ -160,7 +160,7 @@ export default function AlbumPage({
 
   const TABS: { key: AlbumTab; label: string }[] = [
     { key: "photos", label: `Kho ảnh (${photoTotal})` },
-    { key: "info", label: isOwner ? "Tổng quan & Quản trị" : "Thông tin album" },
+    { key: "info", label: "Thông tin & Chia sẻ" },
   ]
 
   const toggleSelect = (id: string) => {
@@ -555,352 +555,266 @@ export default function AlbumPage({
           </>
         )}
 
-        {/* TAB TỔNG QUAN & QUẢN TRỊ (GỘP THÔNG TIN + CHIA SẺ CHUẨN DEV DASHBOARD) */}
+        {/* TAB THÔNG TIN & CHIA SẺ — THIẾT KẾ CASAOS DASHBOARD TRỰC QUAN & TINH GỌN */}
         {activeTab === "info" && (
-          <div className="max-w-6xl mx-auto py-6 space-y-8">
-            {/* TOP DEVELOPER TELEMETRY STATUS BAR */}
-            <div className="flex flex-wrap items-center justify-between gap-3 p-3.5 px-5 rounded-2xl bg-[rgba(15,20,38,0.75)] backdrop-blur-2xl border border-white/10 font-mono text-xs shadow-xl">
-              <div className="flex items-center gap-3">
-                <span className="flex items-center gap-1.5 text-emerald-400 font-bold">
-                  <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-                  STATUS: 200_OK
-                </span>
-                <span className="text-white/20">|</span>
-                <div className="flex items-center gap-1.5 text-white/80">
-                  <span className="text-white/40">UUID:</span>
-                  <span className="text-cyan-300 font-semibold select-all">#EV-{String(event.id).padStart(4, "0")}</span>
-                  <button
-                    onClick={() => {
-                      navigator.clipboard.writeText(`#EV-${event.id}`)
-                      onToast?.("success", "Đã sao chép Album UUID!")
-                    }}
-                    title="Sao chép UUID"
-                    className="text-white/40 hover:text-cyan-300 transition-colors cursor-pointer"
-                  >
-                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                      <rect x="9" y="9" width="13" height="13" rx="2" />
-                      <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
-                    </svg>
-                  </button>
-                </div>
-                <span className="text-white/20">|</span>
-                <span className="text-white/60">
-                  POLICY: <span className="text-white font-semibold">{vis.label.toUpperCase()}</span>
-                </span>
-              </div>
-
-              <div className="flex items-center gap-3 text-white/60">
-                <span className="hidden sm:inline">
-                  PAYLOAD: <span className="text-cyan-300 font-semibold">{formatFileSize(event.totalSizeBytes ?? totalSize)}</span>
-                </span>
-                <span className="text-white/20 hidden sm:inline">|</span>
-                <span className="text-emerald-400/90 font-semibold flex items-center gap-1">
-                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-                    <polyline points="20 6 9 17 4 12" />
-                  </svg>
-                  S3_STORAGE_SYNCED
-                </span>
-              </div>
-            </div>
-
-            {/* MAIN 2-COLUMN GRID (MEDIA HERO & METADATA SPECS) */}
+          <div className="max-w-6xl mx-auto py-6 space-y-6">
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
-              {/* CỘT TRÁI (5 CỘT): HERO MEDIA & CLI ACTIONS */}
-              <div className="lg:col-span-5 bg-[rgba(15,20,38,0.72)] backdrop-blur-2xl border border-white/10 rounded-3xl p-5 shadow-2xl flex flex-col gap-5">
-                {/* Hero Media Box with HUD Overlays */}
-                <div className="relative rounded-2xl overflow-hidden aspect-[16/10] bg-neutral-900 border border-white/10 group shadow-lg">
-                  <AuthImg
-                    src={event.coverImage}
-                    alt={event.name}
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/30 to-black/20" />
-
-                  {/* Corner HUD: Aspect ratio & Role */}
-                  <div className="absolute top-3 left-3 flex items-center gap-1.5 font-mono text-[10px]">
-                    <span className="px-2 py-0.5 rounded-full bg-black/70 backdrop-blur-md text-cyan-300 border border-white/20 shadow-md">
-                      RATIO: 16:10
-                    </span>
-                    <span className="px-2 py-0.5 rounded-full bg-black/70 backdrop-blur-md text-white/80 border border-white/20 shadow-md">
-                      ROLE: {role?.toUpperCase() ?? "GUEST"}
-                    </span>
-                  </div>
-
-                  {/* Top-Right: Object ID */}
-                  <div className="absolute top-3 right-3 font-mono text-[10px]">
-                    <span className="px-2.5 py-0.5 rounded-full bg-black/70 backdrop-blur-md text-white/70 border border-white/20 shadow-md">
-                      #EV-{event.id}
-                    </span>
-                  </div>
-
-                  {/* Bottom: Title & Geolocation */}
-                  <div className="absolute bottom-3 left-3 right-3 text-white">
-                    <h3 className="text-lg font-bold tracking-tight drop-shadow truncate">
-                      {event.name}
-                    </h3>
-                    {event.location && (
-                      <p className="text-xs text-cyan-300/90 flex items-center gap-1 mt-0.5 drop-shadow font-mono">
-                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-                          <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z" />
-                          <circle cx="12" cy="9" r="2.5" />
+              {/* ================= CỘT TRÁI (4 CỘT): CASAOS WIDGETS ================= */}
+              <div className="lg:col-span-4 space-y-5">
+                {/* WIDGET 1: ĐỒNG HỒ ĐO CHỈ SỐ (GAUGES WIDGET) */}
+                <div className="bg-[rgba(26,34,64,0.65)] backdrop-blur-2xl border border-white/10 rounded-3xl p-5 shadow-xl">
+                  <div className="flex items-center justify-around gap-4 text-center">
+                    {/* Gauge 1: Số bức ảnh */}
+                    <div className="flex flex-col items-center">
+                      <div className="relative w-20 h-20 flex items-center justify-center">
+                        <svg className="w-full h-full -rotate-90" viewBox="0 0 36 36">
+                          <path
+                            className="text-white/10"
+                            strokeWidth="3.5"
+                            stroke="currentColor"
+                            fill="none"
+                            d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+                          />
+                          <path
+                            className="text-cyan-400"
+                            strokeDasharray="75, 100"
+                            strokeWidth="3.5"
+                            strokeLinecap="round"
+                            stroke="currentColor"
+                            fill="none"
+                            d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+                          />
                         </svg>
-                        <span>{event.location}</span>
+                        <div className="absolute flex flex-col items-center justify-center">
+                          <span className="text-base font-bold text-white tracking-tight leading-none">
+                            {photoTotal}
+                          </span>
+                          <span className="text-[10px] text-white/50 mt-0.5">ảnh</span>
+                        </div>
+                      </div>
+                      <p className="text-xs font-semibold text-white/90 mt-2">Tổng số ảnh</p>
+                      <p className="text-[11px] text-white/40">Trong album</p>
+                    </div>
+
+                    {/* Gauge 2: Dung lượng */}
+                    <div className="flex flex-col items-center">
+                      <div className="relative w-20 h-20 flex items-center justify-center">
+                        <svg className="w-full h-full -rotate-90" viewBox="0 0 36 36">
+                          <path
+                            className="text-white/10"
+                            strokeWidth="3.5"
+                            stroke="currentColor"
+                            fill="none"
+                            d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+                          />
+                          <path
+                            className="text-blue-500"
+                            strokeDasharray="45, 100"
+                            strokeWidth="3.5"
+                            strokeLinecap="round"
+                            stroke="currentColor"
+                            fill="none"
+                            d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+                          />
+                        </svg>
+                        <div className="absolute flex flex-col items-center justify-center">
+                          <span className="text-xs font-bold text-white tracking-tight leading-none truncate max-w-[65px]">
+                            {formatFileSize(event.totalSizeBytes ?? totalSize)}
+                          </span>
+                        </div>
+                      </div>
+                      <p className="text-xs font-semibold text-white/90 mt-2">Dung lượng</p>
+                      <p className="text-[11px] text-white/40">Đã sử dụng</p>
+                    </div>
+                  </div>
+                </div>
+
+                {/* WIDGET 2: Ổ LƯU TRỮ (STORAGE WIDGET CHUẨN CASAOS) */}
+                <div className="bg-[rgba(26,34,64,0.65)] backdrop-blur-2xl border border-white/10 rounded-3xl p-5 shadow-xl space-y-3">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2.5">
+                      <div className="w-8 h-8 rounded-xl bg-blue-500/20 text-blue-400 flex items-center justify-center">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                          <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z" />
+                          <polyline points="3.27 6.96 12 12.01 20.73 6.96" />
+                          <line x1="12" y1="22.08" x2="12" y2="12" />
+                        </svg>
+                      </div>
+                      <span className="text-sm font-bold text-white">Lưu trữ</span>
+                    </div>
+
+                    <span className="text-[11px] font-semibold px-2.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 flex items-center gap-1">
+                      <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                      Hoạt động tốt
+                    </span>
+                  </div>
+
+                  <div>
+                    <div className="flex items-center justify-between text-xs text-white/60 mb-1.5">
+                      <span>Đã dùng: {formatFileSize(event.totalSizeBytes ?? totalSize)}</span>
+                      <span>Máy chủ S3</span>
+                    </div>
+                    <div className="w-full bg-white/10 h-2.5 rounded-full overflow-hidden">
+                      <div className="h-full bg-blue-500 rounded-full w-[28%]" />
+                    </div>
+                  </div>
+                </div>
+
+                {/* WIDGET 3: THÔNG TIN CHI TIẾT SỰ KIỆN */}
+                <div className="bg-[rgba(26,34,64,0.65)] backdrop-blur-2xl border border-white/10 rounded-3xl p-5 shadow-xl space-y-3.5">
+                  <h4 className="text-sm font-bold text-white tracking-tight pb-2.5 border-b border-white/10">
+                    Thông tin sự kiện
+                  </h4>
+
+                  <div className="space-y-3 text-xs">
+                    <div className="flex items-start justify-between gap-3">
+                      <span className="text-white/50 shrink-0">Tên album:</span>
+                      <span className="font-semibold text-white text-right">{event.name}</span>
+                    </div>
+
+                    <div className="flex items-start justify-between gap-3">
+                      <span className="text-white/50 shrink-0">Địa điểm:</span>
+                      <span className="text-white/90 text-right">{event.location || "Chưa có"}</span>
+                    </div>
+
+                    <div className="flex items-start justify-between gap-3">
+                      <span className="text-white/50 shrink-0">Thời gian:</span>
+                      <span className="text-white/90 text-right">{formatDateRange(event.startDate, event.endDate)}</span>
+                    </div>
+
+                    <div className="flex items-center justify-between gap-3">
+                      <span className="text-white/50 shrink-0">Người tạo:</span>
+                      <span className="text-white/90 font-medium">{event.createdBy || user?.name || "Bạn"}</span>
+                    </div>
+
+                    <div className="flex items-center justify-between gap-3">
+                      <span className="text-white/50 shrink-0">Quyền xem:</span>
+                      <span className="inline-flex items-center gap-1 text-[11px] font-semibold px-2 py-0.5 rounded-full bg-blue-500/20 text-blue-300">
+                        <span>{vis.icon}</span>
+                        <span>{vis.label}</span>
+                      </span>
+                    </div>
+                  </div>
+
+                  {event.description && (
+                    <div className="pt-3 border-t border-white/10">
+                      <p className="text-[11px] text-white/40 mb-1">Mô tả chuyến đi:</p>
+                      <p className="text-xs text-white/80 leading-relaxed italic whitespace-pre-wrap">
+                        "{event.description}"
                       </p>
-                    )}
-                  </div>
-                </div>
-
-                {/* Console / Description Box */}
-                <div className="p-4 rounded-2xl bg-black/40 border border-white/10 font-mono text-xs">
-                  <div className="flex items-center justify-between pb-2 mb-2 border-b border-white/5 text-[10px] text-white/40">
-                    <span>// MANIFEST_DESCRIPTION</span>
-                    <span>UTF-8</span>
-                  </div>
-                  {event.description ? (
-                    <p className="text-white/85 text-xs leading-relaxed whitespace-pre-wrap font-sans">
-                      {event.description}
-                    </p>
-                  ) : (
-                    <p className="text-white/35 italic text-[11px]">
-                      // NO_DESCRIPTION_METADATA_ATTACHED
-                    </p>
-                  )}
-                </div>
-
-                {/* CLI-style Quick Action Buttons */}
-                <div className="grid grid-cols-2 gap-2.5 pt-1 font-mono text-xs">
-                  {photos.length > 0 && (
-                    <button
-                      onClick={() => {
-                        setSlideshow(true)
-                        setLightboxIndex(0)
-                      }}
-                      className="flex items-center justify-center gap-1.5 py-2.5 px-3 rounded-xl bg-white/10 hover:bg-white/15 text-white font-semibold transition-colors cursor-pointer border border-white/10 active:scale-95"
-                    >
-                      <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor">
-                        <polygon points="5 3 19 12 5 21 5 3" />
-                      </svg>
-                      <span>▶ SLIDESHOW</span>
-                    </button>
-                  )}
-
-                  <button
-                    onClick={() => setActiveTab("photos")}
-                    className="flex items-center justify-center gap-1.5 py-2.5 px-3 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-semibold transition-all shadow-md shadow-blue-600/30 cursor-pointer active:scale-95"
-                  >
-                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                      <rect x="3" y="3" width="18" height="18" rx="2" />
-                      <circle cx="8.5" cy="8.5" r="1.5" />
-                      <polyline points="21 15 16 10 5 21" />
-                    </svg>
-                    <span>⊞ BROWSE_PHOTOS</span>
-                  </button>
-
-                  {isOwner && (
-                    <button
-                      onClick={() => setShowShareModal(true)}
-                      className="col-span-2 flex items-center justify-center gap-1.5 py-2.5 px-3 rounded-xl bg-cyan-500/10 hover:bg-cyan-500/15 text-cyan-300 hover:text-white font-semibold transition-colors cursor-pointer border border-cyan-500/30 active:scale-95"
-                    >
-                      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                        <line x1="12" y1="5" x2="12" y2="19" />
-                        <line x1="5" y1="12" x2="19" y2="12" />
-                      </svg>
-                      <span>+ GENERATE_SHARE_LINK</span>
-                    </button>
+                    </div>
                   )}
                 </div>
               </div>
 
-              {/* CỘT PHẢI (7 CỘT): TELEMETRY METRICS & SYSTEM MANIFEST */}
-              <div className="lg:col-span-7 space-y-6">
-                {/* 4 Cyber Telemetry Metrics Cards */}
-                <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 font-mono">
-                  {/* Total Objects */}
-                  <div className="p-3.5 rounded-2xl bg-[rgba(15,20,38,0.72)] backdrop-blur-xl border border-white/10 shadow-lg">
-                    <div className="flex items-center justify-between mb-2">
-                      <span className="text-[10px] text-white/40 tracking-wider">TOTAL_OBJECTS</span>
-                      <div className="w-6 h-6 rounded-lg bg-blue-500/20 text-blue-400 flex items-center justify-center">
-                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              {/* ================= CỘT PHẢI (8 CỘT): CASAOS FEATURE CARDS & QUẢN LÝ ================= */}
+              <div className="lg:col-span-8 space-y-6">
+                {/* 2 THẺ HÀNH ĐỘNG LỚN (GIỐNG "SYNC YOUR DATA" & "SMARTEN UP YOUR HOME" TRONG CASAOS) */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  {/* Card 1: Khám phá kho ảnh */}
+                  <div className="bg-[rgba(26,34,64,0.65)] backdrop-blur-2xl border border-white/10 hover:border-white/20 rounded-3xl p-5 shadow-xl flex flex-col justify-between gap-4 transition-all group">
+                    <div className="flex items-start justify-between gap-3">
+                      <div>
+                        <h4 className="text-base font-bold text-white tracking-tight">
+                          Khám phá kho ảnh
+                        </h4>
+                        <p className="text-xs text-white/60 mt-1 leading-relaxed">
+                          Xem toàn bộ {photoTotal} bức ảnh sắc nét hoặc bật trình chiếu toàn màn hình.
+                        </p>
+                      </div>
+
+                      <div className="w-12 h-12 rounded-2xl bg-cyan-500/20 border border-cyan-500/30 flex items-center justify-center text-cyan-400 shrink-0 shadow-lg group-hover:scale-105 transition-transform">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                           <rect x="3" y="3" width="18" height="18" rx="2" />
                           <circle cx="8.5" cy="8.5" r="1.5" />
                           <polyline points="21 15 16 10 5 21" />
                         </svg>
                       </div>
                     </div>
-                    <p className="text-base font-bold text-white tracking-tight">{photoTotal}</p>
-                    <p className="text-[10px] text-white/40 mt-0.5">Assets indexed</p>
-                  </div>
 
-                  {/* Payload Size */}
-                  <div className="p-3.5 rounded-2xl bg-[rgba(15,20,38,0.72)] backdrop-blur-xl border border-white/10 shadow-lg">
-                    <div className="flex items-center justify-between mb-2">
-                      <span className="text-[10px] text-white/40 tracking-wider">STORAGE_PAYLOAD</span>
-                      <div className="w-6 h-6 rounded-lg bg-emerald-500/20 text-emerald-400 flex items-center justify-center">
-                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                          <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z" />
-                        </svg>
-                      </div>
-                    </div>
-                    <p className="text-sm font-bold text-white tracking-tight truncate">
-                      {formatFileSize(event.totalSizeBytes ?? totalSize)}
-                    </p>
-                    <p className="text-[10px] text-emerald-400/80 mt-0.5">S3 SSD Hot</p>
-                  </div>
+                    <div className="flex items-center gap-2 pt-2">
+                      <button
+                        onClick={() => setActiveTab("photos")}
+                        className="px-4 py-2 bg-blue-600 hover:bg-blue-500 active:scale-95 text-white text-xs font-semibold rounded-full shadow-md shadow-blue-600/30 transition-all cursor-pointer"
+                      >
+                        Xem kho ảnh
+                      </button>
 
-                  {/* Geolocation */}
-                  <div className="p-3.5 rounded-2xl bg-[rgba(15,20,38,0.72)] backdrop-blur-xl border border-white/10 shadow-lg">
-                    <div className="flex items-center justify-between mb-2">
-                      <span className="text-[10px] text-white/40 tracking-wider">GEO_TARGET</span>
-                      <div className="w-6 h-6 rounded-lg bg-rose-500/20 text-rose-400 flex items-center justify-center">
-                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                          <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z" />
-                          <circle cx="12" cy="9" r="2.5" />
-                        </svg>
-                      </div>
-                    </div>
-                    <p className="text-sm font-bold text-white tracking-tight truncate" title={event.location || "UNSET"}>
-                      {event.location || "UNSET"}
-                    </p>
-                    <p className="text-[10px] text-white/40 mt-0.5">Geotag metadata</p>
-                  </div>
-
-                  {/* Temporal Window */}
-                  <div className="p-3.5 rounded-2xl bg-[rgba(15,20,38,0.72)] backdrop-blur-xl border border-white/10 shadow-lg">
-                    <div className="flex items-center justify-between mb-2">
-                      <span className="text-[10px] text-white/40 tracking-wider">TIME_SPAN</span>
-                      <div className="w-6 h-6 rounded-lg bg-amber-500/20 text-amber-400 flex items-center justify-center">
-                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                          <rect x="3" y="4" width="18" height="18" rx="2" />
-                          <line x1="16" y1="2" x2="16" y2="6" />
-                          <line x1="8" y1="2" x2="8" y2="6" />
-                          <line x1="3" y1="10" x2="21" y2="10" />
-                        </svg>
-                      </div>
-                    </div>
-                    <p className="text-xs font-bold text-white tracking-tight truncate" title={formatDateRange(event.startDate, event.endDate)}>
-                      {formatDateRange(event.startDate, event.endDate)}
-                    </p>
-                    <p className="text-[10px] text-white/40 mt-0.5">Event window</p>
-                  </div>
-                </div>
-
-                {/* System Manifest & Technical Specs (Inspector) */}
-                <div className="bg-[rgba(15,20,38,0.72)] backdrop-blur-2xl border border-white/10 rounded-3xl p-5 sm:p-6 shadow-2xl font-mono">
-                  <div className="flex items-center gap-3 mb-5 pb-4 border-b border-white/10">
-                    <div className="w-10 h-10 rounded-2xl bg-cyan-500/15 border border-cyan-500/30 flex items-center justify-center text-cyan-400 shadow-inner font-bold text-sm">
-                      SYS
-                    </div>
-                    <div>
-                      <h4 className="text-sm font-bold text-white tracking-tight flex items-center gap-2">
-                        <span>System Manifest &amp; Specs</span>
-                        <span className="text-[10px] font-semibold px-2 py-0.5 rounded bg-emerald-500/15 text-emerald-400 border border-emerald-500/30">
-                          SYNCED
-                        </span>
-                      </h4>
-                      <p className="text-xs text-white/50 mt-0.5">
-                        Thuộc tính runtime và thông số kiểm soát truy cập
-                      </p>
-                    </div>
-                  </div>
-
-                  <div className="space-y-2.5 text-xs">
-                    {/* Hàng: Canonical ID */}
-                    <div className="flex items-center justify-between p-2.5 sm:p-3 rounded-2xl bg-black/35 border border-white/5">
-                      <span className="text-white/40 font-medium">canonical_id:</span>
-                      <div className="flex items-center gap-2">
-                        <span className="text-cyan-300 font-semibold select-all">#EV-{event.id}</span>
+                      {photos.length > 0 && (
                         <button
                           onClick={() => {
-                            navigator.clipboard.writeText(String(event.id))
-                            onToast?.("success", "Đã sao chép ID sự kiện!")
+                            setSlideshow(true)
+                            setLightboxIndex(0)
                           }}
-                          className="text-white/40 hover:text-cyan-300 cursor-pointer"
+                          className="px-3.5 py-2 bg-white/10 hover:bg-white/15 active:scale-95 text-white text-xs font-medium rounded-full border border-white/10 transition-all cursor-pointer flex items-center gap-1.5"
                         >
-                          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                            <rect x="9" y="9" width="13" height="13" rx="2" />
-                            <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
+                          <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor">
+                            <polygon points="5 3 19 12 5 21 5 3" />
                           </svg>
+                          <span>Trình chiếu</span>
                         </button>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* Card 2: Chia sẻ với mọi người */}
+                  <div className="bg-[rgba(26,34,64,0.65)] backdrop-blur-2xl border border-white/10 hover:border-white/20 rounded-3xl p-5 shadow-xl flex flex-col justify-between gap-4 transition-all group">
+                    <div className="flex items-start justify-between gap-3">
+                      <div>
+                        <h4 className="text-base font-bold text-white tracking-tight">
+                          Chia sẻ kỷ niệm
+                        </h4>
+                        <p className="text-xs text-white/60 mt-1 leading-relaxed">
+                          Tạo liên kết gửi cho bạn bè để cùng xem và đóng góp thêm ảnh mới vào album.
+                        </p>
+                      </div>
+
+                      <div className="w-12 h-12 rounded-2xl bg-blue-500/20 border border-blue-500/30 flex items-center justify-center text-blue-400 shrink-0 shadow-lg group-hover:scale-105 transition-transform">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                          <circle cx="18" cy="5" r="3" />
+                          <circle cx="6" cy="12" r="3" />
+                          <circle cx="18" cy="19" r="3" />
+                          <line x1="8.59" y1="13.51" x2="15.42" y2="17.49" />
+                          <line x1="15.41" y1="6.51" x2="8.59" y2="10.49" />
+                        </svg>
                       </div>
                     </div>
 
-                    {/* Hàng: Canonical Title */}
-                    <div className="flex items-center justify-between p-2.5 sm:p-3 rounded-2xl bg-black/35 border border-white/5">
-                      <span className="text-white/40 font-medium">canonical_title:</span>
-                      <span className="font-semibold text-white font-sans">{event.name}</span>
-                    </div>
-
-                    {/* Hàng: Owner Principal */}
-                    <div className="flex items-center justify-between p-2.5 sm:p-3 rounded-2xl bg-black/35 border border-white/5">
-                      <span className="text-white/40 font-medium">owner_principal:</span>
-                      <div className="flex items-center gap-2">
-                        <div className="w-5 h-5 rounded-md bg-gradient-to-tr from-cyan-600 to-blue-600 flex items-center justify-center text-[10px] font-bold text-white">
-                          {(event.createdBy || user?.name || "U").charAt(0).toUpperCase()}
-                        </div>
-                        <span className="font-semibold text-white">
-                          {event.createdBy || user?.name || "root"}
-                        </span>
-                        <span className="text-[10px] text-white/35">#uid_{event.ownerId}</span>
-                      </div>
-                    </div>
-
-                    {/* Hàng: Created At */}
-                    <div className="flex items-center justify-between p-2.5 sm:p-3 rounded-2xl bg-black/35 border border-white/5">
-                      <span className="text-white/40 font-medium">created_timestamp:</span>
-                      <span className="text-white/80">{formatDate(event.createdAt)}</span>
-                    </div>
-
-                    {/* Hàng: Access Policy */}
-                    <div className="flex items-center justify-between p-2.5 sm:p-3 rounded-2xl bg-black/35 border border-white/5">
-                      <span className="text-white/40 font-medium">access_policy:</span>
-                      <div className="flex items-center gap-2">
-                        <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-cyan-500/15 text-cyan-300 border border-cyan-500/30 text-[11px] font-semibold">
-                          <span>{vis.icon}</span>
-                          <span>{vis.label}</span>
-                        </span>
-                        {isOwner && (
-                          <button
-                            onClick={() => setShowShareModal(true)}
-                            className="text-[11px] text-cyan-400 hover:text-cyan-300 underline cursor-pointer"
-                          >
-                            Config
-                          </button>
-                        )}
-                      </div>
-                    </div>
-
-                    {/* Hàng: Data Encryption */}
-                    <div className="flex items-center justify-between p-2.5 sm:p-3 rounded-2xl bg-black/35 border border-white/5">
-                      <span className="text-white/40 font-medium">encryption_at_rest:</span>
-                      <span className="text-emerald-400 font-semibold text-[11px]">
-                        AES-256-GCM · TLS 1.3
-                      </span>
-                    </div>
-
-                    {/* Hàng: Storage Engine */}
-                    <div className="flex items-center justify-between p-2.5 sm:p-3 rounded-2xl bg-black/35 border border-white/5">
-                      <span className="text-white/40 font-medium">storage_tier:</span>
-                      <span className="text-white/80 text-[11px]">
-                        Standard Hot SSD (S3-Compatible)
-                      </span>
+                    <div className="pt-2">
+                      <button
+                        onClick={() => setShowShareModal(true)}
+                        className="px-4 py-2 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 active:scale-95 text-white text-xs font-semibold rounded-full shadow-md shadow-blue-600/30 transition-all cursor-pointer flex items-center gap-1.5"
+                      >
+                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                          <line x1="12" y1="5" x2="12" y2="19" />
+                          <line x1="5" y1="12" x2="19" y2="12" />
+                        </svg>
+                        <span>Tạo liên kết mới</span>
+                      </button>
                     </div>
                   </div>
                 </div>
+
+                {/* KHU VỰC QUẢN LÝ CHIA SẺ & THÀNH VIÊN (CHỈ HIỂN THỊ KHI LÀ OWNER) */}
+                {isOwner && (
+                  <div className="space-y-4">
+                    <div className="flex items-center gap-2 px-1">
+                      <h3 className="text-sm font-bold text-white tracking-tight">
+                        Cài đặt chia sẻ &amp; Phân quyền
+                      </h3>
+                    </div>
+
+                    <ShareTab
+                      eventId={Number(event.id)}
+                      onOpenShareModal={() => setShowShareModal(true)}
+                      onToast={onToast}
+                      refreshTrigger={shareRefreshKey}
+                      isEmbedded={true}
+                    />
+                  </div>
+                )}
               </div>
             </div>
-
-            {/* INTEGRATED ACCESS CONTROL & IAM ENGINE (CHỈ HIỂN THỊ KHI LÀ OWNER) */}
-            {isOwner && (
-              <div className="pt-6 border-t border-white/10">
-                <ShareTab
-                  eventId={Number(event.id)}
-                  onOpenShareModal={() => setShowShareModal(true)}
-                  onToast={onToast}
-                  refreshTrigger={shareRefreshKey}
-                  isEmbedded={true}
-                />
-              </div>
-            )}
           </div>
         )}
       </div>
