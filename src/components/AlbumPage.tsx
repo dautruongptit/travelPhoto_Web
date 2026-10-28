@@ -312,15 +312,15 @@ export default function AlbumPage({
           </div>
 
           {/* Tabs */}
-          <div className="flex gap-0 mt-5 border-b border-neutral-100 dark:border-neutral-800 -mb-px">
+          <div className="flex gap-1 mt-5 border-b border-white/10 -mb-px">
             {TABS.map((tab) => (
               <button
                 key={tab.key}
                 onClick={() => setActiveTab(tab.key)}
                 className={`px-4 py-2.5 text-sm font-semibold border-b-2 transition-colors mr-1 cursor-pointer ${
                   activeTab === tab.key
-                    ? "border-blue-600 text-blue-600"
-                    : "border-transparent text-neutral-500 hover:text-neutral-700 dark:hover:text-neutral-300"
+                    ? "border-blue-500 text-blue-400"
+                    : "border-transparent text-white/60 hover:text-white"
                 }`}
               >
                 {tab.label}

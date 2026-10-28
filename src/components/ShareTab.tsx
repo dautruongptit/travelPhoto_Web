@@ -75,7 +75,7 @@ export default function ShareTab({
     }
     navigator.clipboard.writeText(url)
     setCopiedId(link.id)
-    setTimeout(() => setCopiedId(null), 2000)
+    setTimeout(() => setCopiedId(null), 2200)
     onToast?.("success", "Đã sao chép liên kết chia sẻ vào bộ nhớ tạm!")
   }
 
@@ -121,17 +121,6 @@ export default function ShareTab({
     }
   }
 
-  if (loading) {
-    return (
-      <div className="flex justify-center py-16">
-        <div className="w-6 h-6 border-2 border-blue-500 border-t-transparent rounded-full animate-spin" />
-      </div>
-    )
-  }
-
-  const roleLabel = (r: EventMemberRole) =>
-    r === "EDITOR" ? "Biên tập viên" : "Người xem"
-
   const formatDate = (iso: string) =>
     new Date(iso).toLocaleDateString("vi-VN", {
       day: "2-digit",
@@ -139,235 +128,348 @@ export default function ShareTab({
       year: "numeric",
     })
 
+  if (loading) {
+    return (
+      <div className="flex flex-col items-center justify-center py-24 gap-3">
+        <div className="w-8 h-8 border-2 border-blue-500 border-t-transparent rounded-full animate-spin" />
+        <span className="text-white/60 text-xs">Đang tải cài đặt chia sẻ...</span>
+      </div>
+    )
+  }
+
   return (
-    <div className="max-w-2xl mx-auto py-6 space-y-8">
-      {/* Share links */}
-      <section>
-        <div className="flex items-center justify-between mb-4">
-          <h3 className="text-sm font-semibold text-neutral-900 dark:text-white">
-            Link chia sẻ
-          </h3>
-          <button
-            onClick={onOpenShareModal}
-            className="text-xs font-semibold text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 flex items-center gap-1 transition-colors cursor-pointer"
-          >
-            <span>+ Tạo link mới</span>
-          </button>
-        </div>
+    <div className="max-w-6xl mx-auto py-6 space-y-6">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+        {/* CỘT TRÁI: Quản lý liên kết chia sẻ (Links) */}
+        <section className="lg:col-span-7 bg-[rgba(22,28,54,0.65)] backdrop-blur-2xl border border-white/10 rounded-3xl p-5 sm:p-6 shadow-2xl transition-all">
+          {/* Header */}
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6 pb-4 border-b border-white/10">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-2xl bg-blue-500/20 border border-blue-500/30 flex items-center justify-center text-blue-400 shadow-inner">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71" />
+                  <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71" />
+                </svg>
+              </div>
+              <div>
+                <h3 className="text-base font-bold text-white tracking-tight flex items-center gap-2">
+                  <span>Liên kết chia sẻ</span>
+                  <span className="text-[11px] font-semibold px-2 py-0.5 rounded-full bg-blue-500/20 text-blue-300 border border-blue-500/30">
+                    {links.length}
+                  </span>
+                </h3>
+                <p className="text-xs text-white/50 mt-0.5">
+                  Tạo link bảo mật để mời bạn bè xem hoặc đóng góp ảnh
+                </p>
+              </div>
+            </div>
 
-        {links.length === 0 ? (
-          <p className="text-sm text-neutral-500 dark:text-neutral-400">
-            Chưa có link chia sẻ nào. Bấm <strong>+ Tạo link mới</strong> ở trên để tạo.
-          </p>
-        ) : (
-          <div className="space-y-3">
-            {links.map((link) => {
-              const url = getResolvedUrl(link)
-              const isHidden = url.includes("[hidden]")
-              const isCopied = copiedId === link.id
+            <button
+              onClick={onOpenShareModal}
+              className="inline-flex items-center justify-center gap-1.5 px-4 py-2 bg-blue-600 hover:bg-blue-500 active:scale-95 text-white text-xs font-semibold rounded-xl shadow-lg shadow-blue-600/30 transition-all cursor-pointer shrink-0"
+            >
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
+                <line x1="12" y1="5" x2="12" y2="19" />
+                <line x1="5" y1="12" x2="19" y2="12" />
+              </svg>
+              <span>Tạo link mới</span>
+            </button>
+          </div>
 
-              return (
-                <div
-                  key={link.id}
-                  className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-3.5 rounded-xl bg-neutral-50 dark:bg-neutral-800/60 border border-neutral-200 dark:border-neutral-700"
-                >
-                  <div className="min-w-0 flex-1">
-                    <div className="flex items-center gap-2 mb-1">
-                      <span className="text-xs font-medium px-2 py-0.5 rounded-full bg-blue-100 dark:bg-blue-900/40 text-blue-700 dark:text-blue-300">
-                        {roleLabel(link.role)}
-                      </span>
-                      <span className="text-xs text-neutral-400">
-                        Tạo ngày {formatDate(link.createdAt)}
-                      </span>
+          {/* Links List */}
+          {links.length === 0 ? (
+            <div className="py-14 text-center flex flex-col items-center justify-center px-4">
+              <div className="w-16 h-16 rounded-3xl bg-blue-500/10 border border-blue-500/20 flex items-center justify-center text-blue-400 mb-4 shadow-inner">
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71" />
+                  <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71" />
+                </svg>
+              </div>
+              <h4 className="text-sm font-semibold text-white mb-1">
+                Chưa có liên kết chia sẻ nào
+              </h4>
+              <p className="text-xs text-white/50 max-w-sm mb-5 leading-relaxed">
+                Tạo liên kết để gửi cho bạn bè hoặc gia đình cùng xem và đóng góp ảnh vào album này.
+              </p>
+              <button
+                onClick={onOpenShareModal}
+                className="inline-flex items-center gap-1.5 px-4 py-2.5 bg-blue-600 hover:bg-blue-500 text-white text-xs font-semibold rounded-xl shadow-lg shadow-blue-600/30 transition-all cursor-pointer active:scale-95"
+              >
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                  <line x1="12" y1="5" x2="12" y2="19" />
+                  <line x1="5" y1="12" x2="19" y2="12" />
+                </svg>
+                <span>Tạo liên kết chia sẻ đầu tiên</span>
+              </button>
+            </div>
+          ) : (
+            <div className="space-y-4">
+              {links.map((link) => {
+                const url = getResolvedUrl(link)
+                const isHidden = url.includes("[hidden]")
+                const isCopied = copiedId === link.id
+
+                return (
+                  <div
+                    key={link.id}
+                    className="p-4 rounded-2xl bg-white/[0.04] hover:bg-white/[0.07] border border-white/10 hover:border-white/20 transition-all duration-200 flex flex-col gap-3 group"
+                  >
+                    {/* Hàng trên: Vai trò + Hạn dùng + Nút thu hồi */}
+                    <div className="flex items-center justify-between gap-2 flex-wrap">
+                      <div className="flex items-center gap-2">
+                        {link.role === "EDITOR" ? (
+                          <span className="inline-flex items-center gap-1.5 text-xs font-semibold px-2.5 py-1 rounded-full bg-purple-500/20 text-purple-300 border border-purple-500/30">
+                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                              <path d="M12 20h9" />
+                              <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z" />
+                            </svg>
+                            Biên tập viên
+                          </span>
+                        ) : (
+                          <span className="inline-flex items-center gap-1.5 text-xs font-semibold px-2.5 py-1 rounded-full bg-cyan-500/20 text-cyan-300 border border-cyan-500/30">
+                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                              <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+                              <circle cx="12" cy="12" r="3" />
+                            </svg>
+                            Chỉ xem
+                          </span>
+                        )}
+
+                        <span className="text-[11px] text-white/50 flex items-center gap-1">
+                          <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                          Hạn: {formatDate(link.expiredAt)}
+                        </span>
+                      </div>
+
+                      <div className="flex items-center gap-1">
+                        <span className="text-[11px] text-white/40 hidden sm:inline">
+                          Tạo ngày {formatDate(link.createdAt)}
+                        </span>
+                        <button
+                          onClick={() => handleRevoke(link.id)}
+                          title="Thu hồi liên kết này"
+                          className="text-[11px] text-rose-400 hover:text-rose-300 hover:bg-rose-500/15 px-2.5 py-1 rounded-lg transition-colors cursor-pointer flex items-center gap-1 ml-1"
+                        >
+                          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                            <polyline points="3 6 5 6 21 6" />
+                            <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
+                          </svg>
+                          <span>Thu hồi</span>
+                        </button>
+                      </div>
                     </div>
 
-                    <p
-                      className="text-xs font-mono text-neutral-600 dark:text-neutral-300 truncate"
-                      title={url}
-                    >
-                      {url}
-                    </p>
-
-                    <p className="text-[11px] text-neutral-400 mt-1">
-                      Hết hạn: {formatDate(link.expiredAt)}
-                    </p>
-                  </div>
-
-                  {/* Actions: Copy, QR, Thu hồi */}
-                  <div className="flex items-center gap-1.5 shrink-0 self-end sm:self-center">
-                    <button
-                      type="button"
-                      onClick={() => handleCopy(link)}
-                      disabled={isHidden}
-                      title={isHidden ? "Link cũ đã ẩn token" : "Sao chép liên kết"}
-                      className={`px-3 py-1.5 rounded-lg text-xs font-medium flex items-center gap-1.5 transition-all cursor-pointer ${
-                        isCopied
-                          ? "bg-green-600 text-white"
-                          : isHidden
-                            ? "bg-neutral-200 dark:bg-neutral-700 text-neutral-400 cursor-not-allowed opacity-60"
-                            : "bg-blue-600 hover:bg-blue-700 text-white shadow-sm"
-                      }`}
-                    >
-                      {isCopied ? (
-                        <>
-                          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3">
-                            <polyline points="20 6 9 17 4 12" />
-                          </svg>
-                          <span>Đã chép</span>
-                        </>
-                      ) : (
-                        <>
-                          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                            <rect x="9" y="9" width="13" height="13" rx="2" />
-                            <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
-                          </svg>
-                          <span>Sao chép</span>
-                        </>
-                      )}
-                    </button>
-
-                    <button
-                      type="button"
-                      onClick={() => setQrModalLink(link)}
-                      disabled={isHidden}
-                      title={isHidden ? "Link cũ đã ẩn token" : "Xem mã QR"}
-                      className={`px-2.5 py-1.5 rounded-lg border text-xs font-medium flex items-center gap-1 transition-all cursor-pointer ${
-                        isHidden
-                          ? "border-neutral-200 dark:border-neutral-700 text-neutral-400 cursor-not-allowed opacity-60"
-                          : "border-neutral-300 dark:border-neutral-600 hover:bg-neutral-100 dark:hover:bg-neutral-700 text-neutral-700 dark:text-neutral-200 bg-white dark:bg-neutral-800"
-                      }`}
-                    >
-                      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                        <rect x="3" y="3" width="7" height="7" />
-                        <rect x="14" y="3" width="7" height="7" />
-                        <rect x="14" y="14" width="7" height="7" />
-                        <rect x="3" y="14" width="7" height="7" />
+                    {/* Hàng dưới: Thanh liên kết + Nút Copy + Nút QR */}
+                    <div className="flex items-center gap-2 bg-black/40 border border-white/10 rounded-xl p-1.5 pl-3">
+                      <svg className="text-white/40 shrink-0" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                        <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71" />
+                        <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71" />
                       </svg>
-                      <span>QR</span>
-                    </button>
+                      <input
+                        type="text"
+                        readOnly
+                        value={url}
+                        title={url}
+                        className="bg-transparent border-0 outline-none text-xs font-mono text-white/90 w-full truncate select-all"
+                      />
+
+                      <button
+                        type="button"
+                        onClick={() => handleCopy(link)}
+                        disabled={isHidden}
+                        className={`px-3 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition-all shrink-0 cursor-pointer ${
+                          isCopied
+                            ? "bg-emerald-600 text-white shadow-sm shadow-emerald-500/30"
+                            : isHidden
+                              ? "bg-white/10 text-white/40 cursor-not-allowed"
+                              : "bg-blue-600 hover:bg-blue-500 text-white shadow-sm shadow-blue-500/20 active:scale-95"
+                        }`}
+                      >
+                        {isCopied ? (
+                          <>
+                            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3">
+                              <polyline points="20 6 9 17 4 12" />
+                            </svg>
+                            <span>Đã chép!</span>
+                          </>
+                        ) : (
+                          <>
+                            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                              <rect x="9" y="9" width="13" height="13" rx="2" />
+                              <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
+                            </svg>
+                            <span>Sao chép</span>
+                          </>
+                        )}
+                      </button>
+
+                      <button
+                        type="button"
+                        onClick={() => setQrModalLink(link)}
+                        disabled={isHidden}
+                        title="Hiển thị mã QR để quét điện thoại"
+                        className="p-1.5 px-2.5 rounded-lg bg-white/10 hover:bg-white/20 text-white/90 text-xs font-medium flex items-center gap-1 transition-colors shrink-0 cursor-pointer active:scale-95"
+                      >
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                          <rect x="3" y="3" width="7" height="7" />
+                          <rect x="14" y="3" width="7" height="7" />
+                          <rect x="14" y="14" width="7" height="7" />
+                          <rect x="3" y="14" width="7" height="7" />
+                        </svg>
+                        <span>QR</span>
+                      </button>
+                    </div>
+                  </div>
+                )
+              })}
+            </div>
+          )}
+        </section>
+
+        {/* CỘT PHẢI: Quản lý thành viên & Hướng dẫn quyền (Members & Roles) */}
+        <section className="lg:col-span-5 bg-[rgba(22,28,54,0.65)] backdrop-blur-2xl border border-white/10 rounded-3xl p-5 sm:p-6 shadow-2xl flex flex-col transition-all">
+          {/* Header */}
+          <div className="flex items-center gap-3 mb-6 pb-4 border-b border-white/10">
+            <div className="w-10 h-10 rounded-2xl bg-purple-500/20 border border-purple-500/30 flex items-center justify-center text-purple-400 shadow-inner">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+                <circle cx="9" cy="7" r="4" />
+                <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
+                <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+              </svg>
+            </div>
+            <div>
+              <h3 className="text-base font-bold text-white tracking-tight flex items-center gap-2">
+                <span>Thành viên</span>
+                <span className="text-[11px] font-semibold px-2 py-0.5 rounded-full bg-purple-500/20 text-purple-300 border border-purple-500/30">
+                  {members.length}
+                </span>
+              </h3>
+              <p className="text-xs text-white/50 mt-0.5">
+                Những người đã truy cập và tham gia album
+              </p>
+            </div>
+          </div>
+
+          {/* Members List */}
+          <div className="space-y-3 flex-1">
+            {members.length === 0 ? (
+              <div className="py-12 text-center text-white/40 text-xs px-4">
+                Chưa có thành viên nào tham gia album này qua liên kết chia sẻ.
+              </div>
+            ) : (
+              members.map((m) => (
+                <div
+                  key={m.id}
+                  className="flex items-center gap-3 p-3 rounded-2xl bg-white/[0.04] hover:bg-white/[0.07] border border-white/10 transition-colors"
+                >
+                  {m.avatarUrl ? (
+                    <img
+                      src={m.avatarUrl}
+                      alt=""
+                      className="w-9 h-9 rounded-full object-cover ring-2 ring-white/10 shrink-0"
+                    />
+                  ) : (
+                    <div className="w-9 h-9 rounded-full bg-gradient-to-tr from-blue-600 to-indigo-600 flex items-center justify-center text-xs font-bold text-white shadow-sm shrink-0">
+                      {m.userName?.charAt(0).toUpperCase() ?? "?"}
+                    </div>
+                  )}
+
+                  <div className="min-w-0 flex-1">
+                    <p className="text-sm font-semibold text-white truncate">
+                      {m.userName}
+                    </p>
+                    <p className="text-xs text-white/50 truncate">
+                      {m.email}
+                    </p>
+                  </div>
+
+                  <div className="flex items-center gap-1.5 shrink-0">
+                    <select
+                      value={m.role}
+                      onChange={(e) =>
+                        handleChangeRole(m.userId, e.target.value as EventMemberRole)
+                      }
+                      className="text-xs bg-black/50 border border-white/15 rounded-xl px-2.5 py-1.5 text-white/90 focus:border-blue-500 outline-none cursor-pointer"
+                    >
+                      <option value="VIEWER" className="bg-[#151a30] text-white">Chỉ xem</option>
+                      <option value="EDITOR" className="bg-[#151a30] text-white">Biên tập</option>
+                    </select>
 
                     <button
-                      type="button"
-                      onClick={() => handleRevoke(link.id)}
-                      title="Thu hồi liên kết này"
-                      className="px-2.5 py-1.5 rounded-lg text-xs text-red-500 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-950/30 font-medium transition-colors cursor-pointer"
+                      onClick={() => handleRemoveMember(m.userId)}
+                      title="Gỡ thành viên khỏi album"
+                      className="p-1.5 text-white/40 hover:text-rose-400 hover:bg-rose-500/15 rounded-lg transition-colors cursor-pointer"
                     >
-                      Thu hồi
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                        <polyline points="3 6 5 6 21 6" />
+                        <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
+                      </svg>
                     </button>
                   </div>
                 </div>
-              )
-            })}
+              ))
+            )}
           </div>
-        )}
-      </section>
 
-      {/* Members */}
-      <section>
-        <h3 className="text-sm font-semibold text-neutral-900 dark:text-white mb-4">
-          Thành viên ({members.length})
-        </h3>
-
-        {members.length === 0 ? (
-          <p className="text-sm text-neutral-500 dark:text-neutral-400">
-            Chưa có thành viên nào tham gia.
-          </p>
-        ) : (
-          <div className="space-y-2">
-            {members.map((m) => (
-              <div
-                key={m.id}
-                className="flex items-center gap-3 p-3 rounded-xl bg-neutral-50 dark:bg-neutral-800/60 border border-neutral-200 dark:border-neutral-700"
-              >
-                {m.avatarUrl ? (
-                  <img
-                    src={m.avatarUrl}
-                    alt=""
-                    className="w-8 h-8 rounded-full object-cover"
-                  />
-                ) : (
-                  <div className="w-8 h-8 rounded-full bg-neutral-300 dark:bg-neutral-600 flex items-center justify-center text-xs font-bold text-white">
-                    {m.userName?.charAt(0).toUpperCase() ?? "?"}
-                  </div>
-                )}
-
-                <div className="min-w-0 flex-1">
-                  <p className="text-sm font-medium text-neutral-900 dark:text-white truncate">
-                    {m.userName}
-                  </p>
-                  <p className="text-xs text-neutral-500 dark:text-neutral-400 truncate">
-                    {m.email}
-                  </p>
-                </div>
-
-                <select
-                  value={m.role}
-                  onChange={(e) =>
-                    handleChangeRole(m.userId, e.target.value as EventMemberRole)
-                  }
-                  className="text-xs bg-transparent border border-neutral-300 dark:border-neutral-600 rounded-lg px-2 py-1 text-neutral-700 dark:text-neutral-300 cursor-pointer"
-                >
-                  <option value="VIEWER">Người xem</option>
-                  <option value="EDITOR">Biên tập viên</option>
-                </select>
-
-                <button
-                  onClick={() => handleRemoveMember(m.userId)}
-                  className="text-xs text-red-500 hover:text-red-400 font-medium cursor-pointer"
-                >
-                  Xóa
-                </button>
-              </div>
-            ))}
+          {/* Quick Permissions Info */}
+          <div className="mt-6 pt-4 border-t border-white/10 text-[11px] text-white/50 space-y-2">
+            <p className="font-semibold text-white/70">Quyền hạn trong album:</p>
+            <div className="flex items-start gap-2">
+              <span className="w-1.5 h-1.5 rounded-full bg-cyan-400 mt-1.5 shrink-0" />
+              <span><strong>Chỉ xem:</strong> Được xem toàn bộ ảnh trong album và tải ảnh gốc về máy.</span>
+            </div>
+            <div className="flex items-start gap-2">
+              <span className="w-1.5 h-1.5 rounded-full bg-purple-400 mt-1.5 shrink-0" />
+              <span><strong>Biên tập viên:</strong> Được tải thêm ảnh mới và đóng góp nội dung vào album.</span>
+            </div>
           </div>
-        )}
-      </section>
+        </section>
+      </div>
 
-      {/* QR Code Modal for ShareTab */}
+      {/* QR Code Modal */}
       {qrModalLink && (
         <div className="fixed inset-0 z-[90] flex items-center justify-center p-4">
           <div
             className="absolute inset-0 bg-black/60 backdrop-blur-sm"
             onClick={() => setQrModalLink(null)}
           />
-          <div className="slide-up relative bg-white dark:bg-[#18181b] rounded-3xl shadow-2xl p-6 max-w-sm w-full border border-neutral-200 dark:border-neutral-800 text-center">
+          <div className="slide-up relative bg-[rgba(22,28,54,0.92)] backdrop-blur-2xl border border-white/15 rounded-3xl shadow-2xl p-6 max-w-sm w-full text-center">
             <div className="flex items-center justify-between mb-4">
-              <div>
-                <h4 className="text-base font-bold text-neutral-900 dark:text-white text-left">
+              <div className="text-left">
+                <h4 className="text-base font-bold text-white">
                   Mã QR chia sẻ
                 </h4>
-                <p className="text-xs text-neutral-500 text-left mt-0.5">
-                  Quyền: <span className="font-semibold text-blue-600 dark:text-blue-400">{roleLabel(qrModalLink.role)}</span>
+                <p className="text-xs text-white/50 mt-0.5">
+                  Quyền: <span className="font-semibold text-blue-400">{qrModalLink.role === "EDITOR" ? "Biên tập viên" : "Chỉ xem"}</span>
                 </p>
               </div>
               <button
                 onClick={() => setQrModalLink(null)}
-                className="w-8 h-8 rounded-full flex items-center justify-center text-neutral-400 hover:text-neutral-700 dark:hover:text-neutral-200 hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-colors cursor-pointer"
+                className="w-8 h-8 rounded-full flex items-center justify-center text-white/50 hover:text-white hover:bg-white/10 transition-colors cursor-pointer"
               >
                 ✕
               </button>
             </div>
 
-            <div className="p-4 bg-white rounded-2xl border border-neutral-200 shadow-sm inline-block my-2">
+            <div className="p-4 bg-white rounded-2xl shadow-xl inline-block my-2">
               <QRCodeSVG
                 value={getResolvedUrl(qrModalLink)}
                 size={180}
                 level="H"
-                includeMargin={true}
+                includeMargin={false}
               />
             </div>
 
-            <p className="text-xs text-neutral-500 dark:text-neutral-400 mt-2 mb-4 leading-relaxed">
-              Quét mã QR bằng Camera hoặc Zalo để truy cập album ngay lập tức.
+            <p className="text-xs text-white/60 mt-2 mb-5 leading-relaxed">
+              Mở Camera điện thoại hoặc Zalo quét mã để truy cập album nhanh chóng.
             </p>
 
-            <div className="flex gap-2">
+            <div className="flex gap-2.5">
               <button
                 type="button"
-                onClick={() => {
-                  handleCopy(qrModalLink)
-                }}
-                className="flex-1 py-2 px-3 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold flex items-center justify-center gap-1.5 transition-colors cursor-pointer"
+                onClick={() => handleCopy(qrModalLink)}
+                className="flex-1 py-2.5 px-3 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-xs font-semibold flex items-center justify-center gap-1.5 transition-all shadow-lg shadow-blue-600/30 cursor-pointer active:scale-95"
               >
                 <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
                   <rect x="9" y="9" width="13" height="13" rx="2" />
@@ -378,7 +480,7 @@ export default function ShareTab({
               <button
                 type="button"
                 onClick={() => setQrModalLink(null)}
-                className="py-2 px-4 rounded-xl border border-neutral-300 dark:border-neutral-700 text-xs font-medium text-neutral-700 dark:text-neutral-300 hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-colors cursor-pointer"
+                className="py-2.5 px-4 rounded-xl bg-white/10 hover:bg-white/15 text-xs font-medium text-white/90 transition-colors cursor-pointer"
               >
                 Đóng
               </button>
