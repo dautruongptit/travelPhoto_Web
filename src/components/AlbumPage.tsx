@@ -555,110 +555,94 @@ export default function AlbumPage({
           </>
         )}
 
-        {/* TAB THÔNG TIN & CHIA SẺ — THIẾT KẾ CASAOS DASHBOARD TINH GỌN */}
+        {/* TAB THÔNG TIN & CHIA SẺ — KHỚP 100% THEO THIẾT KẾ MẪU CỦA USER */}
         {activeTab === "info" && (
-          <div className="max-w-6xl mx-auto py-6 space-y-6">
+          <div className="max-w-6xl mx-auto py-6">
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
-              {/* ================= CỘT TRÁI (4 CỘT): CASAOS WIDGETS ================= */}
-              <div className="lg:col-span-4 space-y-5">
-                {/* THẺ 1: LƯU TRỮ & CHỈ SỐ (GỘP SỐ ẢNH & DUNG LƯỢNG) */}
-                <div className="bg-[rgba(26,34,64,0.65)] backdrop-blur-2xl border border-white/10 rounded-3xl p-5 shadow-xl space-y-4">
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-2.5">
-                      <div className="w-8 h-8 rounded-xl bg-blue-500/20 text-blue-400 flex items-center justify-center">
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                          <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z" />
-                          <polyline points="3.27 6.96 12 12.01 20.73 6.96" />
-                          <line x1="12" y1="22.08" x2="12" y2="12" />
+              {/* ================= CỘT TRÁI (5 CỘT): THÔNG TIN SỰ KIỆN ================= */}
+              <div className="lg:col-span-5">
+                <div className="bg-[rgba(22,28,54,0.65)] backdrop-blur-2xl border border-white/10 rounded-3xl p-6 shadow-2xl space-y-6">
+                  {/* Header Thẻ Thông tin sự kiện */}
+                  <div className="flex items-center justify-between pb-4 border-b border-white/10">
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 rounded-2xl bg-blue-500/15 border border-blue-500/30 flex items-center justify-center text-blue-400 shadow-inner">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                          <circle cx="12" cy="12" r="10" />
+                          <line x1="12" y1="16" x2="12" y2="12" />
+                          <line x1="12" y1="8" x2="12.01" y2="8" />
                         </svg>
                       </div>
-                      <span className="text-sm font-bold text-white">Lưu trữ album</span>
+                      <div>
+                        <h3 className="text-base font-bold text-white tracking-tight">
+                          Thông tin sự kiện
+                        </h3>
+                        <p className="text-xs text-white/50 mt-0.5">
+                          Chi tiết &amp; ghi chú chuyến đi
+                        </p>
+                      </div>
                     </div>
 
-                    <span className="text-[11px] font-semibold px-2.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 flex items-center gap-1">
-                      <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-                      Hoạt động tốt
+                    <span className="text-xs font-medium text-white/70 px-3.5 py-1 rounded-full bg-white/5 border border-white/10">
+                      Album
                     </span>
                   </div>
 
-                  {/* 2 chỉ số cốt lõi */}
-                  <div className="grid grid-cols-2 gap-3 p-3 rounded-2xl bg-white/[0.03] border border-white/5">
-                    <div>
-                      <p className="text-[11px] text-white/50">Số bức ảnh</p>
-                      <p className="text-base font-bold text-white mt-0.5">{photoTotal} ảnh</p>
-                    </div>
-                    <div>
-                      <p className="text-[11px] text-white/50">Dung lượng</p>
-                      <p className="text-base font-bold text-cyan-300 mt-0.5 truncate">
-                        {formatFileSize(event.totalSizeBytes ?? totalSize)}
-                      </p>
-                    </div>
-                  </div>
-
-                  {/* Thanh tiến trình lưu trữ */}
-                  <div className="space-y-1.5">
-                    <div className="flex items-center justify-between text-[11px] text-white/50">
-                      <span>Tiến trình lưu trữ</span>
-                      <span>S3 Cloud</span>
-                    </div>
-                    <div className="w-full bg-white/10 h-2 rounded-full overflow-hidden">
-                      <div className="h-full bg-blue-500 rounded-full w-[35%]" />
-                    </div>
-                  </div>
-                </div>
-
-                {/* THẺ 2: THÔNG TIN CHI TIẾT SỰ KIỆN */}
-                <div className="bg-[rgba(26,34,64,0.65)] backdrop-blur-2xl border border-white/10 rounded-3xl p-5 shadow-xl space-y-3.5">
-                  <h4 className="text-sm font-bold text-white tracking-tight pb-2.5 border-b border-white/10">
-                    Thông tin sự kiện
-                  </h4>
-
-                  <div className="space-y-3 text-xs">
-                    <div className="flex items-start justify-between gap-3">
-                      <span className="text-white/50 shrink-0">Tên album:</span>
-                      <span className="font-semibold text-white text-right">{event.name}</span>
+                  {/* Thông tin dòng chi tiết */}
+                  <div className="space-y-4 text-sm">
+                    <div className="flex items-center justify-between gap-4">
+                      <span className="text-xs text-white/50 font-medium">Tên album:</span>
+                      <span className="text-sm font-bold text-white">{event.name}</span>
                     </div>
 
-                    <div className="flex items-start justify-between gap-3">
-                      <span className="text-white/50 shrink-0">Địa điểm:</span>
-                      <span className="text-white/90 text-right">{event.location || "Chưa có"}</span>
+                    <div className="flex items-center justify-between gap-4">
+                      <span className="text-xs text-white/50 font-medium">Địa điểm:</span>
+                      <span className="text-sm font-medium text-white/90">{event.location || "Chưa có"}</span>
                     </div>
 
-                    <div className="flex items-start justify-between gap-3">
-                      <span className="text-white/50 shrink-0">Thời gian:</span>
-                      <span className="text-white/90 text-right">{formatDateRange(event.startDate, event.endDate)}</span>
+                    <div className="flex items-center justify-between gap-4">
+                      <span className="text-xs text-white/50 font-medium">Thời gian:</span>
+                      <span className="text-sm font-medium text-white/90">{formatDateRange(event.startDate, event.endDate)}</span>
                     </div>
 
-                    <div className="flex items-center justify-between gap-3">
-                      <span className="text-white/50 shrink-0">Người tạo:</span>
-                      <span className="text-white/90 font-medium">{event.createdBy || user?.name || "Bạn"}</span>
+                    <div className="flex items-center justify-between gap-4">
+                      <span className="text-xs text-white/50 font-medium">Người tạo:</span>
+                      <div className="flex items-center gap-2">
+                        <div className="w-5 h-5 rounded-full bg-blue-600 flex items-center justify-center text-[10px] font-bold text-white shadow-sm">
+                          {(event.createdBy || user?.name || "U").charAt(0).toUpperCase()}
+                        </div>
+                        <span className="text-sm font-bold text-white">
+                          {event.createdBy || user?.name || "Bạn"}
+                        </span>
+                      </div>
                     </div>
 
-                    <div className="flex items-center justify-between gap-3">
-                      <span className="text-white/50 shrink-0">Quyền xem:</span>
-                      <span className="inline-flex items-center gap-1 text-[11px] font-semibold px-2 py-0.5 rounded-full bg-blue-500/20 text-blue-300">
+                    <div className="flex items-center justify-between gap-4">
+                      <span className="text-xs text-white/50 font-medium">Quyền xem:</span>
+                      <span className="inline-flex items-center gap-1.5 text-xs font-semibold px-3 py-1 rounded-full bg-blue-500/15 text-blue-300 border border-blue-500/30">
                         <span>{vis.icon}</span>
                         <span>{vis.label}</span>
                       </span>
                     </div>
                   </div>
 
-                  {event.description && (
-                    <div className="pt-3 border-t border-white/10">
-                      <p className="text-[11px] text-white/40 mb-1">Mô tả chuyến đi:</p>
-                      <p className="text-xs text-white/80 leading-relaxed italic whitespace-pre-wrap">
-                        "{event.description}"
+                  {/* Khung mô tả chuyến đi */}
+                  <div className="pt-2">
+                    <p className="text-xs text-white/50 font-medium mb-2.5">Mô tả chuyến đi:</p>
+                    <div className="p-4 rounded-2xl bg-black/30 border border-white/10 min-h-[90px] flex items-center">
+                      <p className="text-sm text-white/90 italic font-medium leading-relaxed">
+                        {event.description ? `“${event.description}”` : <span className="text-white/40 not-italic text-xs">Chưa có ghi chú mô tả chuyến đi.</span>}
                       </p>
                     </div>
-                  )}
+                  </div>
                 </div>
               </div>
 
-              {/* ================= CỘT PHẢI (8 CỘT): QUẢN LÝ CHIA SẺ & THÀNH VIÊN ================= */}
-              <div className="lg:col-span-8 space-y-6">
+              {/* ================= CỘT PHẢI (7 CỘT): 3 THẺ CHIA SẺ, THÀNH VIÊN & BẢO MẬT ================= */}
+              <div className="lg:col-span-7">
                 {isOwner ? (
                   <ShareTab
                     eventId={Number(event.id)}
+                    eventName={event.name}
                     onOpenShareModal={() => setShowShareModal(true)}
                     onToast={onToast}
                     refreshTrigger={shareRefreshKey}
@@ -666,42 +650,44 @@ export default function AlbumPage({
                   />
                 ) : (
                   /* GIAO DIỆN DÀNH CHO KHÁCH (VIEWER) */
-                  <div className="bg-[rgba(26,34,64,0.65)] backdrop-blur-2xl border border-white/10 rounded-3xl p-6 shadow-xl space-y-5">
-                    <div className="relative rounded-2xl overflow-hidden aspect-[16/9] bg-neutral-900 border border-white/10">
-                      <AuthImg
-                        src={event.coverImage}
-                        alt={event.name}
-                        className="w-full h-full object-cover"
-                      />
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
-                      <div className="absolute bottom-4 left-4 right-4 text-white">
-                        <h3 className="text-xl font-bold tracking-tight">{event.name}</h3>
-                        {event.location && (
-                          <p className="text-xs text-white/80 mt-1 flex items-center gap-1">
-                            📍 {event.location}
-                          </p>
+                  <div className="space-y-6">
+                    <div className="bg-[rgba(22,28,54,0.65)] backdrop-blur-2xl border border-white/10 rounded-3xl p-6 shadow-xl space-y-5">
+                      <div className="relative rounded-2xl overflow-hidden aspect-[16/9] bg-neutral-900 border border-white/10">
+                        <AuthImg
+                          src={event.coverImage}
+                          alt={event.name}
+                          className="w-full h-full object-cover"
+                        />
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
+                        <div className="absolute bottom-4 left-4 right-4 text-white">
+                          <h3 className="text-xl font-bold tracking-tight">{event.name}</h3>
+                          {event.location && (
+                            <p className="text-xs text-white/80 mt-1 flex items-center gap-1">
+                              📍 {event.location}
+                            </p>
+                          )}
+                        </div>
+                      </div>
+
+                      <div className="flex items-center gap-3">
+                        <button
+                          onClick={() => setActiveTab("photos")}
+                          className="flex-1 py-3 px-4 bg-blue-600 hover:bg-blue-500 active:scale-95 text-white font-semibold text-xs rounded-xl shadow-lg shadow-blue-600/30 transition-all cursor-pointer text-center"
+                        >
+                          Xem {photoTotal} bức ảnh trong album
+                        </button>
+                        {photos.length > 0 && (
+                          <button
+                            onClick={() => {
+                              setSlideshow(true)
+                              setLightboxIndex(0)
+                            }}
+                            className="py-3 px-5 bg-white/10 hover:bg-white/15 text-white font-semibold text-xs rounded-xl border border-white/10 transition-colors cursor-pointer"
+                          >
+                            Trình chiếu
+                          </button>
                         )}
                       </div>
-                    </div>
-
-                    <div className="flex items-center gap-3">
-                      <button
-                        onClick={() => setActiveTab("photos")}
-                        className="flex-1 py-3 px-4 bg-blue-600 hover:bg-blue-500 active:scale-95 text-white font-semibold text-xs rounded-xl shadow-lg shadow-blue-600/30 transition-all cursor-pointer text-center"
-                      >
-                        Xem {photoTotal} bức ảnh trong album
-                      </button>
-                      {photos.length > 0 && (
-                        <button
-                          onClick={() => {
-                            setSlideshow(true)
-                            setLightboxIndex(0)
-                          }}
-                          className="py-3 px-5 bg-white/10 hover:bg-white/15 text-white font-semibold text-xs rounded-xl border border-white/10 transition-colors cursor-pointer"
-                        >
-                          Trình chiếu
-                        </button>
-                      )}
                     </div>
                   </div>
                 )}
