@@ -555,82 +555,14 @@ export default function AlbumPage({
           </>
         )}
 
-        {/* TAB THÔNG TIN & CHIA SẺ — THIẾT KẾ CASAOS DASHBOARD TRỰC QUAN & TINH GỌN */}
+        {/* TAB THÔNG TIN & CHIA SẺ — THIẾT KẾ CASAOS DASHBOARD TINH GỌN */}
         {activeTab === "info" && (
           <div className="max-w-6xl mx-auto py-6 space-y-6">
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
               {/* ================= CỘT TRÁI (4 CỘT): CASAOS WIDGETS ================= */}
               <div className="lg:col-span-4 space-y-5">
-                {/* WIDGET 1: ĐỒNG HỒ ĐO CHỈ SỐ (GAUGES WIDGET) */}
-                <div className="bg-[rgba(26,34,64,0.65)] backdrop-blur-2xl border border-white/10 rounded-3xl p-5 shadow-xl">
-                  <div className="flex items-center justify-around gap-4 text-center">
-                    {/* Gauge 1: Số bức ảnh */}
-                    <div className="flex flex-col items-center">
-                      <div className="relative w-20 h-20 flex items-center justify-center">
-                        <svg className="w-full h-full -rotate-90" viewBox="0 0 36 36">
-                          <path
-                            className="text-white/10"
-                            strokeWidth="3.5"
-                            stroke="currentColor"
-                            fill="none"
-                            d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
-                          />
-                          <path
-                            className="text-cyan-400"
-                            strokeDasharray="75, 100"
-                            strokeWidth="3.5"
-                            strokeLinecap="round"
-                            stroke="currentColor"
-                            fill="none"
-                            d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
-                          />
-                        </svg>
-                        <div className="absolute flex flex-col items-center justify-center">
-                          <span className="text-base font-bold text-white tracking-tight leading-none">
-                            {photoTotal}
-                          </span>
-                          <span className="text-[10px] text-white/50 mt-0.5">ảnh</span>
-                        </div>
-                      </div>
-                      <p className="text-xs font-semibold text-white/90 mt-2">Tổng số ảnh</p>
-                      <p className="text-[11px] text-white/40">Trong album</p>
-                    </div>
-
-                    {/* Gauge 2: Dung lượng */}
-                    <div className="flex flex-col items-center">
-                      <div className="relative w-20 h-20 flex items-center justify-center">
-                        <svg className="w-full h-full -rotate-90" viewBox="0 0 36 36">
-                          <path
-                            className="text-white/10"
-                            strokeWidth="3.5"
-                            stroke="currentColor"
-                            fill="none"
-                            d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
-                          />
-                          <path
-                            className="text-blue-500"
-                            strokeDasharray="45, 100"
-                            strokeWidth="3.5"
-                            strokeLinecap="round"
-                            stroke="currentColor"
-                            fill="none"
-                            d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
-                          />
-                        </svg>
-                        <div className="absolute flex flex-col items-center justify-center">
-                          <span className="text-xs font-bold text-white tracking-tight leading-none truncate max-w-[65px]">
-                            {formatFileSize(event.totalSizeBytes ?? totalSize)}
-                          </span>
-                        </div>
-                      </div>
-                      <p className="text-xs font-semibold text-white/90 mt-2">Dung lượng</p>
-                      <p className="text-[11px] text-white/40">Đã sử dụng</p>
-                    </div>
-                  </div>
-                </div>
-
-                {/* WIDGET 2: Ổ LƯU TRỮ (STORAGE WIDGET CHUẨN CASAOS) */}
-                <div className="bg-[rgba(26,34,64,0.65)] backdrop-blur-2xl border border-white/10 rounded-3xl p-5 shadow-xl space-y-3">
+                {/* THẺ 1: LƯU TRỮ & CHỈ SỐ (GỘP SỐ ẢNH & DUNG LƯỢNG) */}
+                <div className="bg-[rgba(26,34,64,0.65)] backdrop-blur-2xl border border-white/10 rounded-3xl p-5 shadow-xl space-y-4">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2.5">
                       <div className="w-8 h-8 rounded-xl bg-blue-500/20 text-blue-400 flex items-center justify-center">
@@ -640,7 +572,7 @@ export default function AlbumPage({
                           <line x1="12" y1="22.08" x2="12" y2="12" />
                         </svg>
                       </div>
-                      <span className="text-sm font-bold text-white">Lưu trữ</span>
+                      <span className="text-sm font-bold text-white">Lưu trữ album</span>
                     </div>
 
                     <span className="text-[11px] font-semibold px-2.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 flex items-center gap-1">
@@ -649,18 +581,33 @@ export default function AlbumPage({
                     </span>
                   </div>
 
-                  <div>
-                    <div className="flex items-center justify-between text-xs text-white/60 mb-1.5">
-                      <span>Đã dùng: {formatFileSize(event.totalSizeBytes ?? totalSize)}</span>
-                      <span>Máy chủ S3</span>
+                  {/* 2 chỉ số cốt lõi */}
+                  <div className="grid grid-cols-2 gap-3 p-3 rounded-2xl bg-white/[0.03] border border-white/5">
+                    <div>
+                      <p className="text-[11px] text-white/50">Số bức ảnh</p>
+                      <p className="text-base font-bold text-white mt-0.5">{photoTotal} ảnh</p>
                     </div>
-                    <div className="w-full bg-white/10 h-2.5 rounded-full overflow-hidden">
-                      <div className="h-full bg-blue-500 rounded-full w-[28%]" />
+                    <div>
+                      <p className="text-[11px] text-white/50">Dung lượng</p>
+                      <p className="text-base font-bold text-cyan-300 mt-0.5 truncate">
+                        {formatFileSize(event.totalSizeBytes ?? totalSize)}
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* Thanh tiến trình lưu trữ */}
+                  <div className="space-y-1.5">
+                    <div className="flex items-center justify-between text-[11px] text-white/50">
+                      <span>Tiến trình lưu trữ</span>
+                      <span>S3 Cloud</span>
+                    </div>
+                    <div className="w-full bg-white/10 h-2 rounded-full overflow-hidden">
+                      <div className="h-full bg-blue-500 rounded-full w-[35%]" />
                     </div>
                   </div>
                 </div>
 
-                {/* WIDGET 3: THÔNG TIN CHI TIẾT SỰ KIỆN */}
+                {/* THẺ 2: THÔNG TIN CHI TIẾT SỰ KIỆN */}
                 <div className="bg-[rgba(26,34,64,0.65)] backdrop-blur-2xl border border-white/10 rounded-3xl p-5 shadow-xl space-y-3.5">
                   <h4 className="text-sm font-bold text-white tracking-tight pb-2.5 border-b border-white/10">
                     Thông tin sự kiện
@@ -707,110 +654,55 @@ export default function AlbumPage({
                 </div>
               </div>
 
-              {/* ================= CỘT PHẢI (8 CỘT): CASAOS FEATURE CARDS & QUẢN LÝ ================= */}
+              {/* ================= CỘT PHẢI (8 CỘT): QUẢN LÝ CHIA SẺ & THÀNH VIÊN ================= */}
               <div className="lg:col-span-8 space-y-6">
-                {/* 2 THẺ HÀNH ĐỘNG LỚN (GIỐNG "SYNC YOUR DATA" & "SMARTEN UP YOUR HOME" TRONG CASAOS) */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  {/* Card 1: Khám phá kho ảnh */}
-                  <div className="bg-[rgba(26,34,64,0.65)] backdrop-blur-2xl border border-white/10 hover:border-white/20 rounded-3xl p-5 shadow-xl flex flex-col justify-between gap-4 transition-all group">
-                    <div className="flex items-start justify-between gap-3">
-                      <div>
-                        <h4 className="text-base font-bold text-white tracking-tight">
-                          Khám phá kho ảnh
-                        </h4>
-                        <p className="text-xs text-white/60 mt-1 leading-relaxed">
-                          Xem toàn bộ {photoTotal} bức ảnh sắc nét hoặc bật trình chiếu toàn màn hình.
-                        </p>
-                      </div>
-
-                      <div className="w-12 h-12 rounded-2xl bg-cyan-500/20 border border-cyan-500/30 flex items-center justify-center text-cyan-400 shrink-0 shadow-lg group-hover:scale-105 transition-transform">
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                          <rect x="3" y="3" width="18" height="18" rx="2" />
-                          <circle cx="8.5" cy="8.5" r="1.5" />
-                          <polyline points="21 15 16 10 5 21" />
-                        </svg>
+                {isOwner ? (
+                  <ShareTab
+                    eventId={Number(event.id)}
+                    onOpenShareModal={() => setShowShareModal(true)}
+                    onToast={onToast}
+                    refreshTrigger={shareRefreshKey}
+                    isEmbedded={true}
+                  />
+                ) : (
+                  /* GIAO DIỆN DÀNH CHO KHÁCH (VIEWER) */
+                  <div className="bg-[rgba(26,34,64,0.65)] backdrop-blur-2xl border border-white/10 rounded-3xl p-6 shadow-xl space-y-5">
+                    <div className="relative rounded-2xl overflow-hidden aspect-[16/9] bg-neutral-900 border border-white/10">
+                      <AuthImg
+                        src={event.coverImage}
+                        alt={event.name}
+                        className="w-full h-full object-cover"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
+                      <div className="absolute bottom-4 left-4 right-4 text-white">
+                        <h3 className="text-xl font-bold tracking-tight">{event.name}</h3>
+                        {event.location && (
+                          <p className="text-xs text-white/80 mt-1 flex items-center gap-1">
+                            📍 {event.location}
+                          </p>
+                        )}
                       </div>
                     </div>
 
-                    <div className="flex items-center gap-2 pt-2">
+                    <div className="flex items-center gap-3">
                       <button
                         onClick={() => setActiveTab("photos")}
-                        className="px-4 py-2 bg-blue-600 hover:bg-blue-500 active:scale-95 text-white text-xs font-semibold rounded-full shadow-md shadow-blue-600/30 transition-all cursor-pointer"
+                        className="flex-1 py-3 px-4 bg-blue-600 hover:bg-blue-500 active:scale-95 text-white font-semibold text-xs rounded-xl shadow-lg shadow-blue-600/30 transition-all cursor-pointer text-center"
                       >
-                        Xem kho ảnh
+                        Xem {photoTotal} bức ảnh trong album
                       </button>
-
                       {photos.length > 0 && (
                         <button
                           onClick={() => {
                             setSlideshow(true)
                             setLightboxIndex(0)
                           }}
-                          className="px-3.5 py-2 bg-white/10 hover:bg-white/15 active:scale-95 text-white text-xs font-medium rounded-full border border-white/10 transition-all cursor-pointer flex items-center gap-1.5"
+                          className="py-3 px-5 bg-white/10 hover:bg-white/15 text-white font-semibold text-xs rounded-xl border border-white/10 transition-colors cursor-pointer"
                         >
-                          <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor">
-                            <polygon points="5 3 19 12 5 21 5 3" />
-                          </svg>
-                          <span>Trình chiếu</span>
+                          Trình chiếu
                         </button>
                       )}
                     </div>
-                  </div>
-
-                  {/* Card 2: Chia sẻ với mọi người */}
-                  <div className="bg-[rgba(26,34,64,0.65)] backdrop-blur-2xl border border-white/10 hover:border-white/20 rounded-3xl p-5 shadow-xl flex flex-col justify-between gap-4 transition-all group">
-                    <div className="flex items-start justify-between gap-3">
-                      <div>
-                        <h4 className="text-base font-bold text-white tracking-tight">
-                          Chia sẻ kỷ niệm
-                        </h4>
-                        <p className="text-xs text-white/60 mt-1 leading-relaxed">
-                          Tạo liên kết gửi cho bạn bè để cùng xem và đóng góp thêm ảnh mới vào album.
-                        </p>
-                      </div>
-
-                      <div className="w-12 h-12 rounded-2xl bg-blue-500/20 border border-blue-500/30 flex items-center justify-center text-blue-400 shrink-0 shadow-lg group-hover:scale-105 transition-transform">
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                          <circle cx="18" cy="5" r="3" />
-                          <circle cx="6" cy="12" r="3" />
-                          <circle cx="18" cy="19" r="3" />
-                          <line x1="8.59" y1="13.51" x2="15.42" y2="17.49" />
-                          <line x1="15.41" y1="6.51" x2="8.59" y2="10.49" />
-                        </svg>
-                      </div>
-                    </div>
-
-                    <div className="pt-2">
-                      <button
-                        onClick={() => setShowShareModal(true)}
-                        className="px-4 py-2 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 active:scale-95 text-white text-xs font-semibold rounded-full shadow-md shadow-blue-600/30 transition-all cursor-pointer flex items-center gap-1.5"
-                      >
-                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-                          <line x1="12" y1="5" x2="12" y2="19" />
-                          <line x1="5" y1="12" x2="19" y2="12" />
-                        </svg>
-                        <span>Tạo liên kết mới</span>
-                      </button>
-                    </div>
-                  </div>
-                </div>
-
-                {/* KHU VỰC QUẢN LÝ CHIA SẺ & THÀNH VIÊN (CHỈ HIỂN THỊ KHI LÀ OWNER) */}
-                {isOwner && (
-                  <div className="space-y-4">
-                    <div className="flex items-center gap-2 px-1">
-                      <h3 className="text-sm font-bold text-white tracking-tight">
-                        Cài đặt chia sẻ &amp; Phân quyền
-                      </h3>
-                    </div>
-
-                    <ShareTab
-                      eventId={Number(event.id)}
-                      onOpenShareModal={() => setShowShareModal(true)}
-                      onToast={onToast}
-                      refreshTrigger={shareRefreshKey}
-                      isEmbedded={true}
-                    />
                   </div>
                 )}
               </div>
