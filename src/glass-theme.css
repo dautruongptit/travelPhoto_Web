@@ -55,7 +55,8 @@ body::before {
 [data-glass="event-body"],
 [data-glass="create"],
 [data-glass="panel"],
-[data-glass="dropdown"] {
+[data-glass="dropdown"],
+.blur-background {
   background: var(--g-bg) !important;
   -webkit-backdrop-filter: var(--g-blur) !important;
   backdrop-filter: var(--g-blur) !important;
