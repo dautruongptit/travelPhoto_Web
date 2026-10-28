@@ -1,5 +1,5 @@
 import type { TravelEvent, User } from "../types"
-import { formatDateRange, formatTimeAgo } from "../utils"
+import { formatDateRange } from "../utils"
 import AuthImg from "./AuthImg"
 import { badgeOf } from "../visibility"
 
@@ -12,8 +12,6 @@ interface Props {
   onClick: () => void
 }
 
-// Thẻ sự kiện theo thiết kế "Tất cả sự kiện": ảnh bìa 16:10, tên đè lên ảnh, số ảnh,
-// bên dưới là địa điểm, mô tả (tối đa 2 dòng) và khoảng thời gian · thời điểm tạo.
 export default function EventCard({
   event,
   selected = false,
@@ -38,17 +36,14 @@ export default function EventCard({
           : "border-gray-100 dark:border-neutral-800"
       }`}
     >
-      {/* Cover */}
-      <div
-        className="relative overflow-hidden bg-gray-100 dark:bg-neutral-800"
-        style={{ aspectRatio: "16/10" }}
-      >
+      {/* Cover image */}
+      <div className="relative h-52 overflow-hidden bg-gray-100 dark:bg-neutral-800">
         <AuthImg
           src={cover}
           alt={event.name}
-          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+          className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
 
         {/* Loading overlay khi đang tải ảnh album */}
         {isLoading && (
@@ -58,7 +53,7 @@ export default function EventCard({
           </div>
         )}
 
-        {/* Huy hiệu quyền xem (top-left); ẩn khi rê chuột / đang chọn để nhường chỗ cho ô chọn */}
+        {/* Huy hiệu quyền xem (top-left) */}
         <div
           className={`absolute top-3 left-3 transition-opacity duration-150 ${
             onSelect ? "group-hover:opacity-0" : ""
@@ -97,52 +92,69 @@ export default function EventCard({
           </button>
         )}
 
-        {/* Photo count */}
-        <div data-glass="chip" className="absolute top-3 right-3 flex items-center gap-1.5 bg-black/50 backdrop-blur-sm text-white text-xs font-medium px-2.5 py-1 rounded-full">
-          <svg width="11" height="11" viewBox="0 0 24 24" fill="none">
-            <rect x="3" y="3" width="18" height="18" rx="2" stroke="white" strokeWidth="2" />
-            <circle cx="8.5" cy="8.5" r="1.5" fill="white" />
-            <path d="M21 15l-5-5L5 21" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+        {/* Photo count badge */}
+        <div
+          className="absolute top-3 right-3 flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium text-white bg-black/45 backdrop-blur-[6px]"
+        >
+          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <rect x="3" y="3" width="18" height="18" rx="2" />
+            <circle cx="8.5" cy="8.5" r="1.5" />
+            <polyline points="21 15 16 10 5 21" />
           </svg>
-          {totalPhotos}
-        </div>
-
-        {/* Event name */}
-        <div className="absolute bottom-3 left-3">
-          <p className="text-white font-semibold text-base leading-tight">
-            {event.name}
-          </p>
+          <span>{totalPhotos} ảnh</span>
         </div>
       </div>
 
-      {/* Body */}
-      <div data-glass="event-body" className="p-4 flex flex-col flex-1">
-        <div className="flex items-center gap-1.5 text-gray-400 text-xs mb-2">
-          <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" opacity=".5">
-            <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z" />
+      {/* Content */}
+      <div data-glass="event-body" className="p-5 flex flex-col flex-1">
+        <div className="flex items-start justify-between gap-2 mb-3">
+          <h2 className="font-semibold text-base leading-snug text-neutral-900 dark:text-white line-clamp-1">
+            {event.name}
+          </h2>
+          <svg
+            width="18"
+            height="18"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            className="flex-shrink-0 mt-0.5 text-neutral-400 transition-transform group-hover:translate-x-0.5"
+          >
+            <polyline points="9 18 15 12 9 6" />
           </svg>
-          <span className="truncate">{event.location}</span>
         </div>
 
-        {event.description && (
-          <p className="text-gray-600 dark:text-neutral-300 text-sm leading-relaxed line-clamp-2 mb-3">
+        {event.description ? (
+          <p className="text-sm mb-3 line-clamp-2 text-neutral-600 dark:text-neutral-300 leading-relaxed">
             {event.description}
+          </p>
+        ) : (
+          <p className="text-sm mb-3 line-clamp-2 text-neutral-400 dark:text-neutral-500 italic">
+            Chưa có ghi chú mô tả cho album này.
           </p>
         )}
 
-        <div className="mt-auto flex items-center justify-between pt-3 border-t border-gray-100 dark:border-neutral-800">
-          <div className="flex items-center gap-1 text-xs text-gray-400">
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none">
-              <rect x="3" y="4" width="18" height="18" rx="2" stroke="currentColor" strokeWidth="2" />
-              <line x1="16" y1="2" x2="16" y2="6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
-              <line x1="8" y1="2" x2="8" y2="6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
-              <line x1="3" y1="10" x2="21" y2="10" stroke="currentColor" strokeWidth="2" />
+        <div className="flex flex-col gap-1.5 mt-auto pt-1">
+          {event.location && (
+            <div className="flex items-center gap-1.5 text-xs text-neutral-500 dark:text-neutral-400">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
+                <circle cx="12" cy="10" r="3" />
+              </svg>
+              <span className="truncate">{event.location}</span>
+            </div>
+          )}
+          <div className="flex items-center gap-1.5 text-xs text-neutral-500 dark:text-neutral-400">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <rect x="3" y="4" width="18" height="18" rx="2" />
+              <line x1="16" y1="2" x2="16" y2="6" />
+              <line x1="8" y1="2" x2="8" y2="6" />
+              <line x1="3" y1="10" x2="21" y2="10" />
             </svg>
-            {formatDateRange(event.startDate, event.endDate)}
+            <span>{formatDateRange(event.startDate, event.endDate)}</span>
           </div>
-          <span className="text-xs text-gray-400">
-            {formatTimeAgo(event.createdAt)}
-          </span>
         </div>
       </div>
     </article>

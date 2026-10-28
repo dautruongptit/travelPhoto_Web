@@ -129,24 +129,17 @@ export default function Dashboard({
 
   return (
     <main className="max-w-screen-2xl mx-auto px-4 sm:px-6 py-8 pb-20">
-      {/* Flickr Slim Hero Bar */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6 pb-5 border-b border-neutral-200/80 dark:border-neutral-800/80">
-        <div>
-          <div className="flex items-center gap-2">
-            <h1 className="text-xl sm:text-2xl font-black text-neutral-900 dark:text-white tracking-tight">
-              Khám phá & Bộ sưu tập
-            </h1>
-            <span className="w-2 h-2 rounded-full bg-[#0063dc]" />
-          </div>
-          <p className="text-xs sm:text-sm text-neutral-500 dark:text-neutral-400 mt-1">
-            Xin chào{" "}
-            <strong className="text-neutral-800 dark:text-neutral-200">
-              {user.name}
-            </strong>{" "}
-            · Lưu giữ những khoảnh khắc tuyệt đẹp
-          </p>
-        </div>
-
+      {/* Hero */}
+      <div className="max-w-2xl pt-2 pb-6">
+        <p className="text-sm font-semibold mb-2 text-blue-500 dark:text-blue-400">
+          Album của bạn
+        </p>
+        <h1 className="text-3xl sm:text-4xl font-bold tracking-tight mb-3 text-neutral-900 dark:text-white">
+          Những chuyến đi đáng nhớ
+        </h1>
+        <p className="text-sm sm:text-base text-neutral-500 dark:text-neutral-400 leading-relaxed">
+          Lưu giữ và chia sẻ những khoảnh khắc đẹp từ các chuyến hành trình của bạn.
+        </p>
       </div>
 
       {/* Flickr Quick Metric Pills */}
@@ -236,7 +229,7 @@ export default function Dashboard({
             <EmptyEvents onCreateEvent={onCreateEvent} />
           )
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {filtered.map((event) => (
               <EventCard
                 key={event.id}
