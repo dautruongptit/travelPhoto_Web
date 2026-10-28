@@ -151,7 +151,7 @@ export default function ShareTab({
   }
 
   return (
-    <div className={`space-y-6 ${isEmbedded ? "" : "max-w-6xl mx-auto py-6"}`}>
+    <div className={`space-y-6 ${isEmbedded ? "" : "max-w-screen-2xl mx-auto px-4 sm:px-6 py-6"}`}>
       {/* THẺ 1: LIÊN KẾT CHIA SẺ */}
       <div className="bg-[rgba(22,28,54,0.65)] backdrop-blur-2xl border border-white/10 rounded-3xl p-6 shadow-2xl space-y-4">
         <div className="flex items-center justify-between pb-3 border-b border-white/10">

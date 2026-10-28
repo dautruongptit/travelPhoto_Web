@@ -186,7 +186,7 @@ export default function AlbumPage({
     <main className="min-h-screen pb-16">
       {/* Header bar gọn gàng chuẩn theo mockup */}
       <div className="border-b border-white/10 bg-transparent transition-colors">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 pt-3.5">
+        <div className="max-w-screen-2xl mx-auto px-4 sm:px-6 pt-3.5">
           {/* Hàng 1: Breadcrumb + Badge quyền xem ở bên trái, Nút Chia sẻ + Avatar ở bên phải */}
           <div className="flex items-center justify-between gap-3 mb-3.5 flex-wrap">
             <div className="flex items-center gap-2 text-xs sm:text-sm text-neutral-400">
@@ -273,13 +273,7 @@ export default function AlbumPage({
         </div>
       </div>
 
-      <div
-        className={
-          activeTab === "photos"
-            ? "max-w-screen-2xl mx-auto px-4 sm:px-6 py-5"
-            : "max-w-6xl mx-auto px-4 sm:px-6 py-6"
-        }
-      >
+      <div className="max-w-screen-2xl mx-auto px-4 sm:px-6 py-6">
         {activeTab === "photos" && (
           <>
         {/* Toolbar */}
