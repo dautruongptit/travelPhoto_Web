@@ -48,13 +48,12 @@ body::before {
   color: var(--g-text);
 }
 
-/* ── Bề mặt kính trong suốt (Navbar, Thẻ sự kiện, Tìm kiếm, Footer...) ─────── */
+/* ── Bề mặt kính trong suốt (Navbar, Thẻ sự kiện, Tìm kiếm...) ─────────────── */
 [data-glass="navbar"],
 [data-glass="stat"],
 [data-glass="search"],
 [data-glass="event-body"],
 [data-glass="create"],
-[data-glass="footer"],
 [data-glass="panel"],
 [data-glass="dropdown"] {
   background: var(--g-bg) !important;
@@ -78,17 +77,23 @@ body::before {
   border-bottom: 1px solid rgba(255, 255, 255, 0.08) !important;
 }
 
-/* ── Footer: Kính trong suốt, cách trái phải 20-50px, bo góc mềm mại chuẩn CasaOS ── */
+/* ── Footer: Kính trong suốt, HOÀN TOÀN KHÔNG VIỀN (borderless), cách trái phải 20-50px ── */
 [data-glass="footer"] {
   background: rgba(22, 28, 52, 0.52) !important;
   -webkit-backdrop-filter: var(--g-blur) !important;
   backdrop-filter: var(--g-blur) !important;
-  border: 1px solid rgba(255, 255, 255, 0.10) !important;
-  box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5) !important;
+  border: none !important;
+  border-top: none !important;
+  border-bottom: none !important;
+  border-left: none !important;
+  border-right: none !important;
+  outline: none !important;
+  box-shadow: 0 8px 24px -6px rgba(0, 0, 0, 0.45) !important;
   border-radius: 1.25rem !important; /* bo tròn 20px */
   margin-left: clamp(20px, 3.5vw, 50px) !important;
   margin-right: clamp(20px, 3.5vw, 50px) !important;
-  margin-bottom: 24px !important;
+  margin-bottom: 20px !important;
+  color: var(--g-text) !important;
 }
 
 /* Ô tìm kiếm & thẻ thống kê: hover sáng hơn */
