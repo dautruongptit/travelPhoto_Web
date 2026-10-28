@@ -11,8 +11,8 @@ html.dark {
   --g-shadow: 0 8px 32px rgba(0, 0, 0, 0.35);
   --g-shadow-hover: 0 14px 44px rgba(0, 0, 0, 0.45);
   /* Sắc xanh chàm đêm Midnight Indigo chuẩn CasaOS */
-  --g-bg: rgba(24, 30, 54, 0.52);
-  --g-bg-hover: rgba(36, 45, 80, 0.65);
+  --g-bg: rgba(24, 30, 54, 0.38);
+  --g-bg-hover: rgba(36, 45, 80, 0.48);
   --g-border: rgba(255, 255, 255, 0.09);
   --g-border-hover: rgba(255, 255, 255, 0.22);
   --g-text: #ffffff;
@@ -73,7 +73,7 @@ body::before {
 }
 [data-glass="navbar"] {
   border-top: 0 !important;
-  background: rgba(18, 23, 44, 0.60) !important;
+  background: rgba(18, 23, 44, 0.45) !important;
   border-bottom: 1px solid rgba(255, 255, 255, 0.08) !important;
 }
 
@@ -85,7 +85,7 @@ body::before {
   box-shadow: var(--g-shadow-hover) !important;
 }
 [data-glass="search"] {
-  background: rgba(26, 33, 60, 0.50) !important;
+  background: rgba(26, 33, 60, 0.38) !important;
   border: 1px solid rgba(255, 255, 255, 0.10) !important;
   box-shadow: none !important;
   color: var(--g-text) !important;
@@ -96,7 +96,7 @@ body::before {
 
 /* ── Thẻ sự kiện ───────────────────────────────────────────────────────────── */
 [data-glass="event-card"] {
-  background: rgba(24, 30, 54, 0.48) !important;
+  background: rgba(24, 30, 54, 0.36) !important;
   -webkit-backdrop-filter: var(--g-blur) !important;
   backdrop-filter: var(--g-blur) !important;
   border: 1px solid var(--g-border) !important;
@@ -104,7 +104,7 @@ body::before {
   color: var(--g-text) !important;
 }
 [data-glass="event-card"]:hover {
-  background: rgba(32, 40, 72, 0.60) !important;
+  background: rgba(32, 40, 72, 0.48) !important;
   border-color: var(--g-border-hover) !important;
   box-shadow: var(--g-shadow-hover) !important;
 }

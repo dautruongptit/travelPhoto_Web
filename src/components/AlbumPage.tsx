@@ -547,7 +547,7 @@ export default function AlbumPage({
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
               {/* ================= CỘT TRÁI (5 CỘT): THÔNG TIN SỰ KIỆN ================= */}
               <div className="lg:col-span-5">
-                <div className="bg-[rgba(22,28,54,0.65)] backdrop-blur-2xl border border-white/10 rounded-3xl p-6 shadow-2xl space-y-6">
+                <div className="bg-[rgba(22,28,54,0.38)] backdrop-blur-2xl border border-white/10 rounded-3xl p-6 shadow-2xl space-y-6">
                   {/* Header Thẻ Thông tin sự kiện */}
                   <div className="flex items-center justify-between pb-4 border-b border-white/10">
                     <div className="flex items-center gap-3">
@@ -614,7 +614,7 @@ export default function AlbumPage({
                   {/* Khung mô tả chuyến đi */}
                   <div className="pt-2">
                     <p className="text-xs text-white/50 font-medium mb-2.5">Mô tả chuyến đi:</p>
-                    <div className="p-4 rounded-2xl bg-black/30 border border-white/10 min-h-[90px] flex items-center">
+                    <div className="p-4 rounded-2xl bg-black/20 border border-white/10 min-h-[90px] flex items-center">
                       <p className="text-sm text-white/90 italic font-medium leading-relaxed">
                         {event.description ? `“${event.description}”` : <span className="text-white/40 not-italic text-xs">Chưa có ghi chú mô tả chuyến đi.</span>}
                       </p>
@@ -637,7 +637,7 @@ export default function AlbumPage({
                 ) : (
                   /* GIAO DIỆN DÀNH CHO KHÁCH (VIEWER) */
                   <div className="space-y-6">
-                    <div className="bg-[rgba(22,28,54,0.65)] backdrop-blur-2xl border border-white/10 rounded-3xl p-6 shadow-xl space-y-5">
+                    <div className="bg-[rgba(22,28,54,0.38)] backdrop-blur-2xl border border-white/10 rounded-3xl p-6 shadow-xl space-y-5">
                       <div className="relative rounded-2xl overflow-hidden aspect-[16/9] bg-neutral-900 border border-white/10">
                         <AuthImg
                           src={event.coverImage}

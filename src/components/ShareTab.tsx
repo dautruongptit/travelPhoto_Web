@@ -153,7 +153,7 @@ export default function ShareTab({
   return (
     <div className={`space-y-6 ${isEmbedded ? "" : "max-w-screen-2xl mx-auto px-4 sm:px-6 py-6"}`}>
       {/* THẺ 1: LIÊN KẾT CHIA SẺ */}
-      <div className="bg-[rgba(22,28,54,0.65)] backdrop-blur-2xl border border-white/10 rounded-3xl p-6 shadow-2xl space-y-4">
+      <div className="bg-[rgba(22,28,54,0.38)] backdrop-blur-2xl border border-white/10 rounded-3xl p-6 shadow-2xl space-y-4">
         <div className="flex items-center justify-between pb-3 border-b border-white/10">
           <div className="flex items-center gap-3">
             <div className="w-9 h-9 rounded-2xl bg-blue-500/15 border border-blue-500/30 flex items-center justify-center text-blue-400 shadow-inner">
@@ -204,7 +204,7 @@ export default function ShareTab({
               return (
                 <div
                   key={link.id}
-                  className="p-4 rounded-2xl bg-black/30 border border-white/10 space-y-3"
+                  className="p-4 rounded-2xl bg-black/20 border border-white/10 space-y-3"
                 >
                   {/* Hàng thông tin quyền & hạn dùng */}
                   <div className="flex items-center justify-between text-xs">
@@ -242,7 +242,7 @@ export default function ShareTab({
                   </div>
 
                   {/* Thanh link + Nút Sao chép + Nút QR */}
-                  <div className="flex items-center gap-2 bg-black/50 border border-white/10 rounded-xl p-1.5 pl-3">
+                  <div className="flex items-center gap-2 bg-black/30 border border-white/10 rounded-xl p-1.5 pl-3">
                     <svg className="text-white/40 shrink-0" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                       <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71" />
                       <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71" />
@@ -302,7 +302,7 @@ export default function ShareTab({
       </div>
 
       {/* THẺ 2: THÀNH VIÊN */}
-      <div className="bg-[rgba(22,28,54,0.65)] backdrop-blur-2xl border border-white/10 rounded-3xl p-6 shadow-2xl space-y-4">
+      <div className="bg-[rgba(22,28,54,0.38)] backdrop-blur-2xl border border-white/10 rounded-3xl p-6 shadow-2xl space-y-4">
         <div className="flex items-center gap-3 pb-3 border-b border-white/10">
           <div className="w-9 h-9 rounded-2xl bg-purple-500/15 border border-purple-500/30 flex items-center justify-center text-purple-400 shadow-inner">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -331,7 +331,7 @@ export default function ShareTab({
             {members.map((m) => (
               <div
                 key={m.id}
-                className="flex items-center gap-3 p-3.5 rounded-2xl bg-black/30 border border-white/10"
+                className="flex items-center gap-3 p-3.5 rounded-2xl bg-black/20 border border-white/10"
               >
                 {m.avatarUrl ? (
                   <img
@@ -384,7 +384,7 @@ export default function ShareTab({
       </div>
 
       {/* THẺ 3: BẢO MẬT & ĐỒNG BỘ LƯU TRỮ */}
-      <div className="bg-[rgba(22,28,54,0.65)] backdrop-blur-2xl border border-white/10 rounded-3xl p-6 shadow-2xl space-y-3.5">
+      <div className="bg-[rgba(22,28,54,0.38)] backdrop-blur-2xl border border-white/10 rounded-3xl p-6 shadow-2xl space-y-3.5">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2.5">
             <svg className="w-5 h-5 text-cyan-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">

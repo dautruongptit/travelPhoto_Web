@@ -325,7 +325,7 @@ export default function Lightbox({
 
         {/* Flickr EXIF & Metadata Right Drawer Panel */}
         {showInfo && (
-          <aside className="w-72 sm:w-80 flex-shrink-0 bg-[#18181b]/95 backdrop-blur-xl border-l border-neutral-800 p-4 overflow-y-auto z-20 flex flex-col gap-4.5 slide-right">
+          <aside className="w-72 sm:w-80 flex-shrink-0 bg-[#18181b]/80 backdrop-blur-2xl border-l border-neutral-800 p-4 overflow-y-auto z-20 flex flex-col gap-4.5 slide-right">
             <div className="flex items-center justify-between pb-2.5 border-b border-neutral-800">
               <h3 className="font-semibold text-xs text-neutral-100 flex items-center gap-1.5">
                 <svg
