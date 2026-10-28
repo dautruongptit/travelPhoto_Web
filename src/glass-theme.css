@@ -77,25 +77,6 @@ body::before {
   border-bottom: 1px solid rgba(255, 255, 255, 0.08) !important;
 }
 
-/* ── Footer: Kính trong suốt, HOÀN TOÀN KHÔNG VIỀN (borderless), cách trái phải 20-50px ── */
-[data-glass="footer"] {
-  background: rgba(22, 28, 52, 0.52) !important;
-  -webkit-backdrop-filter: var(--g-blur) !important;
-  backdrop-filter: var(--g-blur) !important;
-  border: none !important;
-  border-top: none !important;
-  border-bottom: none !important;
-  border-left: none !important;
-  border-right: none !important;
-  outline: none !important;
-  box-shadow: 0 8px 24px -6px rgba(0, 0, 0, 0.45) !important;
-  border-radius: 1.25rem !important; /* bo tròn 20px */
-  margin-left: clamp(20px, 3.5vw, 50px) !important;
-  margin-right: clamp(20px, 3.5vw, 50px) !important;
-  margin-bottom: 20px !important;
-  color: var(--g-text) !important;
-}
-
 /* Ô tìm kiếm & thẻ thống kê: hover sáng hơn */
 [data-glass="stat"]:hover,
 [data-glass="create"]:hover {
@@ -165,7 +146,6 @@ body::before {
 [data-glass="navbar"] :is(.text-neutral-900, .text-neutral-800, .text-neutral-700, .text-white, .text-gray-900, .text-gray-800, .text-gray-700),
 [data-glass="stat"] :is(.text-neutral-900, .text-neutral-800, .text-white),
 [data-glass="event-body"] :is(.text-gray-600, .text-neutral-300, .text-neutral-900, .text-white),
-[data-glass="footer"] :is(.text-gray-900, .text-gray-800, .text-gray-700, .text-white),
 [data-glass="panel"] :is(.text-neutral-900, .text-neutral-800, .text-white),
 [data-glass="dropdown"] :is(.text-neutral-900, .text-neutral-800, .text-neutral-700, .text-white) {
   color: var(--g-text) !important;
@@ -173,7 +153,6 @@ body::before {
 [data-glass="navbar"] :is(.text-neutral-400, .text-neutral-500, .text-neutral-600, .text-gray-400, .text-gray-500, .text-gray-600),
 [data-glass="stat"] :is(.text-neutral-400, .text-neutral-500),
 [data-glass="event-body"] :is(.text-gray-400, .text-gray-500),
-[data-glass="footer"] :is(.text-gray-400, .text-gray-500, .text-gray-600),
 [data-glass="panel"] :is(.text-neutral-400, .text-neutral-500),
 [data-glass="dropdown"] :is(.text-neutral-400, .text-neutral-500, .text-neutral-600) {
   color: var(--g-text-2) !important;
