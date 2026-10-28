@@ -1,4 +1,4 @@
-import { useState, useMemo, useRef } from "react"
+import { useState, useMemo, useRef, useEffect } from "react"
 import type { TravelEvent, User, Photo, SortOption } from "../types"
 import { formatFileSize, formatDateRange, formatDate } from "../utils"
 import Lightbox from "./Lightbox"
@@ -122,6 +122,16 @@ export default function AlbumPage({
     }
   }
   const sortRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    const handler = (e: MouseEvent) => {
+      if (sortRef.current && !sortRef.current.contains(e.target as Node)) {
+        setShowSortMenu(false)
+      }
+    }
+    document.addEventListener("mousedown", handler)
+    return () => document.removeEventListener("mousedown", handler)
+  }, [])
 
   const q = filterQuery || searchQuery
 
@@ -254,21 +264,157 @@ export default function AlbumPage({
             </div>
           </div>
 
-          {/* Hàng 2: Tabs */}
-          <div className="flex gap-4 border-b border-white/10 -mb-px">
-            {TABS.map((tab) => (
-              <button
-                key={tab.key}
-                onClick={() => setActiveTab(tab.key)}
-                className={`pb-2.5 text-sm font-semibold border-b-2 transition-colors cursor-pointer ${
-                  activeTab === tab.key
-                    ? "border-blue-500 text-blue-400"
-                    : "border-transparent text-white/60 hover:text-white"
-                }`}
-              >
-                {tab.label}
-              </button>
-            ))}
+          {/* Hàng 2: Tabs (Kho ảnh, Thông tin & Chia sẻ) + Tìm kiếm, Sắp xếp, View mode, Chọn tất cả, Tải lên CÙNG 1 HÀNG Ở BÊN TRÁI */}
+          <div className="flex items-center justify-between gap-3 pb-2.5 flex-wrap">
+            <div className="flex items-center gap-3 sm:gap-4 flex-wrap">
+              {/* Tabs */}
+              <div className="flex gap-4">
+                {TABS.map((tab) => (
+                  <button
+                    key={tab.key}
+                    onClick={() => setActiveTab(tab.key)}
+                    className={`pb-1 text-sm font-semibold border-b-2 transition-colors cursor-pointer ${
+                      activeTab === tab.key
+                        ? "border-blue-500 text-blue-400"
+                        : "border-transparent text-white/60 hover:text-white"
+                    }`}
+                  >
+                    {tab.label}
+                  </button>
+                ))}
+              </div>
+
+              {/* Các thanh công cụ khi ở tab Kho ảnh */}
+              {activeTab === "photos" && (
+                <>
+                  <div className="hidden sm:block w-px h-4 bg-white/15" />
+
+                  {/* Tìm kiếm ảnh */}
+                  <div className="relative w-40 sm:w-52">
+                    <svg
+                      className="absolute left-2.5 top-1/2 -translate-y-1/2 text-white/40 pointer-events-none"
+                      width="13"
+                      height="13"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                    >
+                      <circle cx="11" cy="11" r="8" stroke="currentColor" strokeWidth="2" />
+                      <path d="m21 21-4.35-4.35" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+                    </svg>
+                    <input
+                      type="text"
+                      value={filterQuery}
+                      onChange={(e) => setFilterQuery(e.target.value)}
+                      placeholder="Tìm tên ảnh…"
+                      className="w-full h-8 pl-8 pr-7 bg-white/5 hover:bg-white/10 focus:bg-black/40 border border-white/10 focus:border-blue-400 rounded-xl text-xs text-white placeholder-white/40 outline-none transition-all"
+                    />
+                    {filterQuery && (
+                      <button
+                        onClick={() => setFilterQuery("")}
+                        className="absolute right-2 top-1/2 -translate-y-1/2 text-white/40 hover:text-white text-xs cursor-pointer"
+                      >
+                        ✕
+                      </button>
+                    )}
+                  </div>
+
+                  {/* Sắp xếp */}
+                  <div className="relative" ref={sortRef}>
+                    <button
+                      onClick={() => setShowSortMenu(!showSortMenu)}
+                      className="h-8 px-3 bg-white/5 hover:bg-white/10 border border-white/10 rounded-xl text-xs font-medium text-white/80 hover:text-white flex items-center gap-1.5 transition-colors cursor-pointer"
+                    >
+                      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                        <path d="M3 6h18M7 12h10M11 18h2" strokeLinecap="round" />
+                      </svg>
+                      <span>{SORT_LABELS[sort]}</span>
+                    </button>
+
+                    {showSortMenu && (
+                      <div className="slide-up absolute left-0 top-full mt-1.5 w-36 bg-[#18181b] backdrop-blur-xl rounded-xl shadow-2xl border border-white/15 py-1 z-30 text-xs">
+                        {(Object.keys(SORT_LABELS) as SortOption[]).map((s) => (
+                          <button
+                            key={s}
+                            onClick={() => {
+                              setSort(s)
+                              setShowSortMenu(false)
+                            }}
+                            className={`w-full text-left px-3.5 py-2 transition-colors cursor-pointer ${
+                              sort === s
+                                ? "text-blue-400 font-semibold bg-white/10"
+                                : "text-white/80 hover:bg-white/5 hover:text-white"
+                            }`}
+                          >
+                            {SORT_LABELS[s]}
+                          </button>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Chế độ xem: Trình chiếu + Lưới */}
+                  <div className="flex items-center gap-0.5 bg-white/5 border border-white/10 rounded-xl p-0.5">
+                    {photos.length > 0 && (
+                      <button
+                        onClick={() => {
+                          setSlideshow(true)
+                          setLightboxIndex(0)
+                        }}
+                        title="Trình chiếu"
+                        aria-label="Trình chiếu"
+                        className="w-7 h-7 flex items-center justify-center rounded-lg text-white/60 hover:text-white hover:bg-white/10 transition-colors cursor-pointer"
+                      >
+                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                          <rect x="3" y="4" width="18" height="13" rx="2" />
+                          <path d="M10 8.5v4l3.5-2z" fill="currentColor" />
+                        </svg>
+                      </button>
+                    )}
+                    {VIEW_BUTTONS.map((b) => (
+                      <button
+                        key={b.mode}
+                        onClick={() => changeViewMode(b.mode)}
+                        title={b.label}
+                        aria-label={b.label}
+                        className={`w-7 h-7 flex items-center justify-center rounded-lg transition-colors cursor-pointer ${
+                          viewMode === b.mode
+                            ? "bg-white/20 text-white shadow-sm"
+                            : "text-white/50 hover:text-white hover:bg-white/10"
+                        }`}
+                      >
+                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                          {b.icon}
+                        </svg>
+                      </button>
+                    ))}
+                  </div>
+
+                  {/* Chọn tất cả */}
+                  {photos.length > 0 && canSelect && (
+                    <button
+                      onClick={selected.size === photos.length ? clearSelect : selectAll}
+                      className="h-8 px-3 bg-white/5 hover:bg-white/10 border border-white/10 rounded-xl text-xs font-medium text-white/80 hover:text-white transition-colors cursor-pointer"
+                    >
+                      {selected.size === photos.length ? "Bỏ chọn" : "Chọn tất cả"}
+                    </button>
+                  )}
+
+                  {/* Nút Tải ảnh lên */}
+                  {canUpload && (
+                    <button
+                      onClick={onUpload}
+                      className="h-8 px-3.5 bg-blue-600 hover:bg-blue-500 active:scale-95 text-white rounded-xl text-xs font-semibold flex items-center gap-1.5 shadow-md shadow-blue-600/30 transition-all cursor-pointer"
+                    >
+                      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                        <line x1="12" y1="5" x2="12" y2="19" />
+                        <line x1="5" y1="12" x2="19" y2="12" />
+                      </svg>
+                      <span>Tải ảnh lên</span>
+                    </button>
+                  )}
+                </>
+              )}
+            </div>
           </div>
         </div>
       </div>
@@ -276,172 +422,6 @@ export default function AlbumPage({
       <div className="max-w-screen-2xl mx-auto px-4 sm:px-6 py-6">
         {activeTab === "photos" && (
           <>
-        {/* Toolbar */}
-        <div className="flex items-center justify-between gap-3 mb-3 flex-wrap">
-          {/* Search inside album */}
-          <div className="relative flex-1 min-w-44 max-w-xs">
-            <svg
-              className="absolute left-3 top-1/2 -translate-y-1/2 text-neutral-400 dark:text-neutral-500 pointer-events-none"
-              width="14"
-              height="14"
-              viewBox="0 0 24 24"
-              fill="none"
-            >
-              <circle
-                cx="11"
-                cy="11"
-                r="8"
-                stroke="currentColor"
-                strokeWidth="2"
-              />
-              <path
-                d="m21 21-4.35-4.35"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-              />
-            </svg>
-            <input
-              type="text"
-              value={filterQuery}
-              onChange={(e) => setFilterQuery(e.target.value)}
-              placeholder="Tìm tên ảnh…"
-              className="w-full h-9 pl-9 pr-8 bg-neutral-50 dark:bg-neutral-800/80 border border-neutral-200 dark:border-neutral-800 rounded-xl text-sm text-neutral-700 dark:text-neutral-200 placeholder-neutral-400 focus:outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-100 dark:focus:ring-blue-900/40 transition-all"
-            />
-            {filterQuery && (
-              <button
-                onClick={() => setFilterQuery("")}
-                className="absolute right-2.5 top-1/2 -translate-y-1/2 text-neutral-400 hover:text-neutral-600 text-xs cursor-pointer"
-              >
-                ✕
-              </button>
-            )}
-          </div>
-
-          {/* Sort & Select actions */}
-          <div className="flex items-center gap-2">
-            {/* Chế độ xem: trình chiếu · lưới · hàng cân bằng · ảnh lớn */}
-            <div className="flex items-center gap-0.5 text-neutral-500 dark:text-neutral-400 mr-1">
-              {photos.length > 0 && (
-                <button
-                  onClick={() => {
-                    setSlideshow(true)
-                    setLightboxIndex(0)
-                  }}
-                  title="Trình chiếu"
-                  aria-label="Trình chiếu"
-                  className="w-8 h-8 flex items-center justify-center rounded-md hover:bg-neutral-100 dark:hover:bg-neutral-800 hover:text-neutral-800 dark:hover:text-white transition-colors cursor-pointer"
-                >
-                  <svg
-                    width="18"
-                    height="18"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  >
-                    <rect x="3" y="4" width="18" height="13" rx="2" />
-                    <path d="M10 8.5v4l3.5-2z" fill="currentColor" />
-                    <path d="M8 21h8" />
-                  </svg>
-                </button>
-              )}
-              {VIEW_BUTTONS.map((b) => (
-                <button
-                  key={b.mode}
-                  onClick={() => changeViewMode(b.mode)}
-                  title={b.label}
-                  aria-label={b.label}
-                  aria-pressed={viewMode === b.mode}
-                  className={`w-8 h-8 flex items-center justify-center rounded-md transition-colors cursor-pointer ${
-                    viewMode === b.mode
-                      ? "text-[#0063dc]"
-                      : "hover:bg-neutral-100 dark:hover:bg-neutral-800 hover:text-neutral-800 dark:hover:text-white"
-                  }`}
-                >
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
-                    {b.icon}
-                  </svg>
-                </button>
-              ))}
-            </div>
-
-            <div className="relative" ref={sortRef}>
-              <button
-                onClick={() => setShowSortMenu((v) => !v)}
-                className="flex items-center gap-1.5 h-9 px-3.5 bg-neutral-50 dark:bg-neutral-800/80 border border-neutral-200 dark:border-neutral-800 rounded-xl text-sm text-neutral-600 dark:text-neutral-300 hover:border-blue-300 transition-colors cursor-pointer"
-              >
-                <svg
-                  width="13"
-                  height="13"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                >
-                  <path d="M3 6h18M7 12h10M11 18h2" strokeLinecap="round" />
-                </svg>
-                {SORT_LABELS[sort]}
-              </button>
-              {showSortMenu && (
-                <div data-glass="dropdown" className="slide-up absolute right-0 top-full mt-1 w-36 bg-white dark:bg-[#18181b] rounded-xl shadow-xl border border-neutral-100 dark:border-neutral-800 py-1 z-20 text-xs">
-                  {(Object.keys(SORT_LABELS) as SortOption[]).map((s) => (
-                    <button
-                      key={s}
-                      onClick={() => {
-                        setSort(s)
-                        setShowSortMenu(false)
-                      }}
-                      className={`w-full text-left px-3.5 py-2 transition-colors cursor-pointer ${
-                        sort === s
-                          ? "text-[#0063dc] font-semibold bg-neutral-50 dark:bg-neutral-800/80"
-                          : "text-neutral-700 dark:text-neutral-300 hover:bg-neutral-50 dark:hover:bg-neutral-800"
-                      }`}
-                    >
-                      {SORT_LABELS[s]}
-                    </button>
-                  ))}
-                </div>
-              )}
-            </div>
-
-            {photos.length > 0 && canSelect && (
-              <button
-                onClick={
-                  selected.size === photos.length ? clearSelect : selectAll
-                }
-                className="h-9 px-3.5 bg-neutral-50 dark:bg-neutral-800/80 border border-neutral-200 dark:border-neutral-800 rounded-xl text-sm text-neutral-600 dark:text-neutral-300 hover:border-blue-300 transition-colors cursor-pointer"
-              >
-                {selected.size === photos.length
-                  ? "Bỏ chọn tất cả"
-                  : "Chọn tất cả"}
-              </button>
-            )}
-
-            {canUpload && (
-              <button
-                onClick={onUpload}
-                className="h-9 px-3.5 bg-blue-600 hover:bg-blue-500 active:scale-95 text-white rounded-xl text-xs font-semibold flex items-center gap-1.5 shadow-md shadow-blue-600/30 transition-all cursor-pointer"
-              >
-                <svg
-                  width="13"
-                  height="13"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2.5"
-                >
-                  <line x1="12" y1="5" x2="12" y2="19" />
-                  <line x1="5" y1="12" x2="19" y2="12" />
-                </svg>
-                <span>Tải ảnh lên</span>
-              </button>
-            )}
-          </div>
-        </div>
-
         {/* Flickr Justified Photo Gallery */}
         {photos.length === 0 && photoTotal === 0 ? (
           <div className="flex flex-col items-center justify-center py-28 text-center">
