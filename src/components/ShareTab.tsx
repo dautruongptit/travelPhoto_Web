@@ -31,6 +31,8 @@ export default function ShareTab({
   const [loading, setLoading] = useState(true)
   const [copiedId, setCopiedId] = useState<number | null>(null)
   const [qrModalLink, setQrModalLink] = useState<ShareLinkResponse | null>(null)
+  const [confirmRevokeLink, setConfirmRevokeLink] = useState<ShareLinkResponse | null>(null)
+  const [isRevoking, setIsRevoking] = useState(false)
 
   const refresh = useCallback(async () => {
     try {
@@ -92,6 +94,27 @@ export default function ShareTab({
         "error",
         err instanceof Error ? err.message : "Thu hồi liên kết thất bại.",
       )
+    }
+  }
+
+  const executeRevoke = async () => {
+    if (!confirmRevokeLink) return
+    setIsRevoking(true)
+    try {
+      await revokeShareLinkById(eventId, confirmRevokeLink.id)
+      try {
+        localStorage.removeItem(`share_token_${confirmRevokeLink.id}`)
+      } catch {}
+      onToast?.("success", "Đã thu hồi liên kết chia sẻ thành công.")
+      setConfirmRevokeLink(null)
+      refresh()
+    } catch (err) {
+      onToast?.(
+        "error",
+        err instanceof Error ? err.message : "Thu hồi liên kết thất bại.",
+      )
+    } finally {
+      setIsRevoking(false)
     }
   }
 
@@ -246,7 +269,7 @@ export default function ShareTab({
                           Tạo ngày {formatDate(link.createdAt)}
                         </span>
                         <button
-                          onClick={() => handleRevoke(link.id)}
+                          onClick={() => setConfirmRevokeLink(link)}
                           title="Thu hồi liên kết này"
                           className="text-[11px] text-rose-400 hover:text-rose-300 hover:bg-rose-500/15 px-2.5 py-1 rounded-lg transition-colors cursor-pointer flex items-center gap-1 ml-1"
                         >
@@ -483,6 +506,90 @@ export default function ShareTab({
                 className="py-2.5 px-4 rounded-xl bg-white/10 hover:bg-white/15 text-xs font-medium text-white/90 transition-colors cursor-pointer"
               >
                 Đóng
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Modal xác nhận thu hồi liên kết chia sẻ */}
+      {confirmRevokeLink && (
+        <div className="fixed inset-0 z-[95] flex items-center justify-center p-4">
+          <div
+            className="absolute inset-0 bg-black/65 backdrop-blur-sm"
+            onClick={() => !isRevoking && setConfirmRevokeLink(null)}
+          />
+          <div className="slide-up relative bg-[rgba(22,28,54,0.92)] backdrop-blur-2xl border border-white/15 rounded-3xl shadow-2xl p-6 max-w-md w-full text-left">
+            <div className="flex items-center gap-3.5 mb-4">
+              <div className="w-11 h-11 rounded-2xl bg-rose-500/20 border border-rose-500/30 flex items-center justify-center text-rose-400 shrink-0 shadow-inner">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" />
+                  <line x1="12" y1="9" x2="12" y2="13" />
+                  <line x1="12" y1="17" x2="12.01" y2="17" />
+                </svg>
+              </div>
+              <div>
+                <h4 className="text-base font-bold text-white tracking-tight">
+                  Thu hồi liên kết chia sẻ?
+                </h4>
+                <p className="text-xs text-white/50 mt-0.5">
+                  Vô hiệu hóa liên kết này ngay lập tức
+                </p>
+              </div>
+            </div>
+
+            <p className="text-xs text-white/70 leading-relaxed mb-4">
+              Bất kỳ ai đang sở hữu liên kết này sẽ <strong className="text-rose-400 font-semibold">không thể truy cập</strong> vào album được nữa. Bạn có chắc chắn muốn tiếp tục?
+            </p>
+
+            {/* Thông tin liên kết sắp thu hồi */}
+            <div className="p-3.5 rounded-2xl bg-white/[0.04] border border-white/10 mb-6 space-y-2">
+              <div className="flex items-center justify-between text-xs">
+                <span className="text-white/50 text-[11px]">Quyền hạn:</span>
+                <span className="font-semibold text-white/90">
+                  {confirmRevokeLink.role === "EDITOR" ? "Biên tập viên" : "Chỉ xem"}
+                </span>
+              </div>
+              <div className="flex items-center justify-between text-xs">
+                <span className="text-white/50 text-[11px]">Hạn sử dụng:</span>
+                <span className="text-white/70 text-[11px] font-mono">
+                  {formatDate(confirmRevokeLink.expiredAt)}
+                </span>
+              </div>
+              <div className="text-[11px] font-mono text-white/50 truncate pt-2 border-t border-white/5">
+                {getResolvedUrl(confirmRevokeLink)}
+              </div>
+            </div>
+
+            <div className="flex items-center justify-end gap-3">
+              <button
+                type="button"
+                disabled={isRevoking}
+                onClick={() => setConfirmRevokeLink(null)}
+                className="px-4 py-2.5 rounded-xl border border-white/15 bg-white/5 hover:bg-white/10 text-xs font-semibold text-white/80 hover:text-white transition-all cursor-pointer disabled:opacity-50"
+              >
+                Hủy bỏ
+              </button>
+              <button
+                type="button"
+                disabled={isRevoking}
+                onClick={executeRevoke}
+                className="px-5 py-2.5 rounded-xl bg-rose-600 hover:bg-rose-500 active:scale-95 text-xs font-semibold text-white transition-all shadow-lg shadow-rose-600/30 flex items-center gap-1.5 cursor-pointer disabled:opacity-50"
+              >
+                {isRevoking ? (
+                  <>
+                    <div className="w-3.5 h-3.5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                    <span>Đang thu hồi...</span>
+                  </>
+                ) : (
+                  <>
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                      <polyline points="3 6 5 6 21 6" />
+                      <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
+                    </svg>
+                    <span>Xác nhận thu hồi</span>
+                  </>
+                )}
               </button>
             </div>
           </div>
