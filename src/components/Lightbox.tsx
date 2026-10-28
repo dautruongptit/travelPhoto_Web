@@ -531,7 +531,7 @@ function InfoRow({
   return (
     <div className="flex items-start gap-2.5">
       <svg
-        className="w-4 h-4 mt-0.5 flex-shrink-0 text-neutral-400"
+        className="w-4 h-4 mt-0.5 flex-shrink-0 text-neutral-300"
         viewBox="0 0 24 24"
         fill="none"
         stroke="currentColor"
