@@ -491,7 +491,10 @@ export default function ShareTab({
             <div className="flex gap-2.5">
               <button
                 type="button"
-                onClick={() => handleCopy(qrModalLink)}
+                onClick={() => {
+                  handleCopy(qrModalLink)
+                  setQrModalLink(null)
+                }}
                 className="flex-1 py-2.5 px-3 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-xs font-semibold flex items-center justify-center gap-1.5 transition-all shadow-lg shadow-blue-600/30 cursor-pointer active:scale-95"
               >
                 <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">

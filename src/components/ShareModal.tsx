@@ -136,6 +136,8 @@ export default function ShareModal({
     navigator.clipboard.writeText(shareUrl)
 
     onToast("success", "Đã sao chép liên kết vào bộ nhớ tạm!")
+
+    onClose()
   }
 
   return (
