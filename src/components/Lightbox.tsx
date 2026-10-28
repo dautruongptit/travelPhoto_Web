@@ -325,12 +325,12 @@ export default function Lightbox({
 
         {/* Flickr EXIF & Metadata Right Drawer Panel */}
         {showInfo && (
-          <aside className="w-80 sm:w-96 flex-shrink-0 bg-[#18181b]/95 backdrop-blur-xl border-l border-neutral-800 p-5 overflow-y-auto z-20 flex flex-col gap-6 slide-right">
-            <div className="flex items-center justify-between pb-3 border-b border-neutral-800">
-              <h3 className="font-semibold text-sm text-neutral-100 flex items-center gap-2">
+          <aside className="w-72 sm:w-80 flex-shrink-0 bg-[#18181b]/95 backdrop-blur-xl border-l border-neutral-800 p-4 overflow-y-auto z-20 flex flex-col gap-4.5 slide-right">
+            <div className="flex items-center justify-between pb-2.5 border-b border-neutral-800">
+              <h3 className="font-semibold text-xs text-neutral-100 flex items-center gap-1.5">
                 <svg
-                  width="16"
-                  height="16"
+                  width="14"
+                  height="14"
                   viewBox="0 0 24 24"
                   fill="none"
                   stroke="#0063dc"
@@ -343,14 +343,14 @@ export default function Lightbox({
               </h3>
               <button
                 onClick={() => setShowInfo(false)}
-                className="text-neutral-400 hover:text-white text-xs cursor-pointer"
+                className="text-neutral-400 hover:text-white text-[11px] cursor-pointer"
               >
                 ✕ Đóng
               </button>
             </div>
 
             {/* Thông tin ảnh kiểu Google Photos: icon + dòng chính + dòng thông số */}
-            <div className="space-y-5 text-sm">
+            <div className="space-y-3.5">
               {/* Ngày chụp / ngày tải lên */}
               <InfoRow
                 icon={
@@ -441,27 +441,27 @@ export default function Lightbox({
             </div>
 
             {/* Keyboard Shortcuts Hint */}
-            <div className="mt-auto pt-4 border-t border-neutral-800 text-[11px] text-neutral-400 space-y-1">
+            <div className="mt-auto pt-3 border-t border-neutral-800 text-[10px] text-neutral-400 space-y-1">
               <p>
                 Phím tắt:{" "}
-                <kbd className="px-1.5 py-0.5 bg-neutral-800 rounded font-mono">
+                <kbd className="px-1 py-0.5 bg-neutral-800 rounded font-mono text-[9px]">
                   ←
                 </kbd>{" "}
-                <kbd className="px-1.5 py-0.5 bg-neutral-800 rounded font-mono">
+                <kbd className="px-1 py-0.5 bg-neutral-800 rounded font-mono text-[9px]">
                   →
                 </kbd>{" "}
                 chuyển ảnh
               </p>
               <p>
-                <kbd className="px-1.5 py-0.5 bg-neutral-800 rounded font-mono">
+                <kbd className="px-1 py-0.5 bg-neutral-800 rounded font-mono text-[9px]">
                   F
                 </kbd>{" "}
                 thích ·{" "}
-                <kbd className="px-1.5 py-0.5 bg-neutral-800 rounded font-mono">
+                <kbd className="px-1 py-0.5 bg-neutral-800 rounded font-mono text-[9px]">
                   I
                 </kbd>{" "}
                 bật/tắt EXIF ·{" "}
-                <kbd className="px-1.5 py-0.5 bg-neutral-800 rounded font-mono">
+                <kbd className="px-1 py-0.5 bg-neutral-800 rounded font-mono text-[9px]">
                   Esc
                 </kbd>{" "}
                 thoát
@@ -529,9 +529,9 @@ function InfoRow({
   lines: string[]
 }) {
   return (
-    <div className="flex items-start gap-4">
+    <div className="flex items-start gap-2.5">
       <svg
-        className="w-5 h-5 mt-0.5 flex-shrink-0 text-neutral-300"
+        className="w-4 h-4 mt-0.5 flex-shrink-0 text-neutral-400"
         viewBox="0 0 24 24"
         fill="none"
         stroke="currentColor"
@@ -542,11 +542,11 @@ function InfoRow({
         {icon}
       </svg>
       <div className="min-w-0">
-        <p className="text-neutral-100 font-medium break-words">{title}</p>
+        <p className="text-xs font-semibold text-neutral-100 break-words leading-tight">{title}</p>
         {lines
           .filter((l) => l && l.trim() !== "" && l !== title)
           .map((l, i) => (
-            <p key={i} className="text-xs text-neutral-400 mt-0.5 break-words">
+            <p key={i} className="text-[11px] text-neutral-400 mt-0.5 break-words leading-relaxed">
               {l}
             </p>
           ))}
