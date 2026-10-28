@@ -7,11 +7,11 @@
 html,
 html.dark {
   --g-wallpaper: url("/images/wallpaper.jpg");
-  --g-blur: blur(20px) saturate(140%);
-  --g-shadow: 0 8px 32px rgba(0, 0, 0, 0.35);
+  --g-blur: blur(5px) saturate(180%);
+  --g-shadow: rgba(255, 255, 255, 0.125) 0.5px 1px 1px 0px inset, 0 8px 32px rgba(0, 0, 0, 0.25);
   --g-shadow-hover: 0 14px 44px rgba(0, 0, 0, 0.45);
   /* Sắc xanh chàm đêm Midnight Indigo chuẩn CasaOS */
-  --g-bg: rgba(24, 30, 54, 0.38);
+  --g-bg: rgba(53, 54, 58, 0.4);
   --g-bg-hover: rgba(36, 45, 80, 0.48);
   --g-border: rgba(255, 255, 255, 0.09);
   --g-border-hover: rgba(255, 255, 255, 0.22);
@@ -55,8 +55,7 @@ body::before {
 [data-glass="event-body"],
 [data-glass="create"],
 [data-glass="panel"],
-[data-glass="dropdown"],
-.blur-background {
+[data-glass="dropdown"] {
   background: var(--g-bg) !important;
   -webkit-backdrop-filter: var(--g-blur) !important;
   backdrop-filter: var(--g-blur) !important;
@@ -287,4 +286,25 @@ body::before {
 [class*="fixed inset-0"] .slide-up button.text-gray-500:hover {
   background-color: rgba(255, 255, 255, 0.10) !important;
   color: #ffffff !important;
+}
+
+/* ── Lớp nền kính mờ CasaOS Acrylic (.blur-background) ────────────────────── */
+.blur-background {
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  background-size: cover;
+  background-position: bottom center;
+  background-attachment: fixed;
+  background-color: rgba(53, 54, 58, 0.4);
+  -webkit-backdrop-filter: blur(5px) saturate(180%);
+  backdrop-filter: blur(5px) saturate(180%);
+  border-radius: 10px;
+  box-shadow: rgba(255, 255, 255, 0.125) 0.5px 1px 1px 0px inset;
+  border: none;
+  position: absolute;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
 }

@@ -547,7 +547,7 @@ export default function AlbumPage({
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
               {/* ================= CỘT TRÁI (5 CỘT): THÔNG TIN SỰ KIỆN ================= */}
               <div className="lg:col-span-5">
-                <div className="bg-[rgba(22,28,54,0.38)] backdrop-blur-2xl border border-white/10 rounded-3xl p-6 shadow-2xl space-y-6">
+                <div className="bg-[rgba(53,54,58,0.4)] backdrop-blur-[5px] saturate-[180%] border border-white/10 rounded-2xl p-6 shadow-[inset_0.5px_1px_1px_0px_rgba(255,255,255,0.125)] space-y-6">
                   {/* Header Thẻ Thông tin sự kiện */}
                   <div className="flex items-center justify-between pb-4 border-b border-white/10">
                     <div className="flex items-center gap-3">
@@ -637,7 +637,7 @@ export default function AlbumPage({
                 ) : (
                   /* GIAO DIỆN DÀNH CHO KHÁCH (VIEWER) */
                   <div className="space-y-6">
-                    <div className="bg-[rgba(22,28,54,0.38)] backdrop-blur-2xl border border-white/10 rounded-3xl p-6 shadow-xl space-y-5">
+                    <div className="bg-[rgba(53,54,58,0.4)] backdrop-blur-[5px] saturate-[180%] border border-white/10 rounded-2xl p-6 shadow-[inset_0.5px_1px_1px_0px_rgba(255,255,255,0.125)] space-y-5">
                       <div className="relative rounded-2xl overflow-hidden aspect-[16/9] bg-neutral-900 border border-white/10">
                         <AuthImg
                           src={event.coverImage}
