@@ -511,22 +511,24 @@ export default function App() {
         />
       ) : (
         <>
-          <Navbar
-            user={user}
-            activeTab={activeNavTab}
-            onSelectTab={handleSelectNavTab}
-            onLogout={handleLogout}
-            onGoHome={handleGoHome}
-            searchQuery={searchQuery}
-            onSearchChange={setSearchQuery}
-            showSearch={view === "dashboard" || view === "album"}
-            usedBytes={storageUsedBytes}
-            limitBytes={storageLimitBytes}
-            onOpenProfile={() => setShowProfileModal(true)}
-            onOpenSettings={() => setShowSettingsModal(true)}
-            onOpenHelp={handleOpenHelp}
-            onOpenUpgrade={() => setShowUpgradeModal(true)}
-          />
+          {view !== "album" && (
+            <Navbar
+              user={user}
+              activeTab={activeNavTab}
+              onSelectTab={handleSelectNavTab}
+              onLogout={handleLogout}
+              onGoHome={handleGoHome}
+              searchQuery={searchQuery}
+              onSearchChange={setSearchQuery}
+              showSearch={view === "dashboard"}
+              usedBytes={storageUsedBytes}
+              limitBytes={storageLimitBytes}
+              onOpenProfile={() => setShowProfileModal(true)}
+              onOpenSettings={() => setShowSettingsModal(true)}
+              onOpenHelp={handleOpenHelp}
+              onOpenUpgrade={() => setShowUpgradeModal(true)}
+            />
+          )}
 
           <div className="flex-1">
             {view === "dashboard" && (
@@ -551,13 +553,14 @@ export default function App() {
                 onDeletePhotos={handleDeletePhotos}
                 onToast={addToast}
                 onVisibilityChanged={refreshEventVisibility}
+                onOpenProfile={() => setShowProfileModal(true)}
               />
             )}
 
             {view === "help" && <HelpPage onBack={handleGoHome} />}
           </div>
 
-          <Footer onOpenHelp={handleOpenHelp} />
+          {view !== "album" && <Footer onOpenHelp={handleOpenHelp} />}
         </>
       )}
 

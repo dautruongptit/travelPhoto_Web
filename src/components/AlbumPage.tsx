@@ -19,6 +19,7 @@ interface Props {
   onToast: (type: "success" | "error" | "warning" | "info", msg: string) => void
   /** Gọi khi quyền xem của album có thể đã đổi (tạo link chia sẻ, bật/tắt công khai) */
   onVisibilityChanged?: (eventId: string) => void
+  onOpenProfile?: () => void
 }
 
 const SORT_LABELS: Record<SortOption, string> = {
@@ -90,6 +91,7 @@ export default function AlbumPage({
   onDeletePhotos,
   onToast,
   onVisibilityChanged,
+  onOpenProfile,
 }: Props) {
   const [activeTab, setActiveTab] = useState<AlbumTab>("photos")
   const [selected, setSelected] = useState<Set<string>>(new Set())
@@ -183,7 +185,7 @@ export default function AlbumPage({
   return (
     <main className="min-h-screen pb-16">
       {/* Header bar gọn gàng chuẩn theo mockup */}
-      <div data-glass="panel" className="bg-transparent border-b border-white/10 transition-colors">
+      <div className="border-b border-white/10 bg-transparent transition-colors">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 pt-3.5">
           {/* Hàng 1: Breadcrumb + Badge quyền xem ở bên trái, Nút Chia sẻ + Avatar ở bên phải */}
           <div className="flex items-center justify-between gap-3 mb-3.5 flex-wrap">
@@ -209,7 +211,7 @@ export default function AlbumPage({
               </span>
 
               {/* Badge quyền xem đặt ngay cạnh tên album */}
-              <span className="inline-flex items-center gap-1.5 text-xs font-semibold px-3 py-0.5 rounded-full bg-amber-500/15 text-amber-300 border border-amber-500/30">
+              <span className="inline-flex items-center gap-1.5 text-xs font-medium px-2.5 py-0.5 rounded-full bg-white/10 text-white/90 border border-white/15">
                 <span>{vis.icon}</span>
                 <span>{vis.label}</span>
               </span>
@@ -240,9 +242,14 @@ export default function AlbumPage({
               )}
 
               {user && (
-                <div className="w-8 h-8 rounded-full bg-blue-600 flex items-center justify-center text-xs font-bold text-white shadow-md ring-2 ring-white/10">
+                <button
+                  type="button"
+                  onClick={onOpenProfile}
+                  title={user.name || "Hồ sơ cá nhân"}
+                  className="w-8 h-8 rounded-full bg-blue-600 flex items-center justify-center text-xs font-bold text-white shadow-md ring-2 ring-white/10 hover:ring-white/30 transition-all cursor-pointer active:scale-95"
+                >
                   {(user.name || "U").charAt(0).toUpperCase()}
-                </div>
+                </button>
               )}
             </div>
           </div>
@@ -266,7 +273,13 @@ export default function AlbumPage({
         </div>
       </div>
 
-      <div className="max-w-screen-2xl mx-auto px-4 sm:px-6 py-5">
+      <div
+        className={
+          activeTab === "photos"
+            ? "max-w-screen-2xl mx-auto px-4 sm:px-6 py-5"
+            : "max-w-6xl mx-auto px-4 sm:px-6 py-6"
+        }
+      >
         {activeTab === "photos" && (
           <>
         {/* Toolbar */}
@@ -412,6 +425,26 @@ export default function AlbumPage({
                   : "Chọn tất cả"}
               </button>
             )}
+
+            {canUpload && (
+              <button
+                onClick={onUpload}
+                className="h-9 px-3.5 bg-blue-600 hover:bg-blue-500 active:scale-95 text-white rounded-xl text-xs font-semibold flex items-center gap-1.5 shadow-md shadow-blue-600/30 transition-all cursor-pointer"
+              >
+                <svg
+                  width="13"
+                  height="13"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2.5"
+                >
+                  <line x1="12" y1="5" x2="12" y2="19" />
+                  <line x1="5" y1="12" x2="19" y2="12" />
+                </svg>
+                <span>Tải ảnh lên</span>
+              </button>
+            )}
           </div>
         </div>
 
@@ -494,8 +527,7 @@ export default function AlbumPage({
 
         {/* TAB THÔNG TIN & CHIA SẺ — KHỚP 100% THEO THIẾT KẾ MẪU CỦA USER */}
         {activeTab === "info" && (
-          <div className="max-w-6xl mx-auto py-6">
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
               {/* ================= CỘT TRÁI (5 CỘT): THÔNG TIN SỰ KIỆN ================= */}
               <div className="lg:col-span-5">
                 <div className="bg-[rgba(22,28,54,0.65)] backdrop-blur-2xl border border-white/10 rounded-3xl p-6 shadow-2xl space-y-6">
@@ -630,7 +662,6 @@ export default function AlbumPage({
                 )}
               </div>
             </div>
-          </div>
         )}
       </div>
 
