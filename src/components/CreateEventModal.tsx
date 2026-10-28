@@ -1,4 +1,4 @@
-import { useState, useRef } from "react"
+import { useState } from "react"
 
 import type { EventFormData } from "../api/events"
 
@@ -25,19 +25,11 @@ export default function CreateEventModal({
 
   const [location, setLocation] = useState("")
 
-  const [coverPreview, setCoverPreview] = useState<string | null>(null)
-
-  const [coverFile, setCoverFile] = useState<File | null>(null)
-
   const [errors, setErrors] = useState<Record<string, string>>({})
-
-  const [isDragging, setIsDragging] = useState(false)
 
   const [isSubmitting, setIsSubmitting] = useState(false)
 
   const [submitError, setSubmitError] = useState<string | null>(null)
-
-  const fileRef = useRef<HTMLInputElement>(null)
 
   const validate = () => {
     const e: Record<string, string> = {}
@@ -53,14 +45,6 @@ export default function CreateEventModal({
     return e
   }
 
-  const handleCoverFile = (file: File) => {
-    if (!file.type.startsWith("image/")) return
-
-    setCoverFile(file)
-
-    setCoverPreview(URL.createObjectURL(file))
-  }
-
   const handleSubmit = async () => {
     const e = validate()
 
@@ -74,21 +58,17 @@ export default function CreateEventModal({
     setIsSubmitting(true)
 
     try {
-      await onSave(
-        {
-          name: name.trim(),
+      await onSave({
+        name: name.trim(),
 
-          description: description.trim() || undefined,
+        description: description.trim() || undefined,
 
-          startDate,
+        startDate,
 
-          endDate: endDate || startDate,
+        endDate: endDate || startDate,
 
-          location: location.trim(),
-        },
-
-        coverFile ?? undefined,
-      )
+        location: location.trim(),
+      })
     } catch (err) {
       setSubmitError(
         err instanceof Error
@@ -254,96 +234,6 @@ export default function CreateEventModal({
                 <span>⚠</span>
                 {errors.location}
               </p>
-            )}
-          </div>
-
-          {/* Cover image */}
-          <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">
-              Ảnh bìa
-            </label>
-            {coverPreview ? (
-              <div
-                className="relative rounded-2xl overflow-hidden"
-                style={{ aspectRatio: "16/7" }}
-              >
-                <img
-                  src={coverPreview}
-                  alt="Cover preview"
-                  className="w-full h-full object-cover"
-                />
-                <button
-                  onClick={() => {
-                    setCoverPreview(null)
-                    setCoverFile(null)
-                  }}
-                  className="absolute top-2 right-2 w-8 h-8 bg-black/60 hover:bg-black/80 rounded-full flex items-center justify-center text-white transition-colors text-base leading-none"
-                >
-                  ×
-                </button>
-                <div className="absolute bottom-2 left-2 bg-black/60 text-white text-xs px-2 py-1 rounded-lg">
-                  {coverFile?.name}
-                </div>
-              </div>
-            ) : (
-              <div
-                onDragOver={(e) => {
-                  e.preventDefault()
-                  setIsDragging(true)
-                }}
-                onDragLeave={() => setIsDragging(false)}
-                onDrop={(e) => {
-                  e.preventDefault()
-
-                  setIsDragging(false)
-
-                  const f = e.dataTransfer.files[0]
-
-                  if (f) handleCoverFile(f)
-                }}
-                onClick={() => fileRef.current?.click()}
-                className={`flex flex-col items-center justify-center gap-2 border-2 border-dashed rounded-2xl cursor-pointer transition-all duration-200 py-10 ${
-                  isDragging
-                    ? "border-blue-400 bg-blue-50 dark:bg-blue-950/40"
-                    : "border-gray-200 dark:border-gray-700 hover:border-blue-300 hover:bg-gray-50 dark:hover:bg-gray-800"
-                }`}
-              >
-                <svg width="32" height="32" viewBox="0 0 24 24" fill="none">
-                  <rect
-                    x="3"
-                    y="3"
-                    width="18"
-                    height="18"
-                    rx="3"
-                    stroke="#D1D5DB"
-                    strokeWidth="1.5"
-                  />
-                  <circle cx="8.5" cy="8.5" r="1.5" fill="#D1D5DB" />
-                  <path
-                    d="M21 15l-5-5L5 21"
-                    stroke="#D1D5DB"
-                    strokeWidth="1.5"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />
-                </svg>
-                <p className="text-sm text-gray-500 dark:text-gray-400">
-                  Kéo thả ảnh vào đây hoặc
-                </p>
-                <span className="text-sm text-blue-600 font-medium">
-                  chọn từ máy tính
-                </span>
-                <input
-                  ref={fileRef}
-                  type="file"
-                  accept="image/*"
-                  hidden
-                  onChange={(e) => {
-                    const f = e.target.files?.[0]
-                    if (f) handleCoverFile(f)
-                  }}
-                />
-              </div>
             )}
           </div>
         </div>
