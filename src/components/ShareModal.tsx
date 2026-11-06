@@ -59,8 +59,10 @@ export default function ShareModal({
   const liveLinks = existingLinks.filter(
     (l) => l.active && new Date(l.expiredAt).getTime() > Date.now(),
   )
-  const hasViewerLink = liveLinks.some((l) => l.role === "VIEWER")
-  const hasEditorLink = liveLinks.some((l) => l.role === "EDITOR")
+  // Mỗi sự kiện chỉ cho phép 1 liên kết chia sẻ hoạt động tại 1 thời điểm
+  // (không phân biệt vai trò) — phải thu hồi link hiện tại mới tạo được link mới.
+  const activeLink = liveLinks[0] ?? null
+  const hasActiveLink = activeLink !== null
 
   const [savingPublic, setSavingPublic] = useState(false)
 
@@ -212,9 +214,12 @@ export default function ShareModal({
                   Không thể kiểm tra link hiện có. Thử tải lại trang.
                 </div>
               )}
-              {linksLoaded && hasViewerLink && hasEditorLink && (
+              {linksLoaded && hasActiveLink && (
                 <div className="p-3 rounded-xl bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 text-sm text-amber-700 dark:text-amber-300">
-                  Đã tạo đủ link cho cả 2 quyền. Thu hồi link cũ trong tab Chia sẻ để tạo link mới.
+                  Sự kiện này đã có 1 liên kết chia sẻ đang hoạt động (
+                  {activeLink?.role === "EDITOR" ? "Cộng tác" : "Chỉ xem"}).
+                  Mỗi sự kiện chỉ được phép 1 liên kết hoạt động — hãy thu hồi
+                  link hiện tại trong tab Chia sẻ trước khi tạo link mới.
                 </div>
               )}
               <div>
@@ -224,10 +229,10 @@ export default function ShareModal({
                 <div className="grid grid-cols-2 gap-3">
                   <button
                     type="button"
-                    disabled={hasViewerLink}
+                    disabled={hasActiveLink}
                     onClick={() => setRole("VIEWER")}
                     className={`p-3.5 rounded-2xl border text-left transition-all ${
-                      hasViewerLink
+                      hasActiveLink
                         ? "border-gray-200 dark:border-gray-700 opacity-50 cursor-not-allowed"
                         : role === "VIEWER"
                           ? "border-blue-600 bg-blue-50/50 dark:bg-blue-950/20 ring-2 ring-blue-500/10"
@@ -236,7 +241,7 @@ export default function ShareModal({
                   >
                     <p
                       className={`text-sm font-semibold ${
-                        hasViewerLink
+                        hasActiveLink
                           ? "text-gray-400 dark:text-gray-500"
                           : role === "VIEWER"
                             ? "text-blue-600 dark:text-blue-400"
@@ -246,18 +251,18 @@ export default function ShareModal({
                       Chỉ xem (Viewer)
                     </p>
                     <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
-                      {hasViewerLink
-                        ? "Đã có link cho quyền này"
+                      {hasActiveLink
+                        ? "Đã có liên kết đang hoạt động"
                         : "Chỉ được xem ảnh, không có quyền tải ảnh lên hoặc chỉnh sửa."}
                     </p>
                   </button>
 
                   <button
                     type="button"
-                    disabled={hasEditorLink}
+                    disabled={hasActiveLink}
                     onClick={() => setRole("EDITOR")}
                     className={`p-3.5 rounded-2xl border text-left transition-all ${
-                      hasEditorLink
+                      hasActiveLink
                         ? "border-gray-200 dark:border-gray-700 opacity-50 cursor-not-allowed"
                         : role === "EDITOR"
                           ? "border-blue-600 bg-blue-50/50 dark:bg-blue-950/20 ring-2 ring-blue-500/10"
@@ -266,7 +271,7 @@ export default function ShareModal({
                   >
                     <p
                       className={`text-sm font-semibold ${
-                        hasEditorLink
+                        hasActiveLink
                           ? "text-gray-400 dark:text-gray-500"
                           : role === "EDITOR"
                             ? "text-blue-600 dark:text-blue-400"
@@ -276,8 +281,8 @@ export default function ShareModal({
                       Cộng tác (Editor)
                     </p>
                     <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
-                      {hasEditorLink
-                        ? "Đã có link cho quyền này"
+                      {hasActiveLink
+                        ? "Đã có liên kết đang hoạt động"
                         : "Được quyền tải ảnh lên và cộng tác đóng góp album. Yêu cầu đăng nhập."}
                     </p>
                   </button>
@@ -286,7 +291,7 @@ export default function ShareModal({
 
               <button
                 type="button"
-                disabled={loading || !linksLoaded || (role === "VIEWER" && hasViewerLink) || (role === "EDITOR" && hasEditorLink)}
+                disabled={loading || !linksLoaded || hasActiveLink}
                 onClick={handleGenerateLink}
                 className="w-full h-11 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-xl shadow-lg shadow-blue-200/50 dark:shadow-none flex items-center justify-center gap-2 transition-colors disabled:opacity-50"
               >

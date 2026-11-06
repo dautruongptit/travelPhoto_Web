@@ -141,6 +141,11 @@ export default function ShareTab({
 
   const latestExpire = links.length > 0 ? formatDate(links[0].expiredAt) : null
 
+  // Mỗi sự kiện chỉ cho phép 1 liên kết chia sẻ hoạt động tại 1 thời điểm.
+  const hasActiveLink = links.some(
+    (l) => l.active && new Date(l.expiredAt).getTime() > Date.now(),
+  )
+
   if (loading) {
     return (
       <div className="flex items-center justify-center py-12 gap-3 text-white/60 text-xs">
@@ -174,7 +179,17 @@ export default function ShareTab({
 
           <button
             onClick={onOpenShareModal}
-            className="inline-flex items-center gap-1.5 px-4 py-1.5 bg-blue-600 hover:bg-blue-500 active:scale-95 text-white text-xs font-semibold rounded-full shadow-md shadow-blue-600/30 transition-all cursor-pointer"
+            disabled={hasActiveLink}
+            title={
+              hasActiveLink
+                ? "Đã có 1 liên kết đang hoạt động — thu hồi link hiện tại trước khi tạo link mới"
+                : undefined
+            }
+            className={`inline-flex items-center gap-1.5 px-4 py-1.5 text-white text-xs font-semibold rounded-full shadow-md transition-all ${
+              hasActiveLink
+                ? "bg-blue-600/40 shadow-none cursor-not-allowed"
+                : "bg-blue-600 hover:bg-blue-500 active:scale-95 shadow-blue-600/30 cursor-pointer"
+            }`}
           >
             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
               <line x1="12" y1="5" x2="12" y2="19" />
@@ -202,10 +217,7 @@ export default function ShareTab({
               const isCopied = copiedId === link.id
 
               return (
-                <div
-                  key={link.id}
-                  className="p-4 rounded-2xl bg-black/20 border border-white/10 space-y-3"
-                >
+                <div key={link.id} className="space-y-3">
                   {/* Hàng thông tin quyền & hạn dùng */}
                   <div className="flex items-center justify-between text-xs">
                     <div className="flex items-center gap-2.5">
@@ -433,46 +445,88 @@ export default function ShareTab({
             className="absolute inset-0 bg-black/60 backdrop-blur-sm"
             onClick={() => setQrModalLink(null)}
           />
-          <div className="slide-up relative bg-[rgba(22,28,54,0.92)] backdrop-blur-2xl border border-white/15 rounded-3xl shadow-2xl p-6 max-w-sm w-full text-center">
-            <div className="flex items-center justify-between mb-4">
-              <div className="text-left">
-                <h4 className="text-sm font-bold text-white">
-                  Mã QR truy cập
-                </h4>
-                <p className="text-xs text-blue-400 mt-0.5">
-                  {qrModalLink.role === "EDITOR" ? "Quyền biên tập viên" : "Quyền chỉ xem"}
-                </p>
+          <div className="slide-up relative overflow-hidden bg-[rgba(22,28,54,0.92)] backdrop-blur-2xl border border-white/15 rounded-3xl shadow-2xl p-6 max-w-sm w-full text-center">
+            {/* Glow nền */}
+            <div className="pointer-events-none absolute -top-16 -right-16 w-40 h-40 bg-blue-500/20 rounded-full blur-3xl" />
+            <div className="pointer-events-none absolute -bottom-16 -left-16 w-40 h-40 bg-purple-500/15 rounded-full blur-3xl" />
+
+            <div className="relative flex items-center justify-between mb-5">
+              <div className="flex items-center gap-3 text-left">
+                <div className="w-9 h-9 rounded-2xl bg-blue-500/15 border border-blue-500/30 flex items-center justify-center text-blue-400 shrink-0 shadow-inner">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <rect x="3" y="3" width="7" height="7" rx="1" />
+                    <rect x="14" y="3" width="7" height="7" rx="1" />
+                    <rect x="3" y="14" width="7" height="7" rx="1" />
+                    <line x1="17.5" y1="14" x2="17.5" y2="21" />
+                    <line x1="14" y1="17.5" x2="21" y2="17.5" />
+                  </svg>
+                </div>
+                <div>
+                  <h4 className="text-sm font-bold text-white tracking-tight">
+                    Mã QR truy cập
+                  </h4>
+                  <span
+                    className={`inline-flex items-center gap-1 text-[11px] font-semibold px-2 py-0.5 mt-1 rounded-full border ${
+                      qrModalLink.role === "EDITOR"
+                        ? "bg-purple-500/20 text-purple-300 border-purple-500/30"
+                        : "bg-cyan-500/20 text-cyan-300 border-cyan-500/30"
+                    }`}
+                  >
+                    {qrModalLink.role === "EDITOR" ? "Biên tập viên" : "Chỉ xem"}
+                  </span>
+                </div>
               </div>
               <button
                 onClick={() => setQrModalLink(null)}
-                className="w-7 h-7 rounded-lg flex items-center justify-center text-white/50 hover:text-white transition-colors cursor-pointer"
+                className="w-7 h-7 rounded-lg flex items-center justify-center text-white/50 hover:text-white hover:bg-white/10 transition-colors cursor-pointer shrink-0"
               >
                 ✕
               </button>
             </div>
 
-            <div className="p-4 bg-white rounded-2xl shadow-xl inline-block my-2">
-              <QRCodeSVG
-                value={getResolvedUrl(qrModalLink)}
-                size={180}
-                level="H"
-                includeMargin={false}
-              />
+            {/* Khung QR kiểu viewfinder */}
+            <div className="relative inline-block my-1">
+              <span className="absolute -top-1.5 -left-1.5 w-5 h-5 border-t-2 border-l-2 border-blue-400 rounded-tl-lg" />
+              <span className="absolute -top-1.5 -right-1.5 w-5 h-5 border-t-2 border-r-2 border-blue-400 rounded-tr-lg" />
+              <span className="absolute -bottom-1.5 -left-1.5 w-5 h-5 border-b-2 border-l-2 border-blue-400 rounded-bl-lg" />
+              <span className="absolute -bottom-1.5 -right-1.5 w-5 h-5 border-b-2 border-r-2 border-blue-400 rounded-br-lg" />
+              <div className="p-4 bg-white rounded-2xl shadow-xl">
+                <QRCodeSVG
+                  value={getResolvedUrl(qrModalLink)}
+                  size={180}
+                  level="H"
+                  includeMargin={false}
+                />
+              </div>
             </div>
 
-            <p className="text-xs text-white/60 mt-2 mb-5">
+            <p className="relative text-xs text-white/60 mt-4 mb-3">
               Quét mã bằng Camera điện thoại hoặc Zalo để vào album.
             </p>
 
-            <div className="flex gap-2">
+            <div className="relative flex items-center gap-2 bg-black/30 border border-white/10 rounded-xl p-1.5 pl-3 mb-5">
+              <svg className="text-white/40 shrink-0" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71" />
+                <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71" />
+              </svg>
+              <span className="text-[11px] text-white/70 truncate font-mono">
+                {getResolvedUrl(qrModalLink)}
+              </span>
+            </div>
+
+            <div className="relative flex gap-2">
               <button
                 type="button"
                 onClick={() => {
                   handleCopy(qrModalLink)
                   setQrModalLink(null)
                 }}
-                className="flex-1 py-2.5 px-3 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-xs font-semibold flex items-center justify-center gap-1.5 transition-all cursor-pointer active:scale-95"
+                className="flex-1 py-2.5 px-3 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-xs font-semibold flex items-center justify-center gap-1.5 transition-all cursor-pointer active:scale-95 shadow-sm shadow-blue-600/30"
               >
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <rect x="9" y="9" width="13" height="13" rx="2" />
+                  <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
+                </svg>
                 Sao chép liên kết
               </button>
               <button
