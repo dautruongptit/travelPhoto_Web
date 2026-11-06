@@ -1,58 +1,52 @@
 import type { StoragePlan } from "./types"
 
-const BASE_PRICE = 25000 // VNĐ/tháng gốc, gói 1 tháng
+const BASE_PRICE = 25000 // VNĐ/tháng gốc, dùng để tính giá gạch ngang của các gói dài hơn
 
 export const storagePlans: StoragePlan[] = [
   {
-    id: "plan-1m",
+    id: "plan-1w",
 
-    durationMonths: 1,
+    durationDays: 7,
 
-    label: "1 tháng",
+    label: "1 tuần",
 
     storageGB: 100,
 
-    pricePerMonth: BASE_PRICE,
+    totalPrice: 10000,
 
-    originalPricePerMonth: BASE_PRICE,
-
-    totalPrice: BASE_PRICE * 1,
+    originalPrice: 10000,
 
     discountPercent: 0,
   },
 
   {
-    id: "plan-3m",
+    id: "plan-1m",
 
-    durationMonths: 3,
+    durationDays: 30,
 
-    label: "3 tháng",
+    label: "1 tháng",
 
     storageGB: 100,
 
-    pricePerMonth: Math.round(BASE_PRICE * 0.9),
+    totalPrice: BASE_PRICE,
 
-    originalPricePerMonth: BASE_PRICE,
+    originalPrice: BASE_PRICE,
 
-    totalPrice: Math.round(BASE_PRICE * 0.9) * 3,
-
-    discountPercent: 10,
+    discountPercent: 0,
   },
 
   {
     id: "plan-6m",
 
-    durationMonths: 6,
+    durationDays: 180,
 
     label: "6 tháng",
 
     storageGB: 200,
 
-    pricePerMonth: Math.round(BASE_PRICE * 0.8),
-
-    originalPricePerMonth: BASE_PRICE,
-
     totalPrice: Math.round(BASE_PRICE * 0.8) * 6,
+
+    originalPrice: BASE_PRICE * 6,
 
     discountPercent: 20,
 
@@ -60,19 +54,17 @@ export const storagePlans: StoragePlan[] = [
   },
 
   {
-    id: "plan-12m",
+    id: "plan-1y",
 
-    durationMonths: 12,
+    durationDays: 365,
 
-    label: "12 tháng",
+    label: "1 năm",
 
     storageGB: 200,
 
-    pricePerMonth: Math.round(BASE_PRICE * 0.65),
-
-    originalPricePerMonth: BASE_PRICE,
-
     totalPrice: Math.round(BASE_PRICE * 0.65) * 12,
+
+    originalPrice: BASE_PRICE * 12,
 
     discountPercent: 35,
 

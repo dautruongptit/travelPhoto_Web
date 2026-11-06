@@ -115,6 +115,7 @@ export default function AlbumPage({
   const [showSortMenu, setShowSortMenu] = useState(false)
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false)
   const [showShareModal, setShowShareModal] = useState(false)
+  const [shareModalMode, setShareModalMode] = useState<"share" | "settings">("share")
   const [shareRefreshKey, setShareRefreshKey] = useState(0)
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null)
   const [slideshow, setSlideshow] = useState(false)
@@ -249,7 +250,10 @@ export default function AlbumPage({
             <div className="flex items-center gap-2.5 flex-shrink-0">
               {user && String(event.ownerId) === String(user.id) && (
                 <button
-                  onClick={() => setShowShareModal(true)}
+                  onClick={() => {
+                    setShareModalMode("share")
+                    setShowShareModal(true)
+                  }}
                   className="flex items-center gap-1.5 h-8 px-3.5 bg-white/5 hover:bg-white/10 border border-white/15 rounded-full text-sm font-semibold text-white transition-all cursor-pointer shadow-sm active:scale-95"
                 >
                   <svg
@@ -679,7 +683,10 @@ export default function AlbumPage({
                   <ShareTab
                     eventId={Number(event.id)}
                     eventName={event.name}
-                    onOpenShareModal={() => setShowShareModal(true)}
+                    onOpenShareModal={(mode) => {
+                      setShareModalMode(mode ?? "share")
+                      setShowShareModal(true)
+                    }}
                     onToast={onToast}
                     refreshTrigger={shareRefreshKey}
                     isEmbedded={true}
@@ -778,6 +785,7 @@ export default function AlbumPage({
               ? () => {
                   setLightboxIndex(null)
                   setSlideshow(false)
+                  setShareModalMode("share")
                   setShowShareModal(true)
                 }
               : undefined
@@ -837,6 +845,7 @@ export default function AlbumPage({
       {showShareModal && (
         <ShareModal
           event={event}
+          mode={shareModalMode}
           onClose={() => setShowShareModal(false)}
           onToast={onToast}
           onChanged={() => {

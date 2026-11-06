@@ -16,7 +16,7 @@ import {
 interface Props {
   eventId: number
   eventName?: string
-  onOpenShareModal: () => void
+  onOpenShareModal: (mode?: "share" | "settings") => void
   onToast?: (type: "success" | "error" | "warning" | "info", msg: string) => void
   refreshTrigger?: number
   isEmbedded?: boolean
@@ -179,7 +179,7 @@ export default function ShareTab({
 
           {!hasActiveLink && (
             <button
-              onClick={onOpenShareModal}
+              onClick={() => onOpenShareModal()}
               className="inline-flex items-center gap-1.5 px-4 py-1.5 text-white text-sm font-semibold rounded-full shadow-md bg-blue-600 hover:bg-blue-500 active:scale-95 shadow-blue-600/30 cursor-pointer transition-all"
             >
               <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
@@ -194,7 +194,7 @@ export default function ShareTab({
         {links.length === 0 ? (
           <div className="py-8 text-center">
             <button
-              onClick={onOpenShareModal}
+              onClick={() => onOpenShareModal()}
               className="inline-flex items-center gap-1.5 text-sm text-blue-400 hover:text-blue-300 font-medium cursor-pointer"
             >
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
@@ -425,7 +425,7 @@ export default function ShareTab({
           </div>
 
           <button
-            onClick={onOpenShareModal}
+            onClick={() => onOpenShareModal("settings")}
             className="px-3.5 py-1.5 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-sm text-white/80 transition-all cursor-pointer"
           >
             Cài đặt nâng cao

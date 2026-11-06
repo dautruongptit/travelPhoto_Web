@@ -50,7 +50,7 @@ export default function HelpPage({ onBack }: Props) {
       {/* Back */}
       <button
         onClick={onBack}
-        className="flex items-center gap-1.5 text-sm text-gray-500 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200 transition-colors mb-6"
+        className="flex items-center gap-1.5 text-sm text-neutral-500 dark:text-neutral-400 hover:text-neutral-800 dark:hover:text-neutral-200 transition-colors mb-6"
       >
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
           <path
@@ -64,10 +64,10 @@ export default function HelpPage({ onBack }: Props) {
         Quay lại
       </button>
 
-      <h1 className="text-2xl font-bold text-gray-900 dark:text-white tracking-tight">
+      <h1 className="text-2xl sm:text-3xl font-bold text-neutral-900 dark:text-white tracking-tight">
         Trung tâm trợ giúp
       </h1>
-      <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
+      <p className="text-sm text-neutral-500 dark:text-neutral-400 mt-1">
         Câu hỏi thường gặp và cách liên hệ với đội ngũ hỗ trợ TripAlbum.
       </p>
 
@@ -79,17 +79,17 @@ export default function HelpPage({ onBack }: Props) {
           return (
             <div
               key={item.q}
-              className="rounded-2xl border border-gray-100 dark:border-gray-800 overflow-hidden"
+              className="rounded-2xl border border-neutral-100 dark:border-neutral-800 overflow-hidden"
             >
               <button
                 onClick={() => setOpenIndex(open ? null : i)}
-                className="w-full flex items-center justify-between gap-4 px-4 py-3.5 text-left bg-white dark:bg-gray-900 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
+                className="w-full flex items-center justify-between gap-4 px-4 py-3.5 text-left bg-white dark:bg-neutral-900 hover:bg-neutral-50 dark:hover:bg-neutral-800 transition-colors"
               >
-                <span className="text-sm font-medium text-gray-800 dark:text-gray-100">
+                <span className="text-sm font-medium text-neutral-800 dark:text-neutral-100">
                   {item.q}
                 </span>
                 <svg
-                  className={`flex-shrink-0 text-gray-400 dark:text-gray-500 transition-transform ${
+                  className={`flex-shrink-0 text-neutral-400 dark:text-neutral-500 transition-transform ${
                     open ? "rotate-180" : ""
                   }`}
                   width="16"
@@ -108,7 +108,7 @@ export default function HelpPage({ onBack }: Props) {
               </button>
               {open && (
                 <div className="px-4 pb-4 -mt-0.5">
-                  <p className="text-sm text-gray-500 dark:text-gray-400 leading-relaxed">
+                  <p className="text-sm text-neutral-500 dark:text-neutral-400 leading-relaxed">
                     {item.a}
                   </p>
                 </div>
@@ -119,18 +119,18 @@ export default function HelpPage({ onBack }: Props) {
       </div>
 
       {/* Contact */}
-      <div className="mt-8 rounded-2xl bg-gray-50 dark:bg-gray-800 p-5">
-        <h2 className="text-base font-semibold text-gray-900 dark:text-white">
+      <div className="mt-8 rounded-2xl bg-neutral-50 dark:bg-neutral-800 p-5">
+        <h2 className="text-base font-semibold text-neutral-900 dark:text-white">
           Vẫn cần trợ giúp?
         </h2>
-        <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
+        <p className="text-sm text-neutral-500 dark:text-neutral-400 mt-1">
           Đội ngũ hỗ trợ TripAlbum sẵn sàng giải đáp mọi lúc.
         </p>
 
         <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-3">
           <a
             href="tel:19001234"
-            className="flex items-center gap-3 rounded-xl bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-800 px-4 py-3 hover:border-blue-300 transition-colors"
+            className="flex items-center gap-3 rounded-xl bg-white dark:bg-neutral-900 border border-neutral-100 dark:border-neutral-800 px-4 py-3 hover:border-blue-300 transition-colors"
           >
             <div className="w-9 h-9 rounded-full bg-blue-100 dark:bg-blue-950/40 flex items-center justify-center flex-shrink-0">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
@@ -144,10 +144,10 @@ export default function HelpPage({ onBack }: Props) {
               </svg>
             </div>
             <div>
-              <p className="text-sm font-semibold text-gray-900 dark:text-white">
+              <p className="text-sm font-semibold text-neutral-900 dark:text-white">
                 1900 1234
               </p>
-              <p className="text-xs text-gray-500 dark:text-gray-400">
+              <p className="text-xs text-neutral-500 dark:text-neutral-400">
                 Hotline · 8:00–21:00 hằng ngày
               </p>
             </div>
@@ -155,7 +155,7 @@ export default function HelpPage({ onBack }: Props) {
 
           <a
             href="mailto:support@tripalbum.vn"
-            className="flex items-center gap-3 rounded-xl bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-800 px-4 py-3 hover:border-blue-300 transition-colors"
+            className="flex items-center gap-3 rounded-xl bg-white dark:bg-neutral-900 border border-neutral-100 dark:border-neutral-800 px-4 py-3 hover:border-blue-300 transition-colors"
           >
             <div className="w-9 h-9 rounded-full bg-blue-100 dark:bg-blue-950/40 flex items-center justify-center flex-shrink-0">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
@@ -178,10 +178,10 @@ export default function HelpPage({ onBack }: Props) {
               </svg>
             </div>
             <div>
-              <p className="text-sm font-semibold text-gray-900 dark:text-white">
+              <p className="text-sm font-semibold text-neutral-900 dark:text-white">
                 support@tripalbum.vn
               </p>
-              <p className="text-xs text-gray-500 dark:text-gray-400">
+              <p className="text-xs text-neutral-500 dark:text-neutral-400">
                 Phản hồi trong 24 giờ
               </p>
             </div>

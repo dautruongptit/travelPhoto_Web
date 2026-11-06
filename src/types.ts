@@ -63,12 +63,11 @@ export interface ToastItem {
 
 export interface StoragePlan {
   id: string
-  durationMonths: 1 | 3 | 6 | 12
-  label: string
+  durationDays: number // 7 | 30 | 180 | 365 — thời hạn gói, tính bằng ngày
+  label: string // "1 tuần" | "1 tháng" | "6 tháng" | "1 năm"
   storageGB: number
-  pricePerMonth: number // VNĐ/tháng đã áp ưu đãi
-  originalPricePerMonth: number // VNĐ/tháng gốc (chưa giảm)
-  totalPrice: number // VNĐ, thanh toán 1 lần cho cả kỳ
+  totalPrice: number // VNĐ, thanh toán 1 lần cho cả gói
+  originalPrice: number // VNĐ gốc (chưa giảm) — dùng hiện giá gạch ngang
   discountPercent: number
   badge?: string
 }

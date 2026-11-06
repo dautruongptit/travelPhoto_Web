@@ -155,7 +155,7 @@ export default function VnpayCheckoutModal({
       <div className="min-h-full flex flex-col items-center px-4 py-10 sm:py-14">
         {/* Header căn giữa trang */}
         <div className="w-full max-w-sm flex flex-col items-center text-center mb-6">
-          <div className="w-11 h-11 rounded-2xl bg-white dark:bg-gray-900 shadow-sm border border-gray-100 dark:border-gray-800 flex items-center justify-center mb-3">
+          <div className="w-11 h-11 rounded-2xl bg-white dark:bg-neutral-900 shadow-sm border border-neutral-100 dark:border-neutral-800 flex items-center justify-center mb-3">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
               <rect
                 x="2"
@@ -163,21 +163,21 @@ export default function VnpayCheckoutModal({
                 width="20"
                 height="14"
                 rx="2.5"
-                stroke="#4F46E5"
+                stroke="#2563EB"
                 strokeWidth="1.8"
               />
               <path
                 d="M2 10h20M6 15h4"
-                stroke="#4F46E5"
+                stroke="#2563EB"
                 strokeWidth="1.8"
                 strokeLinecap="round"
               />
             </svg>
           </div>
-          <h1 className="text-xl font-bold text-gray-900 dark:text-white">
+          <h1 className="text-xl font-bold text-neutral-900 dark:text-white">
             Thanh toán VNPay
           </h1>
-          <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
+          <p className="text-sm text-neutral-500 dark:text-neutral-400 mt-1">
             {step === "result"
               ? result?.success
                 ? "Giao dịch đã hoàn tất"
@@ -189,7 +189,7 @@ export default function VnpayCheckoutModal({
         </div>
 
         {/* Card chính */}
-        <div className="w-full max-w-sm bg-white dark:bg-gray-900 rounded-3xl shadow-sm border border-gray-100 dark:border-gray-800 p-5 sm:p-6">
+        <div className="w-full max-w-sm bg-white dark:bg-neutral-900 rounded-3xl shadow-sm border border-neutral-100 dark:border-neutral-800 p-5 sm:p-6">
           {/* Redirecting / lỗi khởi tạo */}
           {step === "redirecting" && (
             <div className="py-10 flex flex-col items-center gap-3">
@@ -198,12 +198,12 @@ export default function VnpayCheckoutModal({
                   <div className="w-12 h-12 rounded-2xl bg-red-100 dark:bg-red-950/40 flex items-center justify-center text-red-500 text-xl">
                     !
                   </div>
-                  <p className="text-sm text-gray-600 dark:text-gray-300 text-center">
+                  <p className="text-sm text-neutral-600 dark:text-neutral-300 text-center">
                     {error}
                   </p>
                   <button
                     onClick={onCancel}
-                    className="mt-2 px-4 py-2 rounded-xl border border-gray-200 dark:border-gray-700 text-sm font-medium text-gray-700 dark:text-gray-300"
+                    className="mt-2 px-4 py-2 rounded-xl border border-neutral-200 dark:border-neutral-700 text-sm font-medium text-neutral-700 dark:text-neutral-300"
                   >
                     Đóng
                   </button>
@@ -211,7 +211,7 @@ export default function VnpayCheckoutModal({
               ) : (
                 <>
                   <svg
-                    className="animate-spin text-indigo-500"
+                    className="animate-spin text-blue-500"
                     width="26"
                     height="26"
                     viewBox="0 0 24 24"
@@ -227,7 +227,7 @@ export default function VnpayCheckoutModal({
                       strokeDasharray="40 60"
                     />
                   </svg>
-                  <p className="text-sm text-gray-500 dark:text-gray-400">
+                  <p className="text-sm text-neutral-500 dark:text-neutral-400">
                     Đang khởi tạo giao dịch…
                   </p>
                 </>
@@ -238,8 +238,8 @@ export default function VnpayCheckoutModal({
           {(step === "qr" || step === "waiting") && (
             <>
               {/* Thông tin đơn hàng */}
-              <div className="flex items-center gap-3 bg-gray-50 dark:bg-gray-800 rounded-2xl px-3.5 py-3">
-                <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-500 to-purple-500 flex items-center justify-center flex-shrink-0">
+              <div className="flex items-center gap-3 bg-neutral-50 dark:bg-neutral-800 rounded-2xl px-3.5 py-3">
+                <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-500 to-purple-500 flex items-center justify-center flex-shrink-0">
                   <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
                     <path
                       d="M12 2l2.4 6.6L21 11l-6.6 2.4L12 20l-2.4-6.6L3 11l6.6-2.4L12 2z"
@@ -248,10 +248,10 @@ export default function VnpayCheckoutModal({
                   </svg>
                 </div>
                 <div className="min-w-0">
-                  <p className="text-sm font-semibold text-gray-900 dark:text-white truncate">
+                  <p className="text-sm font-semibold text-neutral-900 dark:text-white truncate">
                     Nâng cấp TripAlbum — Gói {plan.label}
                   </p>
-                  <p className="text-xs text-gray-500 dark:text-gray-400 truncate">
+                  <p className="text-xs text-neutral-500 dark:text-neutral-400 truncate">
                     Mã ĐH: #{orderId.slice(-8)}
                     {customerName ? ` • ${customerName}` : ""}
                   </p>
@@ -260,25 +260,25 @@ export default function VnpayCheckoutModal({
 
               {/* Số tiền */}
               <div className="text-center mt-5">
-                <p className="text-sm text-gray-500 dark:text-gray-400">
+                <p className="text-sm text-neutral-500 dark:text-neutral-400">
                   Số tiền thanh toán
                 </p>
-                <p className="text-3xl font-bold text-gray-900 dark:text-white mt-1">
+                <p className="text-3xl font-bold text-neutral-900 dark:text-white mt-1">
                   {formatCurrency(plan.totalPrice)}
                 </p>
               </div>
 
               {/* QR / trạng thái chờ */}
-              <div className="mt-5 rounded-2xl border border-gray-100 dark:border-gray-800 p-5 flex flex-col items-center">
+              <div className="mt-5 rounded-2xl border border-neutral-100 dark:border-neutral-800 p-5 flex flex-col items-center">
                 {step === "qr" ? (
-                  <div className="w-44 h-44 rounded-2xl bg-white border border-gray-100 shadow-sm p-2.5 grid grid-cols-9 grid-rows-9 gap-0.5 relative overflow-hidden">
-                    <div className="absolute top-0 left-0 right-0 h-0.5 bg-gradient-to-r from-transparent via-indigo-400 to-transparent" />
+                  <div className="w-44 h-44 rounded-2xl bg-white border border-neutral-100 shadow-sm p-2.5 grid grid-cols-9 grid-rows-9 gap-0.5 relative overflow-hidden">
+                    <div className="absolute top-0 left-0 right-0 h-0.5 bg-gradient-to-r from-transparent via-blue-400 to-transparent" />
                     {Array.from({ length: 81 }).map((_, i) => (
                       <div
                         key={i}
                         className={
                           (i * 41 + orderId.length) % 3 === 0
-                            ? "bg-gray-900"
+                            ? "bg-neutral-900"
                             : "bg-transparent"
                         }
                       />
@@ -286,7 +286,7 @@ export default function VnpayCheckoutModal({
                   </div>
                 ) : (
                   <div className="w-44 h-44 flex flex-col items-center justify-center gap-2.5">
-                    <div className="w-14 h-14 rounded-full bg-indigo-50 dark:bg-indigo-950/40 flex items-center justify-center">
+                    <div className="w-14 h-14 rounded-full bg-blue-50 dark:bg-blue-950/40 flex items-center justify-center">
                       <svg
                         width="26"
                         height="26"
@@ -295,26 +295,26 @@ export default function VnpayCheckoutModal({
                       >
                         <path
                           d="M12 2l8 3v6c0 5-3.4 8.4-8 10-4.6-1.6-8-5-8-10V5l8-3z"
-                          stroke="#4F46E5"
+                          stroke="#2563EB"
                           strokeWidth="1.8"
                           strokeLinejoin="round"
                         />
                         <path
                           d="M9 12l2 2 4-4"
-                          stroke="#4F46E5"
+                          stroke="#2563EB"
                           strokeWidth="1.8"
                           strokeLinecap="round"
                           strokeLinejoin="round"
                         />
                       </svg>
                     </div>
-                    <p className="text-sm font-semibold text-gray-800 dark:text-gray-100">
+                    <p className="text-sm font-semibold text-neutral-800 dark:text-neutral-100">
                       Đã nhận QR
                     </p>
-                    <p className="text-xs text-gray-400 dark:text-gray-500 -mt-1.5">
+                    <p className="text-xs text-neutral-400 dark:text-neutral-500 -mt-1.5">
                       Chờ ngân hàng xác nhận…
                     </p>
-                    <span className="inline-flex items-center gap-1.5 text-xs text-gray-500 dark:text-gray-400 bg-gray-50 dark:bg-gray-800 rounded-full px-2.5 py-1 mt-1">
+                    <span className="inline-flex items-center gap-1.5 text-xs text-neutral-500 dark:text-neutral-400 bg-neutral-50 dark:bg-neutral-800 rounded-full px-2.5 py-1 mt-1">
                       <svg
                         className="animate-spin"
                         width="11"
@@ -347,11 +347,11 @@ export default function VnpayCheckoutModal({
                 </div>
 
                 {step === "qr" ? (
-                  <p className="text-sm text-gray-400 dark:text-gray-500 mt-1 text-center">
+                  <p className="text-sm text-neutral-400 dark:text-neutral-500 mt-1 text-center">
                     Quét bằng ứng dụng ngân hàng hoặc VNPay
                   </p>
                 ) : (
-                  <p className="text-sm text-indigo-500 mt-1 text-center">
+                  <p className="text-sm text-blue-500 mt-1 text-center">
                     {DEMO_BANK} đang xử lý giao dịch…
                   </p>
                 )}
@@ -381,7 +381,7 @@ export default function VnpayCheckoutModal({
                 </div>
               ) : (
                 <div className="mt-4 flex justify-center">
-                  <span className="inline-flex items-center gap-1.5 text-xs font-medium text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-950/30 rounded-full px-3 py-1.5">
+                  <span className="inline-flex items-center gap-1.5 text-xs font-medium text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-950/30 rounded-full px-3 py-1.5">
                     <svg
                       className="animate-spin"
                       width="12"
@@ -407,7 +407,7 @@ export default function VnpayCheckoutModal({
               <button
                 onClick={handleConfirmedPayment}
                 disabled={step === "waiting"}
-                className="mt-5 w-full py-3 rounded-2xl bg-gray-700 hover:bg-gray-800 disabled:bg-gray-300 dark:disabled:bg-gray-700 disabled:cursor-not-allowed text-white text-sm font-semibold transition-colors flex items-center justify-center gap-1.5"
+                className="mt-5 w-full py-3 rounded-2xl bg-blue-600 hover:bg-blue-700 disabled:bg-neutral-300 dark:disabled:bg-neutral-700 disabled:cursor-not-allowed text-white text-sm font-semibold transition-colors flex items-center justify-center gap-1.5"
               >
                 Tôi đã thanh toán
                 <svg width="15" height="15" viewBox="0 0 24 24" fill="none">
@@ -423,7 +423,7 @@ export default function VnpayCheckoutModal({
               <button
                 onClick={onCancel}
                 disabled={step === "waiting"}
-                className="mt-1 w-full py-2 text-sm text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300 disabled:opacity-40 transition-colors"
+                className="mt-1 w-full py-2 text-sm text-neutral-400 dark:text-neutral-500 hover:text-neutral-600 dark:hover:text-neutral-300 disabled:opacity-40 transition-colors"
               >
                 Hủy
               </button>
@@ -469,59 +469,59 @@ export default function VnpayCheckoutModal({
                 )}
               </div>
 
-              <p className="text-lg font-bold text-gray-900 dark:text-white mt-4">
+              <p className="text-lg font-bold text-neutral-900 dark:text-white mt-4">
                 {result.success
                   ? "Thanh toán thành công"
                   : "Thanh toán thất bại"}
               </p>
-              <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
+              <p className="text-sm text-neutral-500 dark:text-neutral-400 mt-1">
                 {result.success
                   ? "Cảm ơn bạn! Giao dịch đã được xác nhận."
                   : "Vui lòng thử lại hoặc chọn phương thức khác."}
               </p>
 
               {result.success && (
-                <div className="w-full bg-gray-50 dark:bg-gray-800 rounded-2xl p-4 mt-5 text-left text-sm space-y-2.5">
+                <div className="w-full bg-neutral-50 dark:bg-neutral-800 rounded-2xl p-4 mt-5 text-left text-sm space-y-2.5">
                   <div className="flex items-center justify-between">
-                    <span className="text-gray-400 dark:text-gray-500 text-xs flex items-center gap-1.5">
-                      <span className="text-gray-300 dark:text-gray-600">
+                    <span className="text-neutral-400 dark:text-neutral-500 text-xs flex items-center gap-1.5">
+                      <span className="text-neutral-300 dark:text-neutral-600">
                         #
                       </span>{" "}
                       Mã giao dịch
                     </span>
-                    <span className="font-medium text-gray-800 dark:text-gray-100">
+                    <span className="font-medium text-neutral-800 dark:text-neutral-100">
                       #{result.orderId.slice(-8)}
                     </span>
                   </div>
                   <div className="flex items-center justify-between">
-                    <span className="text-gray-400 dark:text-gray-500 text-xs">
+                    <span className="text-neutral-400 dark:text-neutral-500 text-xs">
                       Mã VNPay
                     </span>
-                    <span className="font-medium text-gray-800 dark:text-gray-100">
+                    <span className="font-medium text-neutral-800 dark:text-neutral-100">
                       {result.transactionNo}
                     </span>
                   </div>
                   <div className="flex items-center justify-between">
-                    <span className="text-gray-400 dark:text-gray-500 text-xs">
+                    <span className="text-neutral-400 dark:text-neutral-500 text-xs">
                       Thời gian
                     </span>
-                    <span className="font-medium text-gray-800 dark:text-gray-100">
+                    <span className="font-medium text-neutral-800 dark:text-neutral-100">
                       {result.payDate}
                     </span>
                   </div>
                   <div className="flex items-center justify-between">
-                    <span className="text-gray-400 dark:text-gray-500 text-xs">
+                    <span className="text-neutral-400 dark:text-neutral-500 text-xs">
                       Ngân hàng
                     </span>
-                    <span className="font-medium text-gray-800 dark:text-gray-100">
+                    <span className="font-medium text-neutral-800 dark:text-neutral-100">
                       {DEMO_BANK}
                     </span>
                   </div>
-                  <div className="flex items-center justify-between pt-2.5 border-t border-gray-200 dark:border-gray-700">
-                    <span className="text-gray-500 dark:text-gray-400 text-xs">
+                  <div className="flex items-center justify-between pt-2.5 border-t border-neutral-200 dark:border-neutral-700">
+                    <span className="text-neutral-500 dark:text-neutral-400 text-xs">
                       Số tiền
                     </span>
-                    <span className="font-bold text-indigo-600 dark:text-indigo-400">
+                    <span className="font-bold text-blue-600 dark:text-blue-400">
                       {formatCurrency(result.amount ?? plan.totalPrice)}
                     </span>
                   </div>
@@ -530,14 +530,14 @@ export default function VnpayCheckoutModal({
 
               <button
                 onClick={handleDone}
-                className="mt-6 w-full py-3 rounded-2xl bg-indigo-600 hover:bg-indigo-700 text-sm font-semibold text-white transition-colors"
+                className="mt-6 w-full py-3 rounded-2xl bg-blue-600 hover:bg-blue-700 text-sm font-semibold text-white transition-colors"
               >
                 Tiếp tục
               </button>
               {result.success && (
                 <button
                   onClick={() => {}}
-                  className="mt-2 w-full py-2.5 rounded-2xl bg-indigo-50 dark:bg-indigo-950/30 text-sm font-medium text-indigo-600 dark:text-indigo-400 hover:bg-indigo-100 dark:hover:bg-indigo-900/40 transition-colors flex items-center justify-center gap-1.5"
+                  className="mt-2 w-full py-2.5 rounded-2xl bg-blue-50 dark:bg-blue-950/30 text-sm font-medium text-blue-600 dark:text-blue-400 hover:bg-blue-100 dark:hover:bg-blue-900/40 transition-colors flex items-center justify-center gap-1.5"
                 >
                   <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
                     <path

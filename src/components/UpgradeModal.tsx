@@ -37,36 +37,36 @@ export default function UpgradeModal({
         className="absolute inset-0 bg-black/50 backdrop-blur-sm"
         onClick={onClose}
       />
-      <div className="slide-up relative bg-white dark:bg-gray-900 rounded-3xl shadow-2xl w-full max-w-3xl max-h-[90vh] flex flex-col overflow-hidden">
+      <div className="slide-up relative bg-white dark:bg-neutral-900 rounded-3xl shadow-2xl w-full max-w-3xl max-h-[90vh] flex flex-col overflow-hidden">
         {/* Header */}
-        <div className="px-6 pt-6 pb-4 border-b border-gray-100 dark:border-gray-800 flex-shrink-0">
+        <div className="px-6 pt-6 pb-4 border-b border-neutral-100 dark:border-neutral-800 flex-shrink-0">
           <div className="flex items-center justify-between">
             <div>
-              <h2 className="text-xl font-bold text-gray-900 dark:text-white tracking-tight">
+              <h2 className="text-xl font-bold text-neutral-900 dark:text-white tracking-tight">
                 Nâng cấp dung lượng lưu trữ
               </h2>
-              <p className="text-sm text-gray-500 dark:text-gray-400 mt-0.5">
+              <p className="text-sm text-neutral-500 dark:text-neutral-400 mt-0.5">
                 Lưu trữ nhiều ảnh hơn, không lo hết dung lượng.
               </p>
             </div>
             <button
               onClick={onClose}
-              className="w-9 h-9 flex items-center justify-center rounded-xl text-gray-400 dark:text-gray-500 hover:text-gray-700 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors text-xl"
+              className="w-9 h-9 flex items-center justify-center rounded-xl text-neutral-400 dark:text-neutral-500 hover:text-neutral-700 dark:hover:text-neutral-200 hover:bg-neutral-100 dark:hover:bg-neutral-700 transition-colors text-xl"
             >
               ×
             </button>
           </div>
 
           {/* Storage usage bar */}
-          <div className="mt-4 bg-gray-50 dark:bg-gray-800 rounded-xl p-3">
-            <div className="flex items-center justify-between text-xs text-gray-600 dark:text-gray-300 mb-1.5">
+          <div className="mt-4 bg-neutral-50 dark:bg-neutral-800 rounded-xl p-3">
+            <div className="flex items-center justify-between text-xs text-neutral-600 dark:text-neutral-300 mb-1.5">
               <span>
                 Đã dùng {formatTotalSize(usedBytes)} /{" "}
                 {formatTotalSize(limitBytes)}
               </span>
               <span className="font-medium">{usedPercent}%</span>
             </div>
-            <div className="h-2 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
+            <div className="h-2 bg-neutral-200 dark:bg-neutral-700 rounded-full overflow-hidden">
               <div
                 className={`h-full rounded-full transition-all ${
                   usedPercent >= 90
@@ -94,7 +94,7 @@ export default function UpgradeModal({
                   className={`relative text-left rounded-2xl border-2 p-4 transition-all ${
                     isSelected
                       ? "border-blue-500 bg-blue-50 dark:bg-blue-950/40 shadow-md shadow-blue-100 dark:shadow-none"
-                      : "border-gray-200 dark:border-gray-700 hover:border-blue-300 bg-white dark:bg-gray-900"
+                      : "border-neutral-200 dark:border-neutral-700 hover:border-blue-300 bg-white dark:bg-neutral-900"
                   }`}
                 >
                   {plan.badge && (
@@ -108,28 +108,24 @@ export default function UpgradeModal({
                     </span>
                   )}
 
-                  <p className="text-base font-semibold text-gray-900 dark:text-white mt-1">
+                  <p className="text-base font-semibold text-neutral-900 dark:text-white mt-1">
                     {plan.label}
                   </p>
-                  <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">
+                  <p className="text-xs text-neutral-500 dark:text-neutral-400 mt-0.5">
                     {plan.storageGB} GB lưu trữ
                   </p>
 
                   <div className="mt-3">
                     {plan.discountPercent > 0 && (
-                      <p className="text-xs text-gray-400 dark:text-gray-500 line-through">
-                        {formatCurrency(plan.originalPricePerMonth)}/tháng
+                      <p className="text-xs text-neutral-400 dark:text-neutral-500 line-through">
+                        {formatCurrency(plan.originalPrice)}
                       </p>
                     )}
-                    <p className="text-lg font-bold text-gray-900 dark:text-white">
-                      {formatCurrency(plan.pricePerMonth)}
-                      <span className="text-xs font-normal text-gray-500 dark:text-gray-400">
-                        /tháng
-                      </span>
+                    <p className="text-lg font-bold text-neutral-900 dark:text-white">
+                      {formatCurrency(plan.totalPrice)}
                     </p>
-                    <p className="text-xs text-gray-400 dark:text-gray-500 mt-0.5">
-                      Thanh toán {formatCurrency(plan.totalPrice)} /{" "}
-                      {plan.durationMonths} tháng
+                    <p className="text-xs text-neutral-400 dark:text-neutral-500 mt-0.5">
+                      Thanh toán 1 lần / {plan.label}
                     </p>
                   </div>
 
@@ -137,7 +133,7 @@ export default function UpgradeModal({
                     className={`mt-3 w-4 h-4 rounded-full border-2 flex items-center justify-center ${
                       isSelected
                         ? "border-blue-600 bg-blue-600"
-                        : "border-gray-300 dark:border-gray-600"
+                        : "border-neutral-300 dark:border-neutral-600"
                     }`}
                   >
                     {isSelected && (
@@ -149,7 +145,7 @@ export default function UpgradeModal({
             })}
           </div>
 
-          <ul className="mt-5 space-y-1.5 text-sm text-gray-600 dark:text-gray-300">
+          <ul className="mt-5 space-y-1.5 text-sm text-neutral-600 dark:text-neutral-300">
             {[
               "Lưu trữ ảnh gốc, không nén chất lượng",
 
@@ -182,19 +178,19 @@ export default function UpgradeModal({
         </div>
 
         {/* Footer */}
-        <div className="flex-shrink-0 px-6 py-4 border-t border-gray-100 dark:border-gray-800 flex items-center justify-between gap-3">
+        <div className="flex-shrink-0 px-6 py-4 border-t border-neutral-100 dark:border-neutral-800 flex items-center justify-between gap-3">
           <div className="text-sm">
-            <span className="text-gray-500 dark:text-gray-400">
+            <span className="text-neutral-500 dark:text-neutral-400">
               Tổng thanh toán:{" "}
             </span>
-            <span className="font-bold text-gray-900 dark:text-white">
+            <span className="font-bold text-neutral-900 dark:text-white">
               {formatCurrency(selectedPlan.totalPrice)}
             </span>
           </div>
           <div className="flex gap-3">
             <button
               onClick={onClose}
-              className="px-4 py-2.5 rounded-xl border border-gray-200 dark:border-gray-700 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
+              className="px-4 py-2.5 rounded-xl border border-neutral-200 dark:border-neutral-700 text-sm font-medium text-neutral-700 dark:text-neutral-300 hover:bg-neutral-50 dark:hover:bg-neutral-800 transition-colors"
             >
               Để sau
             </button>

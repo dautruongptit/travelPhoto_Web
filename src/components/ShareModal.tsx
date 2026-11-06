@@ -18,6 +18,13 @@ interface Props {
 
   /** Quyền xem của album đã đổi (đã tạo link / bật tắt công khai) */
   onChanged?: () => void
+
+  /**
+   * "share" (mặc định): quản lý link chia sẻ (tạo mới / xem QR).
+   * "settings": chỉ xem cài đặt công khai — bỏ phần link/QR vì đã hiển thị
+   * sẵn trong tab Chia sẻ, tránh lặp lại cùng 1 nội dung.
+   */
+  mode?: "share" | "settings"
 }
 
 export default function ShareModal({
@@ -25,6 +32,7 @@ export default function ShareModal({
   onClose,
   onToast,
   onChanged,
+  mode = "share",
 }: Props) {
   // null = chưa biết trạng thái thật từ server -> công tắc bị khóa (không đoán "riêng tư")
   const [isPublic, setIsPublic] = useState<boolean | null>(null)
@@ -175,7 +183,7 @@ export default function ShareModal({
           <div className="flex items-center justify-between">
             <div>
               <h2 className="text-xl font-bold text-gray-900 dark:text-white tracking-tight">
-                Chia sẻ sự kiện
+                {mode === "settings" ? "Cài đặt nâng cao" : "Chia sẻ sự kiện"}
               </h2>
               <p className="text-sm text-gray-500 dark:text-gray-400 mt-0.5">
                 {event.name}
@@ -228,7 +236,7 @@ export default function ShareModal({
             </button>
           </div>
 
-          {!shareUrl ? (
+          {mode === "settings" ? null : !shareUrl ? (
             <div className="space-y-4">
               {!linksLoaded && (
                 <div className="p-3 rounded-xl bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 text-sm text-amber-700 dark:text-amber-300">
