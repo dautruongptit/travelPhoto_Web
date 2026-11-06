@@ -6,6 +6,7 @@ import ShareModal from "./ShareModal"
 import AuthImg from "./AuthImg"
 import JustifiedGallery from "./flickr/JustifiedGallery"
 import PhotoMasonry from "./PhotoMasonry"
+import PhotoList from "./PhotoList"
 import ShareTab from "./ShareTab"
 import { infoOf } from "../visibility"
 
@@ -30,7 +31,7 @@ const SORT_LABELS: Record<SortOption, string> = {
 }
 
 type AlbumTab = "photos" | "info"
-type ViewMode = "masonry" | "justified" | "grid" | "large"
+type ViewMode = "masonry" | "justified" | "grid" | "large" | "list"
 const VIEW_MODE_KEY = "travelphoto-album-view"
 
 const VIEW_BUTTONS: { mode: ViewMode; label: string; icon: React.ReactNode }[] = [
@@ -80,6 +81,20 @@ const VIEW_BUTTONS: { mode: ViewMode; label: string; icon: React.ReactNode }[] =
     label: "Ảnh lớn",
     icon: <rect x="4" y="4" width="16" height="16" rx="1" />,
   },
+  {
+    mode: "list",
+    label: "Danh sách chi tiết",
+    icon: (
+      <>
+        <rect x="3" y="4" width="4" height="4" rx="1" />
+        <rect x="9" y="4.5" width="12" height="3" rx="1" />
+        <rect x="3" y="10" width="4" height="4" rx="1" />
+        <rect x="9" y="10.5" width="12" height="3" rx="1" />
+        <rect x="3" y="16" width="4" height="4" rx="1" />
+        <rect x="9" y="16.5" width="12" height="3" rx="1" />
+      </>
+    ),
+  },
 ]
 
 export default function AlbumPage({
@@ -106,7 +121,10 @@ export default function AlbumPage({
   const [viewMode, setViewMode] = useState<ViewMode>(() => {
     try {
       const saved = localStorage.getItem(VIEW_MODE_KEY)
-      return saved === "grid" || saved === "large" || saved === "justified"
+      return saved === "grid" ||
+        saved === "large" ||
+        saved === "justified" ||
+        saved === "list"
         ? saved
         : "masonry"
     } catch {
@@ -524,6 +542,38 @@ export default function AlbumPage({
               }}
             />
           )
+        ) : viewMode === "list" ? (
+          photos.length === 0 ? (
+            event.photos.length === 0 ? (
+              /* Skeleton loading dạng dòng khi đang tải ảnh từ backend */
+              <div className="divide-y divide-neutral-100 dark:divide-neutral-800 rounded-xl border border-neutral-100 dark:border-neutral-800 overflow-hidden">
+                {Array.from({ length: 8 }).map((_, i) => (
+                  <div key={i} className="flex items-center gap-3 px-3 py-2">
+                    <div className="w-5 h-5 rounded-full bg-neutral-200 dark:bg-neutral-800 animate-pulse shrink-0" />
+                    <div className="w-12 h-12 rounded-lg bg-neutral-200 dark:bg-neutral-800 animate-pulse shrink-0" />
+                    <div className="flex-1 space-y-1.5">
+                      <div className="h-3.5 w-1/3 rounded bg-neutral-200 dark:bg-neutral-800 animate-pulse" />
+                      <div className="h-3 w-1/5 rounded bg-neutral-200 dark:bg-neutral-800 animate-pulse" />
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <p className="py-20 text-center text-sm text-neutral-500">
+                Không có ảnh khớp với "{q}".
+              </p>
+            )
+          ) : (
+            <PhotoList
+              photos={photos}
+              selectedIds={selected}
+              onSelectPhoto={canSelect ? (id) => toggleSelect(id) : () => {}}
+              onPhotoClick={(_photo, index) => {
+                setSlideshow(false)
+                setLightboxIndex(index)
+              }}
+            />
+          )
         ) : (
           <JustifiedGallery
             photos={photos}
@@ -559,7 +609,7 @@ export default function AlbumPage({
                         </svg>
                       </div>
                       <div>
-                        <h3 className="text-base font-bold text-white tracking-tight">
+                        <h3 className="text-sm font-bold text-white tracking-tight">
                           Thông tin sự kiện
                         </h3>
                         <p className="text-xs text-white/50 mt-0.5">

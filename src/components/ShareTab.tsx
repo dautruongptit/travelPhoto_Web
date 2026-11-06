@@ -168,7 +168,7 @@ export default function ShareTab({
               </svg>
             </div>
             <div className="flex items-center gap-2">
-              <h3 className="text-base font-bold text-white tracking-tight">
+              <h3 className="text-sm font-bold text-white tracking-tight">
                 Liên kết chia sẻ
               </h3>
               <span className="text-xs font-semibold px-2 py-0.5 rounded-full bg-white/10 text-white/70">
@@ -325,7 +325,7 @@ export default function ShareTab({
             </svg>
           </div>
           <div className="flex items-center gap-2">
-            <h3 className="text-base font-bold text-white tracking-tight">
+            <h3 className="text-sm font-bold text-white tracking-tight">
               Thành viên
             </h3>
             <span className="text-xs font-semibold px-2 py-0.5 rounded-full bg-white/10 text-white/70">
@@ -403,7 +403,7 @@ export default function ShareTab({
               <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
               <path d="M9 12l2 2 4-4" />
             </svg>
-            <h4 className="text-base font-bold text-white tracking-tight">
+            <h4 className="text-sm font-bold text-white tracking-tight">
               Bảo mật &amp; Đồng bộ lưu trữ
             </h4>
           </div>

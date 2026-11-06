@@ -134,7 +134,7 @@ export default function Dashboard({
         <p className="text-sm font-semibold mb-2 text-blue-500 dark:text-blue-400">
           Album của bạn
         </p>
-        <h1 className="text-3xl sm:text-4xl font-bold tracking-tight mb-3 text-neutral-900 dark:text-white">
+        <h1 className="text-2xl sm:text-3xl font-bold tracking-tight mb-3 text-neutral-900 dark:text-white">
           Những chuyến đi đáng nhớ
         </h1>
         <p className="text-sm sm:text-base text-neutral-500 dark:text-neutral-400 leading-relaxed">

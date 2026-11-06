@@ -146,7 +146,7 @@ export default function LoginPage({
 
           <div className="my-10 h-px bg-gray-100 dark:bg-gray-800" />
 
-          <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-2 tracking-tight">
+          <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-2 tracking-tight">
             Chào mừng!
           </h2>
           <p className="text-gray-500 dark:text-gray-400 text-base mb-10">
