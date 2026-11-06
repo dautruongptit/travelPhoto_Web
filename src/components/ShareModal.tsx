@@ -30,6 +30,21 @@ export default function ShareModal({
   const [isPublic, setIsPublic] = useState<boolean | null>(null)
   const [existingLinks, setExistingLinks] = useState<ShareLinkResponse[]>([])
   const [linksLoaded, setLinksLoaded] = useState(false)
+  const [shareUrl, setShareUrl] = useState<string | null>(null)
+
+  /** Link đầy đủ đã được lưu lúc tạo (server chỉ trả token thật 1 lần). */
+  const getResolvedUrl = (link: ShareLinkResponse): string => {
+    if (link.shareUrl && !link.shareUrl.includes("[hidden]")) {
+      return link.shareUrl
+    }
+    try {
+      const byId = localStorage.getItem(`share_token_${link.id}`)
+      if (byId) return byId
+      const byRole = localStorage.getItem(`share_token_${event.id}_${link.role}`)
+      if (byRole) return byRole
+    } catch {}
+    return link.shareUrl
+  }
 
   useEffect(() => {
     let cancelled = false
@@ -42,9 +57,17 @@ export default function ShareModal({
 
     listShareLinks(Number(event.id))
       .then((links) => {
-        if (!cancelled) {
-          setExistingLinks(links)
-          setLinksLoaded(true)
+        if (cancelled) return
+        setExistingLinks(links)
+        setLinksLoaded(true)
+        // Đã có 1 liên kết đang hoạt động -> mở thẳng màn QR + sao chép,
+        // không hiện lại form tạo link (chỉ được phép 1 link/sự kiện).
+        const live = links.find(
+          (l) => l.active && new Date(l.expiredAt).getTime() > Date.now(),
+        )
+        if (live) {
+          const url = getResolvedUrl(live)
+          if (!url.includes("[hidden]")) setShareUrl(url)
         }
       })
       .catch(() => {
@@ -97,8 +120,6 @@ export default function ShareModal({
   }
 
   const [role, setRole] = useState<"VIEWER" | "EDITOR">("VIEWER")
-
-  const [shareUrl, setShareUrl] = useState<string | null>(null)
 
   const [loading, setLoading] = useState(false)
 
@@ -367,15 +388,6 @@ export default function ShareModal({
                   Sao chép
                 </button>
               </div>
-
-              {/* Reset link option */}
-              <button
-                type="button"
-                onClick={() => setShareUrl(null)}
-                className="text-sm font-semibold text-gray-500 hover:text-blue-600 transition-colors"
-              >
-                Tạo cấu hình chia sẻ khác
-              </button>
             </div>
           )}
         </div>

@@ -177,36 +177,31 @@ export default function ShareTab({
             </div>
           </div>
 
-          <button
-            onClick={onOpenShareModal}
-            disabled={hasActiveLink}
-            title={
-              hasActiveLink
-                ? "Đã có 1 liên kết đang hoạt động — thu hồi link hiện tại trước khi tạo link mới"
-                : undefined
-            }
-            className={`inline-flex items-center gap-1.5 px-4 py-1.5 text-white text-sm font-semibold rounded-full shadow-md transition-all ${
-              hasActiveLink
-                ? "bg-blue-600/40 shadow-none cursor-not-allowed"
-                : "bg-blue-600 hover:bg-blue-500 active:scale-95 shadow-blue-600/30 cursor-pointer"
-            }`}
-          >
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-              <line x1="12" y1="5" x2="12" y2="19" />
-              <line x1="5" y1="12" x2="19" y2="12" />
-            </svg>
-            <span>+ Tạo link mới</span>
-          </button>
+          {!hasActiveLink && (
+            <button
+              onClick={onOpenShareModal}
+              className="inline-flex items-center gap-1.5 px-4 py-1.5 text-white text-sm font-semibold rounded-full shadow-md bg-blue-600 hover:bg-blue-500 active:scale-95 shadow-blue-600/30 cursor-pointer transition-all"
+            >
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                <line x1="12" y1="5" x2="12" y2="19" />
+                <line x1="5" y1="12" x2="19" y2="12" />
+              </svg>
+              <span>Tạo link mới</span>
+            </button>
+          )}
         </div>
 
         {links.length === 0 ? (
-          <div className="py-8 text-center text-sm text-white/50 space-y-2">
-            <p>Chưa có liên kết chia sẻ nào được tạo.</p>
+          <div className="py-8 text-center">
             <button
               onClick={onOpenShareModal}
-              className="text-blue-400 hover:text-blue-300 underline font-medium cursor-pointer"
+              className="inline-flex items-center gap-1.5 text-sm text-blue-400 hover:text-blue-300 font-medium cursor-pointer"
             >
-              Bấm vào đây để tạo liên kết đầu tiên
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                <line x1="12" y1="5" x2="12" y2="19" />
+                <line x1="5" y1="12" x2="19" y2="12" />
+              </svg>
+              <span>Tạo liên kết chia sẻ đầu tiên</span>
             </button>
           </div>
         ) : (
