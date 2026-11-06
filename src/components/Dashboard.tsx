@@ -229,7 +229,7 @@ export default function Dashboard({
             <EmptyEvents onCreateEvent={onCreateEvent} />
           )
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
             {filtered.map((event) => (
               <EventCard
                 key={event.id}
@@ -245,12 +245,14 @@ export default function Dashboard({
               <button
                 data-glass="create"
                 onClick={onCreateEvent}
-                className="group min-h-[220px] rounded-2xl border-2 border-dashed border-gray-200 dark:border-neutral-700 hover:border-blue-400 hover:bg-blue-50/40 dark:hover:bg-neutral-900 flex flex-col items-center justify-center gap-2 text-gray-400 hover:text-blue-600 transition-all cursor-pointer"
+                className="group rounded-xl border-2 border-dashed border-gray-200 dark:border-neutral-700 hover:border-blue-400 hover:bg-blue-50/40 dark:hover:bg-neutral-900 flex flex-col items-center justify-center gap-2 text-gray-400 hover:text-blue-600 transition-all cursor-pointer min-h-[200px] p-4"
               >
-                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                  <path d="M12 5v14M5 12h14" strokeLinecap="round" />
-                </svg>
-                <span className="text-sm font-semibold">Tạo sự kiện</span>
+                <div className="w-10 h-10 rounded-full bg-blue-500/10 dark:bg-blue-500/20 flex items-center justify-center text-blue-500 group-hover:scale-110 transition-transform">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                    <path d="M12 5v14M5 12h14" strokeLinecap="round" />
+                  </svg>
+                </div>
+                <span className="text-xs sm:text-sm font-semibold">Tạo sự kiện mới</span>
               </button>
             )}
           </div>
