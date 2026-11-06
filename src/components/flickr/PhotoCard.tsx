@@ -130,7 +130,7 @@ export default function PhotoCard({
           <h3 className="text-white text-sm font-medium tracking-tight truncate drop-shadow-sm">
             {photo.title || photo.name}
           </h3>
-          <p className="text-[11px] text-neutral-300 mt-0.5 truncate">
+          <p className="text-xs text-neutral-300 mt-0.5 truncate">
             {formatFileSize(photo.size)}
             {photo.width && photo.height ? ` · ${photo.width}×${photo.height}` : ""}
             {photo.uploadedAt ? ` · ${formatDate(photo.uploadedAt)}` : ""}
@@ -142,7 +142,7 @@ export default function PhotoCard({
                 {photo.uploadedBy || "Thành viên"}
               </strong>
             </span>
-            <div className="flex items-center gap-2.5 text-[11px] font-medium text-neutral-300">
+            <div className="flex items-center gap-2.5 text-xs font-medium text-neutral-300">
               {likesCount > 0 && (
                 <span className="flex items-center gap-1">
                   <svg

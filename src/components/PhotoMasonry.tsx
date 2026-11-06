@@ -129,7 +129,7 @@ function MasonryItem({
         {/* Thông tin */}
         <div className="absolute bottom-0 left-0 right-0 p-2 bg-gradient-to-t from-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none">
           <p className="text-white text-xs font-medium truncate">{photo.name}</p>
-          <p className="text-white/70 text-[10px]">
+          <p className="text-white/70 text-xs">
             {formatFileSize(photo.size)} · {formatDate(photo.uploadedAt)}
           </p>
         </div>

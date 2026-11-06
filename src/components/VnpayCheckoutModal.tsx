@@ -341,17 +341,17 @@ export default function VnpayCheckoutModal({
                   <span className="text-blue-600 font-black text-sm tracking-tight">
                     VNPAY
                   </span>
-                  <span className="text-[10px] font-semibold text-red-500 border border-red-200 rounded px-1 py-px">
+                  <span className="text-xs font-semibold text-red-500 border border-red-200 rounded px-1 py-px">
                     QR
                   </span>
                 </div>
 
                 {step === "qr" ? (
-                  <p className="text-xs text-gray-400 dark:text-gray-500 mt-1 text-center">
+                  <p className="text-sm text-gray-400 dark:text-gray-500 mt-1 text-center">
                     Quét bằng ứng dụng ngân hàng hoặc VNPay
                   </p>
                 ) : (
-                  <p className="text-xs text-indigo-500 mt-1 text-center">
+                  <p className="text-sm text-indigo-500 mt-1 text-center">
                     {DEMO_BANK} đang xử lý giao dịch…
                   </p>
                 )}

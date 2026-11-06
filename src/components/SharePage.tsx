@@ -250,7 +250,7 @@ export default function SharePage({
               className="rounded-2xl border border-neutral-200/80 dark:border-neutral-800 bg-white dark:bg-[#18181b] p-5 sm:p-6 mb-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4"
             >
               <div className="min-w-0">
-                <p className="text-xs text-neutral-500 dark:text-neutral-400 mb-1">
+                <p className="text-sm text-neutral-500 dark:text-neutral-400 mb-1">
                   {event.createdBy
                     ? `${event.createdBy} đã chia sẻ album với bạn`
                     : "Album được chia sẻ với bạn"}

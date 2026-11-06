@@ -41,7 +41,7 @@ const EmptyEvents = ({ onCreateEvent }: { onCreateEvent: () => void }) => (
     <h3 className="text-lg font-bold text-neutral-900 dark:text-white mb-2">
       Chưa có album nào
     </h3>
-    <p className="text-neutral-500 dark:text-neutral-400 text-xs sm:text-sm max-w-sm mb-6 leading-relaxed">
+    <p className="text-neutral-500 dark:text-neutral-400 text-sm max-w-sm mb-6 leading-relaxed">
       Tạo album hoặc chuyến đi đầu tiên để bắt đầu sắp xếp và lưu giữ khoảnh
       khắc theo chuẩn Flickr.
     </p>
@@ -207,7 +207,7 @@ export default function Dashboard({
       {/* Events / Albums Grid */}
       <section>
         <div className="flex items-center justify-between mb-4">
-          <h2 className="text-sm font-semibold text-neutral-700 dark:text-neutral-200 flex items-center gap-2">
+          <h2 className="text-base font-semibold text-neutral-700 dark:text-neutral-200 flex items-center gap-2">
             <span className="w-1.5 h-4 bg-indigo-500 rounded-full" />
             {searchQuery
               ? `Kết quả tìm kiếm "${searchQuery}"`
@@ -252,7 +252,7 @@ export default function Dashboard({
                     <path d="M12 5v14M5 12h14" strokeLinecap="round" />
                   </svg>
                 </div>
-                <span className="text-xs sm:text-sm font-semibold">Tạo sự kiện mới</span>
+                <span className="text-sm font-semibold">Tạo sự kiện mới</span>
               </button>
             )}
           </div>
@@ -303,20 +303,20 @@ export default function Dashboard({
             <h3 className="text-base font-bold text-neutral-900 dark:text-white mb-2">
               Xác nhận xóa sự kiện
             </h3>
-            <p className="text-neutral-600 dark:text-neutral-400 text-xs sm:text-sm mb-5 leading-relaxed">
+            <p className="text-neutral-600 dark:text-neutral-400 text-sm mb-5 leading-relaxed">
               Bạn có chắc muốn xóa <strong>{selected.size} sự kiện</strong> đã
               chọn? Toàn bộ ảnh bên trong cũng sẽ bị xóa vĩnh viễn.
             </p>
             <div className="flex gap-2">
               <button
                 onClick={() => setShowDeleteConfirm(false)}
-                className="flex-1 py-2 rounded-full border border-neutral-200 dark:border-neutral-700 text-xs font-medium text-neutral-700 dark:text-neutral-300 hover:bg-neutral-50 dark:hover:bg-neutral-800 transition-colors cursor-pointer"
+                className="flex-1 py-2 rounded-full border border-neutral-200 dark:border-neutral-700 text-sm font-medium text-neutral-700 dark:text-neutral-300 hover:bg-neutral-50 dark:hover:bg-neutral-800 transition-colors cursor-pointer"
               >
                 Hủy
               </button>
               <button
                 onClick={handleDelete}
-                className="flex-1 py-2 rounded-full bg-red-600 hover:bg-red-700 text-xs font-semibold text-white transition-colors cursor-pointer"
+                className="flex-1 py-2 rounded-full bg-red-600 hover:bg-red-700 text-sm font-semibold text-white transition-colors cursor-pointer"
               >
                 Xóa {selected.size} sự kiện
               </button>

@@ -26,7 +26,7 @@ export default function Footer({ onOpenHelp }: Props) {
 
         <span className="text-white/20 hidden sm:inline">|</span>
 
-        <p className="text-white/75 truncate text-[11px] sm:text-xs">
+        <p className="text-white/75 truncate text-xs">
           <span>Made with</span>
           <span className="text-rose-500 inline-block text-xs mx-1">❤️</span>
           <span>by</span>

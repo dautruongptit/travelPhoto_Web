@@ -177,12 +177,12 @@ export default function ShareModal({
               <p className="text-sm font-semibold text-gray-900 dark:text-white">
                 🌐 Công khai
               </p>
-              <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+              <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
                 Mọi người đã đăng nhập đều xem được album này (chỉ xem, không
                 sửa hay xóa).
               </p>
               {isPublic === null && (
-                <p className="text-xs text-amber-600 mt-1">
+                <p className="text-sm text-amber-600 mt-1">
                   Đang kiểm tra trạng thái hiện tại… (nếu không hiện, hãy tải lại
                   trang)
                 </p>
@@ -250,7 +250,7 @@ export default function ShareModal({
                     >
                       Chỉ xem (Viewer)
                     </p>
-                    <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                    <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
                       {hasActiveLink
                         ? "Đã có liên kết đang hoạt động"
                         : "Chỉ được xem ảnh, không có quyền tải ảnh lên hoặc chỉnh sửa."}
@@ -280,7 +280,7 @@ export default function ShareModal({
                     >
                       Cộng tác (Editor)
                     </p>
-                    <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                    <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
                       {hasActiveLink
                         ? "Đã có liên kết đang hoạt động"
                         : "Được quyền tải ảnh lên và cộng tác đóng góp album. Yêu cầu đăng nhập."}
@@ -330,7 +330,7 @@ export default function ShareModal({
                 />
               </div>
 
-              <p className="text-xs text-gray-500 dark:text-gray-400 text-center max-w-[280px]">
+              <p className="text-sm text-gray-500 dark:text-gray-400 text-center max-w-[280px]">
                 Quét mã QR bằng ứng dụng camera hoặc Zalo để truy cập trực tiếp
                 sự kiện.
               </p>
@@ -346,7 +346,7 @@ export default function ShareModal({
                 <button
                   type="button"
                   onClick={handleCopyLink}
-                  className="h-8 px-4 bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold rounded-lg transition-colors flex items-center gap-1.5 flex-shrink-0"
+                  className="h-8 px-4 bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold rounded-lg transition-colors flex items-center gap-1.5 flex-shrink-0"
                 >
                   <svg width="12" height="12" viewBox="0 0 24 24" fill="none">
                     <rect
@@ -372,7 +372,7 @@ export default function ShareModal({
               <button
                 type="button"
                 onClick={() => setShareUrl(null)}
-                className="text-xs font-semibold text-gray-500 hover:text-blue-600 transition-colors"
+                className="text-sm font-semibold text-gray-500 hover:text-blue-600 transition-colors"
               >
                 Tạo cấu hình chia sẻ khác
               </button>

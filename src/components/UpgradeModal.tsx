@@ -98,17 +98,17 @@ export default function UpgradeModal({
                   }`}
                 >
                   {plan.badge && (
-                    <span className="absolute -top-2.5 left-4 px-2 py-0.5 rounded-full bg-blue-600 text-white text-[11px] font-semibold shadow-sm">
+                    <span className="absolute -top-2.5 left-4 px-2 py-0.5 rounded-full bg-blue-600 text-white text-xs font-semibold shadow-sm">
                       {plan.badge}
                     </span>
                   )}
                   {plan.discountPercent > 0 && (
-                    <span className="absolute -top-2.5 right-4 px-2 py-0.5 rounded-full bg-green-100 dark:bg-green-950/40 text-green-700 dark:text-green-400 text-[11px] font-semibold">
+                    <span className="absolute -top-2.5 right-4 px-2 py-0.5 rounded-full bg-green-100 dark:bg-green-950/40 text-green-700 dark:text-green-400 text-xs font-semibold">
                       -{plan.discountPercent}%
                     </span>
                   )}
 
-                  <p className="text-sm font-semibold text-gray-900 dark:text-white mt-1">
+                  <p className="text-base font-semibold text-gray-900 dark:text-white mt-1">
                     {plan.label}
                   </p>
                   <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">

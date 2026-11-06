@@ -131,7 +131,7 @@ export default function CreateEventModal({
               className={inputClass("name")}
             />
             {errors.name && (
-              <p className="text-red-500 text-xs mt-1.5 flex items-center gap-1">
+              <p className="text-red-500 text-sm mt-1.5 flex items-center gap-1">
                 <span>⚠</span>
                 {errors.name}
               </p>
@@ -168,7 +168,7 @@ export default function CreateEventModal({
                 className={inputClass("startDate")}
               />
               {errors.startDate && (
-                <p className="text-red-500 text-xs mt-1.5">
+                <p className="text-red-500 text-sm mt-1.5">
                   {errors.startDate}
                 </p>
               )}
@@ -230,7 +230,7 @@ export default function CreateEventModal({
               />
             </div>
             {errors.location && (
-              <p className="text-red-500 text-xs mt-1.5 flex items-center gap-1">
+              <p className="text-red-500 text-sm mt-1.5 flex items-center gap-1">
                 <span>⚠</span>
                 {errors.location}
               </p>
@@ -241,7 +241,7 @@ export default function CreateEventModal({
         {/* Footer */}
         <div className="sticky bottom-0 bg-white dark:bg-gray-900 border-t border-gray-100 dark:border-gray-800 px-6 py-4">
           {submitError && (
-            <p className="text-red-500 text-xs mb-3 flex items-center gap-1">
+            <p className="text-red-500 text-sm mb-3 flex items-center gap-1">
               <span>⚠</span>
               {submitError}
             </p>

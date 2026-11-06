@@ -327,7 +327,7 @@ export default function UploadModal({
                 <button
                   type="button"
                   onClick={() => cameraRef.current?.click()}
-                  className="flex items-center gap-2 px-4 py-2 rounded-full bg-[#0063dc] text-white text-xs sm:text-sm font-semibold hover:bg-[#0052b8] transition-all shadow-sm active:scale-95 cursor-pointer"
+                  className="flex items-center gap-2 px-4 py-2 rounded-full bg-[#0063dc] text-white text-sm font-semibold hover:bg-[#0052b8] transition-all shadow-sm active:scale-95 cursor-pointer"
                 >
                   <svg
                     width="16"
@@ -347,7 +347,7 @@ export default function UploadModal({
                 <button
                   type="button"
                   onClick={() => fileRef.current?.click()}
-                  className="flex items-center gap-2 px-4 py-2 rounded-full bg-white dark:bg-neutral-800 border border-neutral-300 dark:border-neutral-700 text-neutral-800 dark:text-neutral-200 text-xs sm:text-sm font-semibold hover:bg-neutral-100 dark:hover:bg-neutral-700 transition-all cursor-pointer"
+                  className="flex items-center gap-2 px-4 py-2 rounded-full bg-white dark:bg-neutral-800 border border-neutral-300 dark:border-neutral-700 text-neutral-800 dark:text-neutral-200 text-sm font-semibold hover:bg-neutral-100 dark:hover:bg-neutral-700 transition-all cursor-pointer"
                 >
                   <svg
                     width="16"
@@ -367,7 +367,7 @@ export default function UploadModal({
                 </button>
               </div>
 
-              <p className="text-xs text-neutral-400">
+              <p className="text-sm text-neutral-400">
                 hoặc kéo thả nhiều ảnh trực tiếp vào đây (JPG, PNG, WEBP, HEIC của iPhone, RAW: CR2, NEF, ARW, DNG... — tối đa 50MB/ảnh)
               </p>
 
@@ -399,7 +399,7 @@ export default function UploadModal({
             </div>
 
             {/* Ghi chú chất lượng & Quyền riêng tư */}
-            <div className="flex items-center justify-between mt-3 text-xs text-neutral-600 dark:text-neutral-400 px-1">
+            <div className="flex items-center justify-between mt-3 text-sm text-neutral-600 dark:text-neutral-400 px-1">
               <span className="text-neutral-500 dark:text-neutral-400">
                 Ảnh được tải lên nguyên bản, không nén
               </span>
@@ -434,14 +434,14 @@ export default function UploadModal({
                       className="w-full h-full object-cover"
                     />
                   ) : (
-                    <div className="w-full h-full flex items-center justify-center text-[10px] font-bold text-neutral-500 dark:text-neutral-300">
+                    <div className="w-full h-full flex items-center justify-center text-xs font-bold text-neutral-500 dark:text-neutral-300">
                       {entry.file.name.split(".").pop()?.toUpperCase().slice(0, 4)}
                     </div>
                   )}
                 </div>
 
                 {/* File Details & EXIF */}
-                <div className="flex-1 min-w-0 text-xs">
+                <div className="flex-1 min-w-0 text-sm">
                   <div className="flex items-center justify-between gap-2">
                     <p className="font-semibold text-neutral-800 dark:text-neutral-200 truncate max-w-[240px]">
                       {entry.file.name}
@@ -459,7 +459,7 @@ export default function UploadModal({
                     </div>
                   </div>
 
-                  <div className="flex items-center gap-2 text-[11px] text-neutral-500 dark:text-neutral-400 mt-0.5">
+                  <div className="flex items-center gap-2 text-xs text-neutral-500 dark:text-neutral-400 mt-0.5">
                     <span>{formatFileSize(entry.originalSize)}</span>
                     {entry.compressedSize &&
                       entry.compressedSize < entry.originalSize && (
@@ -482,7 +482,7 @@ export default function UploadModal({
                   {/* Duplicate warning */}
                   {entry.isDuplicate && !entry.duplicateAction && (
                     <div className="mt-1.5 p-2 bg-amber-50 dark:bg-amber-950/30 rounded-lg text-amber-700 dark:text-amber-300">
-                      <p className="font-medium text-[11px] mb-1">
+                      <p className="font-medium text-sm mb-1">
                         Ảnh đã tồn tại trên sự kiện:
                       </p>
                       <div className="flex gap-1.5">
@@ -508,7 +508,7 @@ export default function UploadModal({
                                   setAction(entry.id, action)
                                 }
                               }}
-                              className="px-2 py-0.5 rounded bg-white dark:bg-neutral-800 border border-neutral-300 dark:border-neutral-700 text-[10px] font-medium hover:border-[#0063dc] cursor-pointer"
+                              className="px-2 py-0.5 rounded bg-white dark:bg-neutral-800 border border-neutral-300 dark:border-neutral-700 text-sm font-medium hover:border-[#0063dc] cursor-pointer"
                             >
                               {action === "rename"
                                 ? "Đổi tên"
@@ -546,7 +546,7 @@ export default function UploadModal({
             <p className="text-base font-bold text-neutral-900 dark:text-white">
               Đã tải lên thành công!
             </p>
-            <p className="text-xs text-neutral-500 dark:text-neutral-400">
+            <p className="text-sm text-neutral-500 dark:text-neutral-400">
               {entries.filter((e) => e.status === "done").length} bức ảnh đã
               được thêm vào sự kiện.
             </p>
@@ -556,7 +556,7 @@ export default function UploadModal({
         {/* Footer Actions */}
         <div className="flex-shrink-0 px-5 sm:px-6 py-4 border-t border-neutral-100 dark:border-neutral-800 bg-neutral-50/50 dark:bg-neutral-900/40">
           {uploadError && (
-            <p className="text-rose-500 text-xs mb-2 flex items-center gap-1">
+            <p className="text-rose-500 text-sm mb-2 flex items-center gap-1">
               <span>⚠</span> {uploadError}
             </p>
           )}
@@ -571,7 +571,7 @@ export default function UploadModal({
               {done ? (
                 <button
                   onClick={onClose}
-                  className="px-5 py-2 rounded-full bg-[#0063dc] hover:bg-[#0052b8] text-white text-xs sm:text-sm font-semibold transition-all cursor-pointer"
+                  className="px-5 py-2 rounded-full bg-[#0063dc] hover:bg-[#0052b8] text-white text-sm font-semibold transition-all cursor-pointer"
                 >
                   Xong
                 </button>
@@ -580,14 +580,14 @@ export default function UploadModal({
                   <button
                     onClick={onClose}
                     disabled={isUploading}
-                    className="px-4 py-2 rounded-full border border-neutral-300 dark:border-neutral-700 text-xs sm:text-sm font-medium hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-colors disabled:opacity-40 cursor-pointer"
+                    className="px-4 py-2 rounded-full border border-neutral-300 dark:border-neutral-700 text-sm font-medium hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-colors disabled:opacity-40 cursor-pointer"
                   >
                     Hủy
                   </button>
                   <button
                     onClick={startUpload}
                     disabled={!canUpload || isUploading || entries.length === 0}
-                    className="px-5 py-2 rounded-full bg-[#ff0084] hover:bg-[#e00074] text-white text-xs sm:text-sm font-semibold transition-all shadow-sm disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer active:scale-95"
+                    className="px-5 py-2 rounded-full bg-[#ff0084] hover:bg-[#e00074] text-white text-sm font-semibold transition-all shadow-sm disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer active:scale-95"
                   >
                     {isUploading
                       ? "Đang xử lý & tải…"

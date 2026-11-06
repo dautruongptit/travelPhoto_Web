@@ -176,7 +176,7 @@ export default function Lightbox({
           <p className="text-sm font-medium truncate max-w-[40vw] text-neutral-100">
             {photo.name}
           </p>
-          <p className="text-[11px] text-neutral-400">
+          <p className="text-xs text-neutral-400">
             {playing ? (
               <span className="text-[#4da3ff]">
                 ▶ Đang trình chiếu · Space để dừng ·{" "}
@@ -327,7 +327,7 @@ export default function Lightbox({
         {showInfo && (
           <aside className="w-72 sm:w-80 flex-shrink-0 bg-[#18181b]/80 backdrop-blur-2xl border-l border-neutral-800 p-4 overflow-y-auto z-20 flex flex-col gap-4.5 slide-right">
             <div className="flex items-center justify-between pb-2.5 border-b border-neutral-800">
-              <h3 className="font-semibold text-xs text-neutral-100 flex items-center gap-1.5">
+              <h3 className="font-semibold text-base text-neutral-100 flex items-center gap-1.5">
                 <svg
                   width="14"
                   height="14"
@@ -343,7 +343,7 @@ export default function Lightbox({
               </h3>
               <button
                 onClick={() => setShowInfo(false)}
-                className="text-neutral-400 hover:text-white text-[11px] cursor-pointer"
+                className="text-neutral-400 hover:text-white text-xs cursor-pointer"
               >
                 ✕ Đóng
               </button>
@@ -441,27 +441,27 @@ export default function Lightbox({
             </div>
 
             {/* Keyboard Shortcuts Hint */}
-            <div className="mt-auto pt-3 border-t border-neutral-800 text-[10px] text-neutral-400 space-y-1">
+            <div className="mt-auto pt-3 border-t border-neutral-800 text-xs text-neutral-400 space-y-1">
               <p>
                 Phím tắt:{" "}
-                <kbd className="px-1 py-0.5 bg-neutral-800 rounded font-mono text-[9px]">
+                <kbd className="px-1 py-0.5 bg-neutral-800 rounded font-mono text-xs">
                   ←
                 </kbd>{" "}
-                <kbd className="px-1 py-0.5 bg-neutral-800 rounded font-mono text-[9px]">
+                <kbd className="px-1 py-0.5 bg-neutral-800 rounded font-mono text-xs">
                   →
                 </kbd>{" "}
                 chuyển ảnh
               </p>
               <p>
-                <kbd className="px-1 py-0.5 bg-neutral-800 rounded font-mono text-[9px]">
+                <kbd className="px-1 py-0.5 bg-neutral-800 rounded font-mono text-xs">
                   F
                 </kbd>{" "}
                 thích ·{" "}
-                <kbd className="px-1 py-0.5 bg-neutral-800 rounded font-mono text-[9px]">
+                <kbd className="px-1 py-0.5 bg-neutral-800 rounded font-mono text-xs">
                   I
                 </kbd>{" "}
                 bật/tắt EXIF ·{" "}
-                <kbd className="px-1 py-0.5 bg-neutral-800 rounded font-mono text-[9px]">
+                <kbd className="px-1 py-0.5 bg-neutral-800 rounded font-mono text-xs">
                   Esc
                 </kbd>{" "}
                 thoát
@@ -542,11 +542,11 @@ function InfoRow({
         {icon}
       </svg>
       <div className="min-w-0">
-        <p className="text-xs font-semibold text-neutral-100 break-words leading-tight">{title}</p>
+        <p className="text-sm font-semibold text-neutral-100 break-words leading-tight">{title}</p>
         {lines
           .filter((l) => l && l.trim() !== "" && l !== title)
           .map((l, i) => (
-            <p key={i} className="text-[11px] text-neutral-400 mt-0.5 break-words leading-relaxed">
+            <p key={i} className="text-xs text-neutral-400 mt-0.5 break-words leading-relaxed">
               {l}
             </p>
           ))}
@@ -605,7 +605,7 @@ function IconButton({
       </button>
       <span
         role="tooltip"
-        className={`pointer-events-none absolute top-full mt-1.5 z-30 whitespace-nowrap rounded-md border border-white/10 bg-black/90 px-2 py-1 text-[11px] font-medium text-white opacity-0 shadow-lg transition-opacity duration-150 group-hover:opacity-100 group-focus-within:opacity-100 ${
+        className={`pointer-events-none absolute top-full mt-1.5 z-30 whitespace-nowrap rounded-md border border-white/10 bg-black/90 px-2 py-1 text-xs font-medium text-white opacity-0 shadow-lg transition-opacity duration-150 group-hover:opacity-100 group-focus-within:opacity-100 ${
           align === "right" ? "right-0" : "left-1/2 -translate-x-1/2"
         }`}
       >

@@ -232,7 +232,7 @@ export default function AlbumPage({
               {user && String(event.ownerId) === String(user.id) && (
                 <button
                   onClick={() => setShowShareModal(true)}
-                  className="flex items-center gap-1.5 h-8 px-3.5 bg-white/5 hover:bg-white/10 border border-white/15 rounded-full text-xs font-semibold text-white transition-all cursor-pointer shadow-sm active:scale-95"
+                  className="flex items-center gap-1.5 h-8 px-3.5 bg-white/5 hover:bg-white/10 border border-white/15 rounded-full text-sm font-semibold text-white transition-all cursor-pointer shadow-sm active:scale-95"
                 >
                   <svg
                     width="13"
@@ -400,7 +400,7 @@ export default function AlbumPage({
                   {showSortMenu && (
                     <div
                       data-glass="dropdown"
-                      className="slide-up absolute right-0 top-full mt-1.5 w-36 bg-white dark:bg-[#18181b] rounded-xl shadow-xl border border-neutral-100 dark:border-neutral-800 py-1 z-30 text-xs"
+                      className="slide-up absolute right-0 top-full mt-1.5 w-36 bg-white dark:bg-[#18181b] rounded-xl shadow-xl border border-neutral-100 dark:border-neutral-800 py-1 z-30 text-sm"
                     >
                       {(Object.keys(SORT_LABELS) as SortOption[]).map((s) => (
                         <button
@@ -440,7 +440,7 @@ export default function AlbumPage({
                 {canUpload && (
                   <button
                     onClick={onUpload}
-                    className="h-9 px-3.5 bg-blue-600 hover:bg-blue-500 active:scale-95 text-white rounded-xl text-xs font-semibold flex items-center gap-1.5 shadow-md shadow-blue-600/30 transition-all cursor-pointer"
+                    className="h-9 px-3.5 bg-blue-600 hover:bg-blue-500 active:scale-95 text-white rounded-xl text-sm font-semibold flex items-center gap-1.5 shadow-md shadow-blue-600/30 transition-all cursor-pointer"
                   >
                     <svg
                       width="13"
@@ -593,7 +593,7 @@ export default function AlbumPage({
                     <div className="flex items-center justify-between gap-4">
                       <span className="text-xs text-white/50 font-medium">Người tạo:</span>
                       <div className="flex items-center gap-2">
-                        <div className="w-5 h-5 rounded-full bg-blue-600 flex items-center justify-center text-[10px] font-bold text-white shadow-sm">
+                        <div className="w-5 h-5 rounded-full bg-blue-600 flex items-center justify-center text-xs font-bold text-white shadow-sm">
                           {(event.createdBy || user?.name || "U").charAt(0).toUpperCase()}
                         </div>
                         <span className="text-sm font-bold text-white">
@@ -616,7 +616,7 @@ export default function AlbumPage({
                     <p className="text-xs text-white/50 font-medium mb-2.5">Mô tả chuyến đi:</p>
                     <div className="p-4 rounded-2xl bg-black/20 border border-white/10 min-h-[90px] flex items-center">
                       <p className="text-sm text-white/90 italic font-medium leading-relaxed">
-                        {event.description ? `“${event.description}”` : <span className="text-white/40 not-italic text-xs">Chưa có ghi chú mô tả chuyến đi.</span>}
+                        {event.description ? `“${event.description}”` : <span className="text-white/40 not-italic text-sm">Chưa có ghi chú mô tả chuyến đi.</span>}
                       </p>
                     </div>
                   </div>
@@ -658,7 +658,7 @@ export default function AlbumPage({
                       <div className="flex items-center gap-3">
                         <button
                           onClick={() => setActiveTab("photos")}
-                          className="flex-1 py-3 px-4 bg-blue-600 hover:bg-blue-500 active:scale-95 text-white font-semibold text-xs rounded-xl shadow-lg shadow-blue-600/30 transition-all cursor-pointer text-center"
+                          className="flex-1 py-3 px-4 bg-blue-600 hover:bg-blue-500 active:scale-95 text-white font-semibold text-sm rounded-xl shadow-lg shadow-blue-600/30 transition-all cursor-pointer text-center"
                         >
                           Xem {photoTotal} bức ảnh trong album
                         </button>
@@ -668,7 +668,7 @@ export default function AlbumPage({
                               setSlideshow(true)
                               setLightboxIndex(0)
                             }}
-                            className="py-3 px-5 bg-white/10 hover:bg-white/15 text-white font-semibold text-xs rounded-xl border border-white/10 transition-colors cursor-pointer"
+                            className="py-3 px-5 bg-white/10 hover:bg-white/15 text-white font-semibold text-sm rounded-xl border border-white/10 transition-colors cursor-pointer"
                           >
                             Trình chiếu
                           </button>
@@ -762,20 +762,20 @@ export default function AlbumPage({
             <h3 className="text-base font-bold text-neutral-900 dark:text-white mb-2">
               Xác nhận xóa
             </h3>
-            <p className="text-neutral-600 dark:text-neutral-400 text-xs sm:text-sm mb-5">
+            <p className="text-neutral-600 dark:text-neutral-400 text-sm mb-5">
               Bạn có chắc muốn xóa <strong>{selected.size} ảnh</strong> đã chọn?
               Hành động này không thể hoàn tác.
             </p>
             <div className="flex gap-2">
               <button
                 onClick={() => setShowDeleteConfirm(false)}
-                className="flex-1 py-2 rounded-full border border-neutral-200 dark:border-neutral-700 text-xs font-medium text-neutral-700 dark:text-neutral-300 hover:bg-neutral-50 dark:hover:bg-neutral-800 transition-colors cursor-pointer"
+                className="flex-1 py-2 rounded-full border border-neutral-200 dark:border-neutral-700 text-sm font-medium text-neutral-700 dark:text-neutral-300 hover:bg-neutral-50 dark:hover:bg-neutral-800 transition-colors cursor-pointer"
               >
                 Hủy
               </button>
               <button
                 onClick={handleDelete}
-                className="flex-1 py-2 rounded-full bg-red-600 hover:bg-red-700 text-xs font-semibold text-white transition-colors cursor-pointer"
+                className="flex-1 py-2 rounded-full bg-red-600 hover:bg-red-700 text-sm font-semibold text-white transition-colors cursor-pointer"
               >
                 Xóa {selected.size} ảnh
               </button>

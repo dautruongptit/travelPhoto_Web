@@ -49,7 +49,7 @@ export default function EventCard({
         {isLoading && (
           <div className="absolute inset-0 bg-black/40 backdrop-blur-[2px] flex flex-col items-center justify-center gap-2 z-10">
             <div className="w-6 h-6 border-2 border-white border-t-transparent rounded-full animate-spin" />
-            <span className="text-white text-[11px] font-medium">Đang tải...</span>
+            <span className="text-white text-xs font-medium">Đang tải...</span>
           </div>
         )}
 
@@ -62,7 +62,7 @@ export default function EventCard({
           <span
             data-glass="chip"
             data-vis={event.visibility}
-            className={`text-[9px] sm:text-[10px] font-semibold px-2 py-0.5 rounded-full ${badge.cls}`}
+            className={`text-xs font-semibold px-2 py-0.5 rounded-full ${badge.cls}`}
           >
             {badge.label}
           </span>
@@ -94,7 +94,7 @@ export default function EventCard({
 
         {/* Photo count badge (top-right) */}
         <div
-          className="absolute top-2.5 right-2.5 flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-medium text-white bg-black/45 backdrop-blur-[6px]"
+          className="absolute top-2.5 right-2.5 flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium text-white bg-black/45 backdrop-blur-[6px]"
         >
           <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
             <rect x="3" y="3" width="18" height="18" rx="2" />
@@ -123,7 +123,7 @@ export default function EventCard({
               <circle cx="8.5" cy="8.5" r="1.5" />
               <polyline points="21 15 16 10 5 21" />
             </svg>
-            <h3 className="font-semibold text-xs sm:text-sm leading-snug text-neutral-900 dark:text-white truncate">
+            <h3 className="font-semibold text-sm sm:text-base leading-snug text-neutral-900 dark:text-white truncate">
               {event.name}
             </h3>
           </div>
@@ -144,17 +144,17 @@ export default function EventCard({
 
         {/* Mô tả */}
         {event.description ? (
-          <p className="text-[11px] sm:text-xs text-neutral-600 dark:text-neutral-400 line-clamp-1 mb-2 leading-relaxed">
+          <p className="text-xs text-neutral-600 dark:text-neutral-400 line-clamp-1 mb-2 leading-relaxed">
             {event.description}
           </p>
         ) : (
-          <p className="text-[11px] sm:text-xs text-neutral-400 dark:text-neutral-500 italic line-clamp-1 mb-2">
+          <p className="text-xs text-neutral-400 dark:text-neutral-500 italic line-clamp-1 mb-2">
             Chưa có mô tả chuyến đi
           </p>
         )}
 
         {/* Địa điểm & Thời gian */}
-        <div className="flex flex-col gap-1 mt-auto pt-2 border-t border-gray-100 dark:border-neutral-800/80 text-[10.5px] sm:text-[11px] text-neutral-500 dark:text-neutral-400">
+        <div className="flex flex-col gap-1 mt-auto pt-2 border-t border-gray-100 dark:border-neutral-800/80 text-xs text-neutral-500 dark:text-neutral-400">
           {event.location && (
             <div className="flex items-center gap-1.5 truncate">
               <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="flex-shrink-0 text-neutral-400">

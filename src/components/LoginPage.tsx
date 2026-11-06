@@ -209,7 +209,7 @@ export default function LoginPage({
 
           {/* Hint khi đang loading */}
           {loading && (
-            <p className="mt-3 text-xs text-center text-gray-400 dark:text-gray-500">
+            <p className="mt-3 text-sm text-center text-gray-400 dark:text-gray-500">
               Cửa sổ Google đang mở — hãy chọn tài khoản của bạn.
             </p>
           )}

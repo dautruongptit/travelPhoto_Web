@@ -147,7 +147,7 @@ export default function Navbar({
                   ✕
                 </button>
               ) : (
-                <span className="hidden sm:inline-block absolute right-3 top-1/2 -translate-y-1/2 px-1.5 py-0.5 text-[10px] text-neutral-400 dark:text-neutral-500 bg-white dark:bg-neutral-800 rounded border border-neutral-200 dark:border-neutral-700 pointer-events-none">
+                <span className="hidden sm:inline-block absolute right-3 top-1/2 -translate-y-1/2 px-1.5 py-0.5 text-xs text-neutral-400 dark:text-neutral-500 bg-white dark:bg-neutral-800 rounded border border-neutral-200 dark:border-neutral-700 pointer-events-none">
                   /
                 </span>
               )}
@@ -183,7 +183,7 @@ export default function Navbar({
 
                     {/* Hạn mức dung lượng lưu trữ */}
                     <div className="mt-3">
-                      <div className="flex justify-between text-[11px] text-neutral-500 mb-1">
+                      <div className="flex justify-between text-xs text-neutral-500 mb-1">
                         <span>Lưu trữ ({usedPercent}%)</span>
                         <span>
                           {formatTotalSize(usedBytes)} /{" "}
@@ -219,7 +219,7 @@ export default function Navbar({
                       className="w-full text-left px-3 py-2 rounded-xl hover:bg-neutral-100 dark:hover:bg-neutral-800 flex items-center justify-between text-[#0063dc] font-medium cursor-pointer"
                     >
                       <span>Nâng cấp dung lượng (VNPay)</span>
-                      <span className="text-[10px] px-1.5 py-0.5 bg-[#0063dc]/10 text-[#0063dc] rounded-full font-bold">
+                      <span className="text-xs px-1.5 py-0.5 bg-[#0063dc]/10 text-[#0063dc] rounded-full font-bold">
                         PRO
                       </span>
                     </button>

@@ -185,7 +185,7 @@ export default function ShareTab({
                 ? "Đã có 1 liên kết đang hoạt động — thu hồi link hiện tại trước khi tạo link mới"
                 : undefined
             }
-            className={`inline-flex items-center gap-1.5 px-4 py-1.5 text-white text-xs font-semibold rounded-full shadow-md transition-all ${
+            className={`inline-flex items-center gap-1.5 px-4 py-1.5 text-white text-sm font-semibold rounded-full shadow-md transition-all ${
               hasActiveLink
                 ? "bg-blue-600/40 shadow-none cursor-not-allowed"
                 : "bg-blue-600 hover:bg-blue-500 active:scale-95 shadow-blue-600/30 cursor-pointer"
@@ -200,7 +200,7 @@ export default function ShareTab({
         </div>
 
         {links.length === 0 ? (
-          <div className="py-8 text-center text-xs text-white/50 space-y-2">
+          <div className="py-8 text-center text-sm text-white/50 space-y-2">
             <p>Chưa có liên kết chia sẻ nào được tạo.</p>
             <button
               onClick={onOpenShareModal}
@@ -335,7 +335,7 @@ export default function ShareTab({
         </div>
 
         {members.length === 0 ? (
-          <div className="py-6 text-center text-xs text-white/40">
+          <div className="py-6 text-center text-sm text-white/40">
             Chưa có thành viên nào tham gia album này.
           </div>
         ) : (
@@ -372,7 +372,7 @@ export default function ShareTab({
                     onChange={(e) =>
                       handleChangeRole(m.userId, e.target.value as EventMemberRole)
                     }
-                    className="text-xs bg-black/60 border border-white/15 rounded-xl px-3 py-1.5 text-white/90 outline-none cursor-pointer"
+                    className="text-sm bg-black/60 border border-white/15 rounded-xl px-3 py-1.5 text-white/90 outline-none cursor-pointer"
                   >
                     <option value="VIEWER" className="bg-[#151a30] text-white">Chỉ xem</option>
                     <option value="EDITOR" className="bg-[#151a30] text-white">Biên tập</option>
@@ -403,17 +403,17 @@ export default function ShareTab({
               <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
               <path d="M9 12l2 2 4-4" />
             </svg>
-            <h4 className="text-sm font-bold text-white tracking-tight">
+            <h4 className="text-base font-bold text-white tracking-tight">
               Bảo mật &amp; Đồng bộ lưu trữ
             </h4>
           </div>
 
-          <span className="text-[11px] text-white/40 font-mono">
+          <span className="text-xs text-white/40 font-mono">
             NAS S3 v2.4
           </span>
         </div>
 
-        <p className="text-xs text-white/70 leading-relaxed">
+        <p className="text-sm text-white/70 leading-relaxed">
           Dữ liệu hình ảnh trong album <strong className="text-white">{eventName}</strong> đã được sao lưu an toàn trên hệ thống đám mây phân tán S3 Cloud. {latestExpire ? `Liên kết chia sẻ hiện đang có hiệu lực đến ngày ${latestExpire}.` : "Chưa có liên kết chia sẻ công khai nào."}
         </p>
 
@@ -431,7 +431,7 @@ export default function ShareTab({
 
           <button
             onClick={onOpenShareModal}
-            className="px-3.5 py-1.5 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-xs text-white/80 transition-all cursor-pointer"
+            className="px-3.5 py-1.5 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-sm text-white/80 transition-all cursor-pointer"
           >
             Cài đặt nâng cao
           </button>
@@ -462,11 +462,11 @@ export default function ShareTab({
                   </svg>
                 </div>
                 <div>
-                  <h4 className="text-sm font-bold text-white tracking-tight">
+                  <h4 className="text-base font-bold text-white tracking-tight">
                     Mã QR truy cập
                   </h4>
                   <span
-                    className={`inline-flex items-center gap-1 text-[11px] font-semibold px-2 py-0.5 mt-1 rounded-full border ${
+                    className={`inline-flex items-center gap-1 text-xs font-semibold px-2 py-0.5 mt-1 rounded-full border ${
                       qrModalLink.role === "EDITOR"
                         ? "bg-purple-500/20 text-purple-300 border-purple-500/30"
                         : "bg-cyan-500/20 text-cyan-300 border-cyan-500/30"
@@ -500,7 +500,7 @@ export default function ShareTab({
               </div>
             </div>
 
-            <p className="relative text-xs text-white/60 mt-4 mb-3">
+            <p className="relative text-sm text-white/60 mt-4 mb-3">
               Quét mã bằng Camera điện thoại hoặc Zalo để vào album.
             </p>
 
@@ -509,7 +509,7 @@ export default function ShareTab({
                 <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71" />
                 <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71" />
               </svg>
-              <span className="text-[11px] text-white/70 truncate font-mono">
+              <span className="text-xs text-white/70 truncate font-mono">
                 {getResolvedUrl(qrModalLink)}
               </span>
             </div>
@@ -521,7 +521,7 @@ export default function ShareTab({
                   handleCopy(qrModalLink)
                   setQrModalLink(null)
                 }}
-                className="flex-1 py-2.5 px-3 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-xs font-semibold flex items-center justify-center gap-1.5 transition-all cursor-pointer active:scale-95 shadow-sm shadow-blue-600/30"
+                className="flex-1 py-2.5 px-3 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-sm font-semibold flex items-center justify-center gap-1.5 transition-all cursor-pointer active:scale-95 shadow-sm shadow-blue-600/30"
               >
                 <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                   <rect x="9" y="9" width="13" height="13" rx="2" />
@@ -532,7 +532,7 @@ export default function ShareTab({
               <button
                 type="button"
                 onClick={() => setQrModalLink(null)}
-                className="py-2.5 px-4 rounded-xl bg-white/10 hover:bg-white/15 text-xs text-white/90 transition-colors cursor-pointer"
+                className="py-2.5 px-4 rounded-xl bg-white/10 hover:bg-white/15 text-sm text-white/90 transition-colors cursor-pointer"
               >
                 Đóng
               </button>
@@ -552,7 +552,7 @@ export default function ShareTab({
             <h4 className="text-base font-bold text-white mb-2">
               Thu hồi liên kết chia sẻ?
             </h4>
-            <p className="text-xs text-white/70 mb-5 leading-relaxed">
+            <p className="text-sm text-white/70 mb-5 leading-relaxed">
               Những ai đang có liên kết này sẽ không thể vào album được nữa. Bạn có chắc chắn muốn thu hồi?
             </p>
             <div className="flex items-center justify-end gap-2.5">
@@ -560,7 +560,7 @@ export default function ShareTab({
                 type="button"
                 disabled={isRevoking}
                 onClick={() => setConfirmRevokeLink(null)}
-                className="px-4 py-2 rounded-xl border border-white/15 bg-white/5 hover:bg-white/10 text-xs font-semibold text-white/80 transition-all cursor-pointer"
+                className="px-4 py-2 rounded-xl border border-white/15 bg-white/5 hover:bg-white/10 text-sm font-semibold text-white/80 transition-all cursor-pointer"
               >
                 Hủy
               </button>
@@ -568,7 +568,7 @@ export default function ShareTab({
                 type="button"
                 disabled={isRevoking}
                 onClick={executeRevoke}
-                className="px-4 py-2 rounded-xl bg-rose-600 hover:bg-rose-500 active:scale-95 text-xs font-semibold text-white transition-all cursor-pointer"
+                className="px-4 py-2 rounded-xl bg-rose-600 hover:bg-rose-500 active:scale-95 text-sm font-semibold text-white transition-all cursor-pointer"
               >
                 {isRevoking ? "Đang thu hồi..." : "Xác nhận thu hồi"}
               </button>

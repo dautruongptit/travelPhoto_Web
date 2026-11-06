@@ -199,7 +199,7 @@ export default function SettingsModal({
                 <div className="flex gap-2 mt-2.5">
                   <button
                     onClick={() => setConfirmDelete(false)}
-                    className="px-3 py-1.5 rounded-lg text-xs font-medium bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-300"
+                    className="px-3 py-1.5 rounded-lg text-sm font-medium bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-300"
                   >
                     Hủy
                   </button>
@@ -212,7 +212,7 @@ export default function SettingsModal({
                       )
                       onClose()
                     }}
-                    className="px-3 py-1.5 rounded-lg text-xs font-semibold bg-red-600 hover:bg-red-700 text-white"
+                    className="px-3 py-1.5 rounded-lg text-sm font-semibold bg-red-600 hover:bg-red-700 text-white"
                   >
                     Xác nhận xóa
                   </button>

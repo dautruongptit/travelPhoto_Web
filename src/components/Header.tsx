@@ -235,7 +235,7 @@ export default function Header({
 
                   {/* Storage usage */}
                   <div className="mt-3">
-                    <div className="flex items-center justify-between text-[11px] text-gray-500 dark:text-gray-400 mb-1">
+                    <div className="flex items-center justify-between text-xs text-gray-500 dark:text-gray-400 mb-1">
                       <span>
                         {formatTotalSize(usedBytes)} /{" "}
                         {formatTotalSize(limitBytes)}
@@ -259,7 +259,7 @@ export default function Header({
                         setProfileOpen(false)
                         onOpenUpgrade()
                       }}
-                      className="mt-2 w-full py-1.5 rounded-lg bg-blue-50 dark:bg-blue-950/40 text-blue-700 dark:text-blue-400 text-xs font-semibold hover:bg-blue-100 dark:hover:bg-blue-900/40 transition-colors flex items-center justify-center gap-1"
+                      className="mt-2 w-full py-1.5 rounded-lg bg-blue-50 dark:bg-blue-950/40 text-blue-700 dark:text-blue-400 text-sm font-semibold hover:bg-blue-100 dark:hover:bg-blue-900/40 transition-colors flex items-center justify-center gap-1"
                     >
                       <svg
                         width="12"
