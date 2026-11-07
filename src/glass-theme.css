@@ -1,7 +1,7 @@
 /* glass-theme.css — Giao diện trong suốt CasaOS (CHỈ CÓ 1 GIAO DIỆN DUY NHẤT, KHÔNG CÓ NGÀY ĐÊM).
  * Nền: Ảnh núi đêm wallpaper02.
  * Thẻ/Thanh công cụ: Kính mờ trong suốt (Dark Glassmorphism).
- * Cửa sổ bật lên (Modal/Popup): Luôn giữ màu TRẮNG SÁNG (Solid White) chuẩn CasaOS Storage Manager / Add link. */
+ * Cửa sổ bật lên (Modal/Popup/Dropdown/Toast): cũng là kính mờ, đậm hơn thẻ widget để chữ đọc rõ. */
 
 :root,
 html,
@@ -21,6 +21,11 @@ html.dark {
   --g-dash: rgba(255, 255, 255, 0.28);
   --g-chip-bg: rgba(255, 255, 255, 0.12);
   --g-chip-border: rgba(255, 255, 255, 0.20);
+  /* Lớp nổi (dropdown / toast): CasaOS dùng công thức đậm & mờ sâu hơn thẻ widget
+   * — đo trực tiếp trên dropdown-content của CasaOS: rgba(0,0,0,0.8) + blur(16px). */
+  --g-float-bg: rgba(0, 0, 0, 0.8);
+  --g-float-blur: blur(16px);
+  --g-radius: 10px;
 }
 
 /* ── Nền trang: ảnh núi đêm toàn màn hình + lớp phủ mờ tối ─────────────────── */
@@ -29,11 +34,18 @@ html.dark {
  * nền dạng fixed-attachment đó, nên thẻ kính chỉ hiện màu phẳng, không có hiệu ứng mờ ảnh.
  * CasaOS gốc dùng 1 lớp riêng `position: fixed` (không phải background-attachment: fixed)
  * để vẽ ảnh nền — đã xác minh trực tiếp trên DOM thật của CasaOS (div#background). */
+/* Màu dự phòng chỉ đặt trên <html>. KHÔNG đặt màu nền đục lên <body>:
+ * nền của body sẽ vẽ đè lên lớp ảnh `body::before` (z-index: -1) và che mất ảnh nền. */
+html {
+  background-color: #0b0f19 !important;
+}
 html,
 body {
-  background-color: #0b0f19 !important;
   color: var(--g-text);
   min-height: 100vh;
+}
+body {
+  background: transparent !important;
 }
 
 body::before {
@@ -60,14 +72,35 @@ body::before {
 [data-glass="search"],
 [data-glass="event-body"],
 [data-glass="create"],
-[data-glass="panel"],
-[data-glass="dropdown"] {
+[data-glass="panel"] {
   background: var(--g-bg) !important;
   -webkit-backdrop-filter: var(--g-blur) !important;
   backdrop-filter: var(--g-blur) !important;
   border: 1px solid var(--g-border) !important;
   box-shadow: var(--g-shadow) !important;
   color: var(--g-text) !important;
+}
+
+/* Lớp nổi trên cùng: dropdown & toast — đậm hơn, mờ sâu hơn để chữ luôn đọc rõ
+ * dù phía sau là ảnh nền sáng hay thẻ kính khác. */
+[data-glass="dropdown"],
+[data-glass="toast"] {
+  background: var(--g-float-bg) !important;
+  -webkit-backdrop-filter: var(--g-float-blur) !important;
+  backdrop-filter: var(--g-float-blur) !important;
+  box-shadow: var(--g-shadow) !important;
+  color: var(--g-text) !important;
+}
+[data-glass="dropdown"] {
+  border: 1px solid var(--g-border) !important;
+  border-radius: var(--g-radius) !important;
+}
+/* Toast giữ nguyên viền trái màu theo trạng thái (success/error/warning/info) */
+[data-glass="toast"] {
+  border-top: 1px solid var(--g-border) !important;
+  border-right: 1px solid var(--g-border) !important;
+  border-bottom: 1px solid var(--g-border) !important;
+  border-radius: var(--g-radius) !important;
 }
 
 /* Thanh ngang: không bo, chỉ có đường kẻ mảnh */
@@ -153,7 +186,8 @@ body::before {
 [data-glass="stat"] :is(.text-neutral-900, .text-neutral-800, .text-white),
 [data-glass="event-body"] :is(.text-gray-600, .text-neutral-300, .text-neutral-900, .text-white),
 [data-glass="panel"] :is(.text-neutral-900, .text-neutral-800, .text-white),
-[data-glass="dropdown"] :is(.text-neutral-900, .text-neutral-800, .text-neutral-700, .text-white) {
+[data-glass="dropdown"] :is(.text-neutral-900, .text-neutral-800, .text-neutral-700, .text-white),
+[data-glass="toast"] :is(.text-neutral-900, .text-gray-900, .text-white) {
   color: var(--g-text) !important;
 }
 [data-glass="navbar"] :is(.text-neutral-400, .text-neutral-500, .text-neutral-600, .text-gray-400, .text-gray-500, .text-gray-600),

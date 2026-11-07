@@ -9,16 +9,13 @@ interface Props {
 }
 
 const styles: Record<ToastItem["type"], string> = {
-  success:
-    "bg-white dark:bg-gray-900 border-green-500 text-gray-900 dark:text-white",
+  success: "border-green-500 text-white",
 
-  error:
-    "bg-white dark:bg-gray-900 border-red-500 text-gray-900 dark:text-white",
+  error: "border-red-500 text-white",
 
-  warning:
-    "bg-white dark:bg-gray-900 border-yellow-500 text-gray-900 dark:text-white",
+  warning: "border-yellow-500 text-white",
 
-  info: "bg-white dark:bg-gray-900 border-blue-500 text-gray-900 dark:text-white",
+  info: "border-blue-500 text-white",
 }
 
 const icons: Record<ToastItem["type"], React.ReactElement> = {
@@ -58,8 +55,8 @@ export default function Toast({ toasts, onRemove }: Props) {
       {toasts.map((t) => (
         <div
           key={t.id}
-          className={`toast-in flex items-start gap-3 px-4 py-3 rounded-2xl border-l-4 shadow-xl ${styles[t.type]}`}
-          style={{ boxShadow: "0 8px 32px rgba(0,0,0,0.12)" }}
+          data-glass="toast"
+          className={`toast-in flex items-start gap-3 px-4 py-3 border-l-4 ${styles[t.type]}`}
         >
           {icons[t.type]}
           <p className="text-sm font-medium flex-1 leading-5 pt-0.5">
@@ -67,7 +64,7 @@ export default function Toast({ toasts, onRemove }: Props) {
           </p>
           <button
             onClick={() => onRemove(t.id)}
-            className="text-gray-400 dark:text-gray-500 hover:text-gray-700 dark:hover:text-gray-200 transition-colors flex-shrink-0 pt-0.5 leading-none text-base"
+            className="text-white/50 hover:text-white transition-colors flex-shrink-0 pt-0.5 leading-none text-base"
           >
             ×
           </button>

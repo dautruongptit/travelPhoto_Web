@@ -433,8 +433,8 @@ export default function AlbumPage({
                           }}
                           className={`w-full text-left px-3.5 py-2 transition-colors cursor-pointer ${
                             sort === s
-                              ? "text-[#0063dc] font-semibold bg-neutral-50 dark:bg-neutral-800/80"
-                              : "text-neutral-700 dark:text-neutral-300 hover:bg-neutral-50 dark:hover:bg-neutral-800"
+                              ? "text-blue-400 font-semibold bg-white/10"
+                              : "text-white/80 hover:bg-white/10"
                           }`}
                         >
                           {SORT_LABELS[s]}

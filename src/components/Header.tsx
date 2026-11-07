@@ -72,7 +72,7 @@ export default function Header({
   }, [])
 
   return (
-    <header className="sticky top-0 z-50 bg-[rgb(53,54,58)] text-white">
+    <header data-glass="navbar" className="sticky top-0 z-50 text-white">
       <div className="max-w-screen-2xl mx-auto px-4 sm:px-6 h-16 flex items-center gap-4">
         {/* Logo */}
         <button
@@ -216,7 +216,10 @@ export default function Header({
             </button>
 
             {profileOpen && (
-              <div className="slide-up absolute right-0 top-full mt-2 w-72 bg-[rgba(0,0,0,0.8)] backdrop-blur-[16px] text-white rounded-[10px] shadow-xl border border-white/10 overflow-hidden z-50">
+              <div
+                data-glass="dropdown"
+                className="slide-up absolute right-0 top-full mt-2 w-72 text-white overflow-hidden z-50"
+              >
                 <div className="px-4 py-4 border-b border-white/10">
                   <div className="flex items-center gap-3">
                     <Avatar
