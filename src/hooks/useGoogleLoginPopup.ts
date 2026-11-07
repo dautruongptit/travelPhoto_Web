@@ -89,8 +89,12 @@ export function useGoogleLoginPopup({
     }
 
     const handleMessage = (event: MessageEvent) => {
-      // Chỉ nhận message từ cùng origin (bảo mật)
-      if (event.origin !== window.location.origin) return
+      // Nhận message từ cùng origin (localhost) hoặc domain production thật (bảo mật)
+      const isAllowedOrigin =
+        event.origin === window.location.origin ||
+        event.origin === "https://travelphoto.thongtinchinhhieu.site" ||
+        event.origin === "https://travelphoto-api.thongtinchinhhieu.site"
+      if (!isAllowedOrigin) return
       handleData(event.data)
     }
 

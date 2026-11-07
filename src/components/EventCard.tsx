@@ -30,20 +30,20 @@ export default function EventCard({
     <article
       data-glass="event-card"
       onClick={onClick}
-      className={`group blur-background flex flex-col h-full rounded-[10px] overflow-hidden transition-all duration-300 cursor-pointer ${
+      className={`group flex flex-col h-full rounded-[10px] overflow-hidden transition-all duration-300 cursor-pointer ${
         selected
           ? "ring-2 ring-blue-500 border-blue-400 ring-offset-2 ring-offset-transparent"
           : ""
       }`}
     >
       {/* Cover image - Aspect ratio 16:10 compact chuẩn CasaOS app card */}
-      <div className="relative aspect-[16/10] overflow-hidden bg-black/40">
+      <div className="relative aspect-[16/10] overflow-hidden bg-black/25">
         <AuthImg
           src={cover}
           alt={event.name}
           className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/15 to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/45 via-black/10 to-transparent" />
 
         {/* Loading overlay khi đang tải ảnh album */}
         {isLoading && (

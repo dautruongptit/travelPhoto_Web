@@ -132,13 +132,13 @@ export default function Dashboard({
       {/* CasaOS Quick Metric Widgets */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3.5 mb-8">
         {[
-          { label: "Sự kiện & Chuyến đi", value: events.length, icon: "🗺️", accent: "from-blue-500/20 to-cyan-500/20 text-cyan-300" },
-          { label: "Tổng số bức ảnh", value: totalPhotos, icon: "📸", accent: "from-purple-500/20 to-pink-500/20 text-pink-300" },
+          { label: "Sự kiện & Chuyến đi", value: events.length, icon: "🗺️", accent: "text-cyan-400" },
+          { label: "Tổng số bức ảnh", value: totalPhotos, icon: "📸", accent: "text-pink-400" },
           {
             label: "Dung lượng đã dùng",
             value: formatTotalSize(totalSize),
             icon: "💾",
-            accent: "from-emerald-500/20 to-teal-500/20 text-emerald-300",
+            accent: "text-emerald-400",
           },
           {
             label: "Ảnh gần đây",
@@ -147,13 +147,13 @@ export default function Dashboard({
               return Date.now() - d.getTime() < 7 * 86400000
             }).length,
             icon: "✨",
-            accent: "from-amber-500/20 to-orange-500/20 text-amber-300",
+            accent: "text-amber-400",
           },
         ].map(({ label, value, icon, accent }) => (
           <div
             key={label}
             data-glass="stat"
-            className="blur-background rounded-[10px] p-4 transition-all flex items-center justify-between"
+            className="rounded-[10px] p-4 transition-all flex items-center justify-between cursor-default"
           >
             <div>
               <p className="text-xs text-white/60 font-medium">
@@ -163,7 +163,7 @@ export default function Dashboard({
                 {value}
               </p>
             </div>
-            <div className={`w-11 h-11 rounded-2xl bg-gradient-to-br ${accent} border border-white/10 flex items-center justify-center text-xl shadow-inner`}>
+            <div className={`w-10 h-10 rounded-xl bg-white/[0.08] border border-white/10 flex items-center justify-center text-lg ${accent}`}>
               {icon}
             </div>
           </div>

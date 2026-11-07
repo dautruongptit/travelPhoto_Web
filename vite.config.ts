@@ -109,6 +109,24 @@ export default defineConfig(({ mode }) => {
       host: "0.0.0.0",
 
       port: parseInt(process.env.PORT || "8300"),
+
+      proxy: {
+        "/api": {
+          target: apiTarget,
+          changeOrigin: true,
+          secure: true,
+        },
+        "^/oauth2/authorization": {
+          target: apiTarget,
+          changeOrigin: true,
+          secure: true,
+        },
+        "/login/oauth2": {
+          target: apiTarget,
+          changeOrigin: true,
+          secure: true,
+        },
+      },
     },
   }
 })

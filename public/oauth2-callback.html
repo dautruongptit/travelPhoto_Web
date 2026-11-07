@@ -41,10 +41,10 @@
 
         var delivered = false;
 
-        // Cách 1: postMessage tới cửa sổ mở popup.
+        // Cách 1: postMessage tới cửa sổ mở popup (hỗ trợ cả khi opener ở localhost:8300 hoặc production).
         try {
           if (window.opener && !window.opener.closed) {
-            window.opener.postMessage(msg, window.location.origin);
+            window.opener.postMessage(msg, "*");
             delivered = true;
           }
         } catch (e) {}

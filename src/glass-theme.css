@@ -15,18 +15,18 @@
 html,
 html.dark {
   --g-wallpaper: url("/images/wallpaper.jpg");
-  --g-blur: blur(5px) saturate(180%);
-  --g-shadow: rgba(255, 255, 255, 0.125) 0.5px 1px 1px 0px inset;
-  --g-shadow-hover: rgba(255, 255, 255, 0.20) 0.5px 1px 1px 0px inset, 0 10px 30px rgba(0, 0, 0, 0.35);
-  /* Sắc xám khói acrylic CasaOS gốc (.blur-background) */
-  --g-bg: rgba(53, 54, 58, 0.4);
-  --g-bg-hover: rgba(65, 75, 95, 0.48);
-  --g-border: none;
-  --g-border-hover: rgba(255, 255, 255, 0.22);
+  --g-blur: blur(12px) saturate(160%);
+  --g-shadow: rgba(255, 255, 255, 0.125) 0.5px 1px 1px 0px inset, 0 8px 24px rgba(0, 0, 0, 0.16);
+  --g-shadow-hover: rgba(255, 255, 255, 0.22) 0.5px 1px 1px 0px inset, 0 12px 32px rgba(0, 0, 0, 0.28);
+  /* Sắc kính mờ CasaOS Acrylic trong suốt cao (giảm opacity theo yêu cầu) */
+  --g-bg: rgba(45, 55, 85, 0.22);
+  --g-bg-hover: rgba(65, 80, 125, 0.32);
+  --g-border: 1px solid rgba(255, 255, 255, 0.10);
+  --g-border-hover: 1px solid rgba(255, 255, 255, 0.22);
   --g-text: #ffffff;
-  --g-text-2: rgba(226, 232, 240, 0.72);
-  --g-overlay: rgba(8, 12, 26, 0.16);
-  --g-dash: rgba(255, 255, 255, 0.28);
+  --g-text-2: rgba(226, 232, 240, 0.75);
+  --g-overlay: rgba(8, 12, 26, 0.06);
+  --g-dash: rgba(255, 255, 255, 0.25);
   --g-chip-bg: rgba(255, 255, 255, 0.12);
   --g-chip-border: rgba(255, 255, 255, 0.20);
   /* Lớp nổi (dropdown / toast): CasaOS dùng công thức đậm & mờ sâu hơn thẻ widget: rgba(0,0,0,0.8) + blur(16px) */
@@ -78,23 +78,21 @@ body::before {
 [data-glass="stat"],
 [data-glass="event-card"],
 [data-glass="panel"] {
-  background-size: cover;
-  background-position: bottom center;
-  background-attachment: fixed;
-  background-color: rgba(53, 54, 58, 0.4) !important;
-  -webkit-backdrop-filter: blur(5px) saturate(180%) !important;
-  backdrop-filter: blur(5px) saturate(180%) !important;
-  border-radius: 10px !important;
-  box-shadow: rgba(255, 255, 255, 0.125) 0.5px 1px 1px 0px inset !important;
-  border: none !important;
+  background-color: var(--g-bg) !important;
+  -webkit-backdrop-filter: var(--g-blur) !important;
+  backdrop-filter: var(--g-blur) !important;
+  border-radius: var(--g-radius) !important;
+  border: var(--g-border) !important;
+  box-shadow: var(--g-shadow) !important;
   color: var(--g-text) !important;
 }
 
 .blur-background:hover,
 [data-glass="stat"]:hover,
 [data-glass="event-card"]:hover {
-  background-color: rgba(65, 75, 95, 0.48) !important;
-  box-shadow: rgba(255, 255, 255, 0.20) 0.5px 1px 1px 0px inset, 0 10px 30px rgba(0, 0, 0, 0.35) !important;
+  background-color: var(--g-bg-hover) !important;
+  border: var(--g-border-hover) !important;
+  box-shadow: var(--g-shadow-hover) !important;
 }
 
 /* Lớp nổi trên cùng: dropdown & toast — đậm hơn, mờ sâu hơn để chữ luôn đọc rõ
@@ -128,22 +126,22 @@ body::before {
 }
 [data-glass="navbar"] {
   border-top: 0 !important;
-  background: rgba(53, 54, 58, 0.40) !important;
-  -webkit-backdrop-filter: blur(5px) saturate(180%) !important;
-  backdrop-filter: blur(5px) saturate(180%) !important;
+  background: rgba(20, 25, 45, 0.45) !important;
+  -webkit-backdrop-filter: var(--g-blur) !important;
+  backdrop-filter: var(--g-blur) !important;
   border-bottom: 1px solid rgba(255, 255, 255, 0.08) !important;
-  box-shadow: rgba(255, 255, 255, 0.125) 0.5px 1px 1px 0px inset !important;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15) !important;
 }
 
 /* Ô tìm kiếm & thẻ thống kê: hover sáng hơn */
 [data-glass="search"] {
-  background: rgba(53, 54, 58, 0.35) !important;
-  -webkit-backdrop-filter: blur(5px) saturate(180%) !important;
-  backdrop-filter: blur(5px) saturate(180%) !important;
-  box-shadow: rgba(255, 255, 255, 0.125) 0.5px 1px 1px 0px inset !important;
+  background: rgba(45, 55, 85, 0.22) !important;
+  -webkit-backdrop-filter: var(--g-blur) !important;
+  backdrop-filter: var(--g-blur) !important;
+  box-shadow: rgba(255, 255, 255, 0.10) 0.5px 1px 1px 0px inset !important;
   border: 1px solid rgba(255, 255, 255, 0.10) !important;
   color: var(--g-text) !important;
-  border-radius: 10px !important;
+  border-radius: var(--g-radius) !important;
 }
 [data-glass="search"]::placeholder {
   color: var(--g-text-2) !important;
@@ -162,18 +160,19 @@ body::before {
   background: transparent !important;
 }
 
-/* ── Thẻ "Tạo sự kiện": viền đứt + nền kính chuẩn CasaOS ───────────────────── */
+/* ── Thẻ "Tạo sự kiện": viền đứt + nền kính siêu trong suốt chuẩn CasaOS ───── */
 [data-glass="create"] {
-  background: rgba(53, 54, 58, 0.25) !important;
+  background: rgba(45, 55, 85, 0.14) !important;
   -webkit-backdrop-filter: var(--g-blur) !important;
   backdrop-filter: var(--g-blur) !important;
   box-shadow: var(--g-shadow) !important;
-  border: 2px dashed var(--g-dash) !important;
+  border: 1.5px dashed var(--g-dash) !important;
   color: var(--g-text-2) !important;
   border-radius: var(--g-radius) !important;
 }
 [data-glass="create"]:hover {
-  background: rgba(65, 75, 95, 0.45) !important;
+  background: rgba(65, 80, 125, 0.25) !important;
+  border-color: rgba(255, 255, 255, 0.40) !important;
   color: var(--g-text) !important;
 }
 
@@ -340,23 +339,4 @@ body::before {
   color: #ffffff !important;
 }
 
-/* ── Lớp nền kính mờ CasaOS Acrylic (.blur-background) ────────────────────── */
-.blur-background {
-  width: 100%;
-  height: 100%;
-  top: 0;
-  left: 0;
-  background-size: cover;
-  background-position: bottom center;
-  background-attachment: fixed;
-  background-color: rgba(53, 54, 58, 0.4);
-  -webkit-backdrop-filter: blur(5px) saturate(180%);
-  backdrop-filter: blur(5px) saturate(180%);
-  border-radius: 10px;
-  box-shadow: rgba(255, 255, 255, 0.125) 0.5px 1px 1px 0px inset;
-  border: none;
-  position: absolute;
-  z-index: 0;
-  overflow: hidden;
-  pointer-events: none;
-}
+
