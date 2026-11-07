@@ -158,7 +158,7 @@ export default function ShareTab({
   return (
     <div className={`space-y-6 ${isEmbedded ? "" : "max-w-screen-2xl mx-auto px-4 sm:px-6 py-6"}`}>
       {/* THẺ 1: LIÊN KẾT CHIA SẺ */}
-      <div className="bg-[rgba(53,54,58,0.4)] backdrop-blur-[5px] saturate-[180%] border border-white/10 rounded-[10px] p-6 shadow-[inset_0.5px_1px_1px_0px_rgba(255,255,255,0.125)] space-y-4">
+      <div className="bg-[rgba(28,38,72,0.35)] backdrop-blur-[10px] saturate-[180%] border border-white/10 rounded-[12px] p-6 shadow-[inset_0.5px_1px_1px_0px_rgba(255,255,255,0.125)] space-y-4">
         <div className="flex items-center justify-between pb-3 border-b border-white/10">
           <div className="flex items-center gap-3">
             <div className="w-9 h-9 rounded-2xl bg-blue-500/15 border border-blue-500/30 flex items-center justify-center text-blue-400 shadow-inner">
@@ -309,7 +309,7 @@ export default function ShareTab({
       </div>
 
       {/* THẺ 2: THÀNH VIÊN */}
-      <div className="bg-[rgba(53,54,58,0.4)] backdrop-blur-[5px] saturate-[180%] border border-white/10 rounded-[10px] p-6 shadow-[inset_0.5px_1px_1px_0px_rgba(255,255,255,0.125)] space-y-4">
+      <div className="bg-[rgba(28,38,72,0.35)] backdrop-blur-[10px] saturate-[180%] border border-white/10 rounded-[12px] p-6 shadow-[inset_0.5px_1px_1px_0px_rgba(255,255,255,0.125)] space-y-4">
         <div className="flex items-center gap-3 pb-3 border-b border-white/10">
           <div className="w-9 h-9 rounded-2xl bg-purple-500/15 border border-purple-500/30 flex items-center justify-center text-purple-400 shadow-inner">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -391,7 +391,7 @@ export default function ShareTab({
       </div>
 
       {/* THẺ 3: BẢO MẬT & ĐỒNG BỘ LƯU TRỮ */}
-      <div className="bg-[rgba(53,54,58,0.4)] backdrop-blur-[5px] saturate-[180%] border border-white/10 rounded-[10px] p-6 shadow-[inset_0.5px_1px_1px_0px_rgba(255,255,255,0.125)] space-y-3.5">
+      <div className="bg-[rgba(28,38,72,0.35)] backdrop-blur-[10px] saturate-[180%] border border-white/10 rounded-[12px] p-6 shadow-[inset_0.5px_1px_1px_0px_rgba(255,255,255,0.125)] space-y-3.5">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2.5">
             <svg className="w-5 h-5 text-cyan-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">

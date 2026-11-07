@@ -15,17 +15,17 @@
 html,
 html.dark {
   --g-wallpaper: url("/images/wallpaper.jpg");
-  --g-blur: blur(16px) saturate(180%);
-  --g-shadow: 0 0.5px 1px rgba(255,255,255,0.1) inset, 0 8px 32px rgba(0,0,0,0.28);
-  --g-shadow-hover: 0 0.5px 1px rgba(255,255,255,0.15) inset, 0 14px 44px rgba(0,0,0,0.5);
-  /* Midnight Indigo — đúng tone Reference Image 1 */
-  --g-bg: rgba(45, 55, 95, 0.55);
-  --g-bg-hover: rgba(60, 72, 120, 0.68);
-  --g-border: rgba(255, 255, 255, 0.09);
+  --g-blur: blur(10px) saturate(180%);
+  --g-shadow: rgba(255, 255, 255, 0.12) 0.5px 1px 1px 0px inset, 0 8px 32px rgba(0, 0, 0, 0.22);
+  --g-shadow-hover: rgba(255, 255, 255, 0.18) 0.5px 1px 1px 0px inset, 0 14px 44px rgba(0, 0, 0, 0.38);
+  /* Sắc xanh chàm đêm bán trong suốt cao độ (~35% opacity) chuẩn CasaOS Reference */
+  --g-bg: rgba(28, 38, 72, 0.35);
+  --g-bg-hover: rgba(40, 54, 102, 0.46);
+  --g-border: rgba(255, 255, 255, 0.10);
   --g-border-hover: rgba(255, 255, 255, 0.22);
   --g-text: #ffffff;
-  --g-text-2: rgba(200, 215, 240, 0.72);
-  --g-overlay: rgba(5, 8, 20, 0.22);
+  --g-text-2: rgba(220, 230, 245, 0.75);
+  --g-overlay: rgba(4, 7, 18, 0.08); /* Giảm độ mờ overlay tối để ảnh nền núi và sao sáng rực rỡ xuyên thấu */
   --g-dash: rgba(255, 255, 255, 0.28);
   --g-chip-bg: rgba(255, 255, 255, 0.12);
   --g-chip-border: rgba(255, 255, 255, 0.20);
@@ -77,7 +77,6 @@ body::before {
 [data-glass="navbar"],
 [data-glass="stat"],
 [data-glass="search"],
-[data-glass="event-body"],
 [data-glass="create"],
 [data-glass="panel"] {
   background: var(--g-bg) !important;
@@ -122,9 +121,9 @@ body::before {
 }
 [data-glass="navbar"] {
   border-top: 0 !important;
-  background: rgba(10, 14, 36, 0.60) !important;
-  -webkit-backdrop-filter: blur(20px) saturate(180%) !important;
-  backdrop-filter: blur(20px) saturate(180%) !important;
+  background: rgba(10, 14, 36, 0.40) !important;
+  -webkit-backdrop-filter: blur(16px) saturate(180%) !important;
+  backdrop-filter: blur(16px) saturate(180%) !important;
   border-bottom: 1px solid rgba(255, 255, 255, 0.08) !important;
 }
 
@@ -136,7 +135,7 @@ body::before {
   box-shadow: var(--g-shadow-hover) !important;
 }
 [data-glass="search"] {
-  background: rgba(26, 33, 60, 0.45) !important;
+  background: rgba(24, 32, 60, 0.30) !important;
   border: 1px solid rgba(255, 255, 255, 0.12) !important;
   box-shadow: none !important;
   color: var(--g-text) !important;
@@ -162,21 +161,26 @@ body::before {
   box-shadow: var(--g-shadow-hover) !important;
 }
 [data-glass="event-body"] {
+  background: transparent !important;
+  -webkit-backdrop-filter: none !important;
+  backdrop-filter: none !important;
   border: 0 !important;
   border-radius: 0 !important;
   box-shadow: none !important;
 }
 [data-glass="event-card"]:hover [data-glass="event-body"] {
-  background: var(--g-bg-hover) !important;
+  background: transparent !important;
 }
 
 /* ── Thẻ "Tạo sự kiện": viền đứt + nền kính ─────────────────────────────────── */
 [data-glass="create"] {
+  background: rgba(28, 38, 72, 0.22) !important;
   border: 2px dashed var(--g-dash) !important;
   color: var(--g-text-2) !important;
   border-radius: var(--g-radius) !important;
 }
 [data-glass="create"]:hover {
+  background: var(--g-bg-hover) !important;
   color: var(--g-text) !important;
 }
 
@@ -352,12 +356,12 @@ body::before {
   background-size: cover;
   background-position: bottom center;
   background-attachment: fixed;
-  background-color: rgba(53, 54, 58, 0.4);
-  -webkit-backdrop-filter: blur(5px) saturate(180%);
-  backdrop-filter: blur(5px) saturate(180%);
-  border-radius: 10px;
+  background-color: rgba(28, 38, 72, 0.35);
+  -webkit-backdrop-filter: blur(10px) saturate(180%);
+  backdrop-filter: blur(10px) saturate(180%);
+  border-radius: 12px;
   box-shadow: rgba(255, 255, 255, 0.125) 0.5px 1px 1px 0px inset;
-  border: none;
+  border: 1px solid rgba(255, 255, 255, 0.10);
   position: absolute;
   z-index: 0;
   overflow: hidden;

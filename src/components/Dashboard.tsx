@@ -236,7 +236,7 @@ export default function Dashboard({
               <button
                 data-glass="create"
                 onClick={onCreateEvent}
-                className="group rounded-[10px] border-2 border-dashed border-white/20 hover:border-blue-400 bg-[rgba(53,54,58,0.25)] hover:bg-[rgba(53,54,58,0.45)] backdrop-blur-[8px] saturate-[180%] flex flex-col items-center justify-center gap-3 text-white/60 hover:text-white transition-all cursor-pointer min-h-[200px] p-4 shadow-[inset_0.5px_1px_1px_0px_rgba(255,255,255,0.08)]"
+                className="group rounded-[12px] flex flex-col items-center justify-center gap-3 text-white/60 hover:text-white transition-all cursor-pointer min-h-[200px] p-4"
               >
                 <div className="w-11 h-11 rounded-2xl bg-blue-500/20 border border-blue-400/30 flex items-center justify-center text-blue-400 group-hover:scale-110 transition-transform shadow-inner">
                   <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">

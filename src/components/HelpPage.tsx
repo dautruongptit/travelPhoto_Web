@@ -83,7 +83,7 @@ export default function HelpPage({ onBack }: Props) {
             >
               <button
                 onClick={() => setOpenIndex(open ? null : i)}
-                className="w-full flex items-center justify-between gap-4 px-4 py-3.5 text-left bg-[rgba(53,54,58,0.4)] hover:bg-[rgba(65,75,95,0.48)] backdrop-blur-[8px] saturate-[180%] transition-colors"
+                className="w-full flex items-center justify-between gap-4 px-4 py-3.5 text-left bg-[rgba(28,38,72,0.35)] hover:bg-[rgba(40,54,102,0.46)] backdrop-blur-[10px] saturate-[180%] transition-colors"
               >
                 <span className="text-sm font-medium text-neutral-800 dark:text-neutral-100">
                   {item.q}
@@ -119,7 +119,7 @@ export default function HelpPage({ onBack }: Props) {
       </div>
 
       {/* Contact */}
-      <div className="mt-8 rounded-[10px] bg-[rgba(53,54,58,0.4)] backdrop-blur-[8px] saturate-[180%] border border-white/10 p-5">
+      <div className="mt-8 rounded-[12px] bg-[rgba(28,38,72,0.35)] backdrop-blur-[10px] saturate-[180%] border border-white/10 p-5">
         <h2 className="text-base font-semibold text-neutral-900 dark:text-white">
           Vẫn cần trợ giúp?
         </h2>
