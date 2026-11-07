@@ -153,7 +153,7 @@ export default function Dashboard({
           <div
             key={label}
             data-glass="stat"
-            className="rounded-[10px] p-4 transition-all flex items-center justify-between"
+            className="blur-background rounded-[10px] p-4 transition-all flex items-center justify-between"
           >
             <div>
               <p className="text-xs text-white/60 font-medium">
