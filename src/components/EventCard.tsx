@@ -30,7 +30,7 @@ export default function EventCard({
     <article
       data-glass="event-card"
       onClick={onClick}
-      className={`group flex flex-col h-full bg-[rgba(53,54,58,0.4)] hover:bg-[rgba(65,75,95,0.48)] backdrop-blur-[8px] saturate-[180%] rounded-2xl overflow-hidden border border-white/10 hover:border-white/25 shadow-[inset_0.5px_1px_1px_0px_rgba(255,255,255,0.125)] hover:shadow-2xl hover:-translate-y-1 transition-all duration-300 cursor-pointer ${
+      className={`group flex flex-col h-full bg-[rgba(53,54,58,0.4)] hover:bg-[rgba(65,75,95,0.48)] backdrop-blur-[8px] saturate-[180%] rounded-[10px] overflow-hidden border border-white/10 hover:border-white/25 shadow-[inset_0.5px_1px_1px_0px_rgba(255,255,255,0.125)] hover:shadow-2xl hover:-translate-y-1 transition-all duration-300 cursor-pointer ${
         selected
           ? "ring-2 ring-blue-500 border-blue-400 ring-offset-2 ring-offset-[#0b0f19]"
           : ""

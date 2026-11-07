@@ -79,7 +79,7 @@ export default function HelpPage({ onBack }: Props) {
           return (
             <div
               key={item.q}
-              className="rounded-2xl border border-white/10 overflow-hidden"
+              className="rounded-[10px] border border-white/10 overflow-hidden"
             >
               <button
                 onClick={() => setOpenIndex(open ? null : i)}
@@ -119,7 +119,7 @@ export default function HelpPage({ onBack }: Props) {
       </div>
 
       {/* Contact */}
-      <div className="mt-8 rounded-2xl bg-[rgba(53,54,58,0.4)] backdrop-blur-[8px] saturate-[180%] border border-white/10 p-5">
+      <div className="mt-8 rounded-[10px] bg-[rgba(53,54,58,0.4)] backdrop-blur-[8px] saturate-[180%] border border-white/10 p-5">
         <h2 className="text-base font-semibold text-neutral-900 dark:text-white">
           Vẫn cần trợ giúp?
         </h2>
