@@ -15,24 +15,24 @@
 html,
 html.dark {
   --g-wallpaper: url("/images/wallpaper.jpg");
-  --g-blur: blur(10px) saturate(180%);
-  --g-shadow: rgba(255, 255, 255, 0.12) 0.5px 1px 1px 0px inset, 0 8px 32px rgba(0, 0, 0, 0.22);
-  --g-shadow-hover: rgba(255, 255, 255, 0.18) 0.5px 1px 1px 0px inset, 0 14px 44px rgba(0, 0, 0, 0.38);
-  /* Sắc xanh chàm đêm bán trong suốt cao độ (~35% opacity) chuẩn CasaOS Reference */
-  --g-bg: rgba(28, 38, 72, 0.35);
-  --g-bg-hover: rgba(40, 54, 102, 0.46);
-  --g-border: rgba(255, 255, 255, 0.10);
+  --g-blur: blur(5px) saturate(180%);
+  --g-shadow: rgba(255, 255, 255, 0.125) 0.5px 1px 1px 0px inset;
+  --g-shadow-hover: rgba(255, 255, 255, 0.20) 0.5px 1px 1px 0px inset, 0 10px 30px rgba(0, 0, 0, 0.35);
+  /* Sắc xám khói acrylic CasaOS gốc (.blur-background) */
+  --g-bg: rgba(53, 54, 58, 0.4);
+  --g-bg-hover: rgba(65, 75, 95, 0.48);
+  --g-border: none;
   --g-border-hover: rgba(255, 255, 255, 0.22);
   --g-text: #ffffff;
-  --g-text-2: rgba(220, 230, 245, 0.75);
-  --g-overlay: rgba(4, 7, 18, 0.08); /* Giảm độ mờ overlay tối để ảnh nền núi và sao sáng rực rỡ xuyên thấu */
+  --g-text-2: rgba(226, 232, 240, 0.72);
+  --g-overlay: rgba(8, 12, 26, 0.16);
   --g-dash: rgba(255, 255, 255, 0.28);
   --g-chip-bg: rgba(255, 255, 255, 0.12);
   --g-chip-border: rgba(255, 255, 255, 0.20);
-  /* Lớp nổi (dropdown / toast): đậm, mờ sâu để chữ luôn đọc rõ */
-  --g-float-bg: rgba(10, 15, 42, 0.88);
-  --g-float-blur: blur(20px);
-  --g-radius: 12px;
+  /* Lớp nổi (dropdown / toast): CasaOS dùng công thức đậm & mờ sâu hơn thẻ widget: rgba(0,0,0,0.8) + blur(16px) */
+  --g-float-bg: rgba(0, 0, 0, 0.8);
+  --g-float-blur: blur(16px);
+  --g-radius: 10px;
 }
 
 /* ── Nền trang: ảnh núi đêm toàn màn hình + lớp phủ mờ tối ─────────────────── */
@@ -73,21 +73,23 @@ body::before {
   color: var(--g-text);
 }
 
-/* ── Bề mặt kính trong suốt (Navbar, Thẻ sự kiện, Tìm kiếm...) ─────────────── */
-[data-glass="navbar"],
+/* ── Bề mặt kính trong suốt chuẩn CasaOS .blur-background ─────────────── */
 [data-glass="stat"],
-[data-glass="search"],
-[data-glass="create"],
+[data-glass="event-card"],
 [data-glass="panel"] {
   background: var(--g-bg) !important;
   -webkit-backdrop-filter: var(--g-blur) !important;
   backdrop-filter: var(--g-blur) !important;
-  border: 1px solid var(--g-border) !important;
+  border-radius: var(--g-radius) !important;
   box-shadow: var(--g-shadow) !important;
+  border: none !important;
   color: var(--g-text) !important;
 }
-[data-glass="stat"] {
-  border-radius: var(--g-radius) !important;
+
+[data-glass="stat"]:hover,
+[data-glass="event-card"]:hover {
+  background: var(--g-bg-hover) !important;
+  box-shadow: var(--g-shadow-hover) !important;
 }
 
 /* Lớp nổi trên cùng: dropdown & toast — đậm hơn, mờ sâu hơn để chữ luôn đọc rõ
@@ -101,14 +103,14 @@ body::before {
   color: var(--g-text) !important;
 }
 [data-glass="dropdown"] {
-  border: 1px solid var(--g-border) !important;
+  border: 1px solid rgba(255, 255, 255, 0.10) !important;
   border-radius: var(--g-radius) !important;
 }
 /* Toast giữ nguyên viền trái màu theo trạng thái (success/error/warning/info) */
 [data-glass="toast"] {
-  border-top: 1px solid var(--g-border) !important;
-  border-right: 1px solid var(--g-border) !important;
-  border-bottom: 1px solid var(--g-border) !important;
+  border-top: 1px solid rgba(255, 255, 255, 0.10) !important;
+  border-right: 1px solid rgba(255, 255, 255, 0.10) !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.10) !important;
   border-radius: var(--g-radius) !important;
 }
 
@@ -121,45 +123,28 @@ body::before {
 }
 [data-glass="navbar"] {
   border-top: 0 !important;
-  background: rgba(10, 14, 36, 0.40) !important;
-  -webkit-backdrop-filter: blur(16px) saturate(180%) !important;
-  backdrop-filter: blur(16px) saturate(180%) !important;
+  background: rgba(53, 54, 58, 0.40) !important;
+  -webkit-backdrop-filter: blur(5px) saturate(180%) !important;
+  backdrop-filter: blur(5px) saturate(180%) !important;
   border-bottom: 1px solid rgba(255, 255, 255, 0.08) !important;
+  box-shadow: rgba(255, 255, 255, 0.125) 0.5px 1px 1px 0px inset !important;
 }
 
 /* Ô tìm kiếm & thẻ thống kê: hover sáng hơn */
-[data-glass="stat"]:hover,
-[data-glass="create"]:hover {
-  background: var(--g-bg-hover) !important;
-  border-color: var(--g-border-hover) !important;
-  box-shadow: var(--g-shadow-hover) !important;
-}
 [data-glass="search"] {
-  background: rgba(24, 32, 60, 0.30) !important;
-  border: 1px solid rgba(255, 255, 255, 0.12) !important;
-  box-shadow: none !important;
+  background: rgba(53, 54, 58, 0.35) !important;
+  -webkit-backdrop-filter: blur(5px) saturate(180%) !important;
+  backdrop-filter: blur(5px) saturate(180%) !important;
+  box-shadow: rgba(255, 255, 255, 0.125) 0.5px 1px 1px 0px inset !important;
+  border: 1px solid rgba(255, 255, 255, 0.10) !important;
   color: var(--g-text) !important;
-  border-radius: 999px !important;
+  border-radius: 10px !important;
 }
 [data-glass="search"]::placeholder {
   color: var(--g-text-2) !important;
 }
 
-/* ── Thẻ sự kiện ───────────────────────────────────────────────────────────── */
-[data-glass="event-card"] {
-  background: var(--g-bg) !important;
-  -webkit-backdrop-filter: var(--g-blur) !important;
-  backdrop-filter: var(--g-blur) !important;
-  border: 1px solid var(--g-border) !important;
-  box-shadow: var(--g-shadow) !important;
-  color: var(--g-text) !important;
-  border-radius: var(--g-radius) !important;
-}
-[data-glass="event-card"]:hover {
-  background: var(--g-bg-hover) !important;
-  border-color: var(--g-border-hover) !important;
-  box-shadow: var(--g-shadow-hover) !important;
-}
+/* ── Thẻ sự kiện: thân trong suốt kế thừa thẻ cha ──────────────────────────── */
 [data-glass="event-body"] {
   background: transparent !important;
   -webkit-backdrop-filter: none !important;
@@ -172,15 +157,18 @@ body::before {
   background: transparent !important;
 }
 
-/* ── Thẻ "Tạo sự kiện": viền đứt + nền kính ─────────────────────────────────── */
+/* ── Thẻ "Tạo sự kiện": viền đứt + nền kính chuẩn CasaOS ───────────────────── */
 [data-glass="create"] {
-  background: rgba(28, 38, 72, 0.22) !important;
+  background: rgba(53, 54, 58, 0.25) !important;
+  -webkit-backdrop-filter: var(--g-blur) !important;
+  backdrop-filter: var(--g-blur) !important;
+  box-shadow: var(--g-shadow) !important;
   border: 2px dashed var(--g-dash) !important;
   color: var(--g-text-2) !important;
   border-radius: var(--g-radius) !important;
 }
 [data-glass="create"]:hover {
-  background: var(--g-bg-hover) !important;
+  background: rgba(65, 75, 95, 0.45) !important;
   color: var(--g-text) !important;
 }
 
@@ -356,12 +344,12 @@ body::before {
   background-size: cover;
   background-position: bottom center;
   background-attachment: fixed;
-  background-color: rgba(28, 38, 72, 0.35);
-  -webkit-backdrop-filter: blur(10px) saturate(180%);
-  backdrop-filter: blur(10px) saturate(180%);
-  border-radius: 12px;
+  background-color: rgba(53, 54, 58, 0.4);
+  -webkit-backdrop-filter: blur(5px) saturate(180%);
+  backdrop-filter: blur(5px) saturate(180%);
+  border-radius: 10px;
   box-shadow: rgba(255, 255, 255, 0.125) 0.5px 1px 1px 0px inset;
-  border: 1px solid rgba(255, 255, 255, 0.10);
+  border: none;
   position: absolute;
   z-index: 0;
   overflow: hidden;

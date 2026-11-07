@@ -153,7 +153,7 @@ export default function Dashboard({
           <div
             key={label}
             data-glass="stat"
-            className="rounded-[12px] p-4 hover:border-white/20 transition-all flex items-center justify-between"
+            className="rounded-[10px] p-4 transition-all flex items-center justify-between"
           >
             <div>
               <p className="text-xs text-white/60 font-medium">
@@ -236,7 +236,7 @@ export default function Dashboard({
               <button
                 data-glass="create"
                 onClick={onCreateEvent}
-                className="group rounded-[12px] flex flex-col items-center justify-center gap-3 text-white/60 hover:text-white transition-all cursor-pointer min-h-[200px] p-4"
+                className="group rounded-[10px] flex flex-col items-center justify-center gap-3 text-white/60 hover:text-white transition-all cursor-pointer min-h-[200px] p-4"
               >
                 <div className="w-11 h-11 rounded-2xl bg-blue-500/20 border border-blue-400/30 flex items-center justify-center text-blue-400 group-hover:scale-110 transition-transform shadow-inner">
                   <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">

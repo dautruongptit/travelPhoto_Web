@@ -137,7 +137,7 @@ export default function Navbar({
                 value={searchQuery}
                 onChange={(e) => onSearchChange(e.target.value)}
                 placeholder="Tìm kiếm ảnh, địa điểm, chuyến đi…"
-                className="w-full h-9 sm:h-10 pl-10 pr-9 rounded-full text-sm text-white placeholder-white/40 focus:outline-none focus:ring-2 focus:ring-blue-400/40 transition-all"
+                className="w-full h-9 sm:h-10 pl-10 pr-9 rounded-[10px] text-sm text-white placeholder-white/40 focus:outline-none focus:ring-2 focus:ring-blue-400/40 transition-all"
               />
               {searchQuery ? (
                 <button

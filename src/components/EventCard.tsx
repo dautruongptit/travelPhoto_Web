@@ -30,7 +30,7 @@ export default function EventCard({
     <article
       data-glass="event-card"
       onClick={onClick}
-      className={`group flex flex-col h-full rounded-[12px] overflow-hidden transition-all duration-300 cursor-pointer ${
+      className={`group flex flex-col h-full rounded-[10px] overflow-hidden transition-all duration-300 cursor-pointer ${
         selected
           ? "ring-2 ring-blue-500 border-blue-400 ring-offset-2 ring-offset-transparent"
           : ""
