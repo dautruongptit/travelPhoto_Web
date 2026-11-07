@@ -128,20 +128,7 @@ export default function Dashboard({
   }
 
   return (
-    <main className="max-w-screen-2xl mx-auto px-4 sm:px-6 py-8 pb-20">
-      {/* Hero */}
-      <div className="max-w-2xl pt-2 pb-6">
-        <p className="text-sm font-semibold mb-2 text-blue-500 dark:text-blue-400">
-          Album của bạn
-        </p>
-        <h1 className="text-2xl sm:text-3xl font-bold tracking-tight mb-3 text-neutral-900 dark:text-white">
-          Những chuyến đi đáng nhớ
-        </h1>
-        <p className="text-sm sm:text-base text-neutral-500 dark:text-neutral-400 leading-relaxed">
-          Lưu giữ và chia sẻ những khoảnh khắc đẹp từ các chuyến hành trình của bạn.
-        </p>
-      </div>
-
+    <main className="max-w-screen-2xl mx-auto px-4 sm:px-6 py-6 sm:py-8 pb-20">
       {/* Flickr Quick Metric Pills */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-8">
         {[
