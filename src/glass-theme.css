@@ -96,7 +96,7 @@ body::before {
 
 /* ── Thẻ sự kiện ───────────────────────────────────────────────────────────── */
 [data-glass="event-card"] {
-  background: rgba(24, 30, 54, 0.36) !important;
+  background: var(--g-bg) !important;
   -webkit-backdrop-filter: var(--g-blur) !important;
   backdrop-filter: var(--g-blur) !important;
   border: 1px solid var(--g-border) !important;
@@ -104,7 +104,7 @@ body::before {
   color: var(--g-text) !important;
 }
 [data-glass="event-card"]:hover {
-  background: rgba(32, 40, 72, 0.48) !important;
+  background: var(--g-bg-hover) !important;
   border-color: var(--g-border-hover) !important;
   box-shadow: var(--g-shadow-hover) !important;
 }

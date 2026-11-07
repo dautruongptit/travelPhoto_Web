@@ -129,15 +129,16 @@ export default function Dashboard({
 
   return (
     <main className="max-w-screen-2xl mx-auto px-4 sm:px-6 py-6 sm:py-8 pb-20">
-      {/* Flickr Quick Metric Pills */}
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-8">
+      {/* CasaOS Quick Metric Widgets */}
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3.5 mb-8">
         {[
-          { label: "Sự kiện & Chuyến đi", value: events.length, icon: "🗺️" },
-          { label: "Tổng số bức ảnh", value: totalPhotos, icon: "📸" },
+          { label: "Sự kiện & Chuyến đi", value: events.length, icon: "🗺️", accent: "from-blue-500/20 to-cyan-500/20 text-cyan-300" },
+          { label: "Tổng số bức ảnh", value: totalPhotos, icon: "📸", accent: "from-purple-500/20 to-pink-500/20 text-pink-300" },
           {
             label: "Dung lượng đã dùng",
             value: formatTotalSize(totalSize),
             icon: "💾",
+            accent: "from-emerald-500/20 to-teal-500/20 text-emerald-300",
           },
           {
             label: "Ảnh gần đây",
@@ -146,22 +147,25 @@ export default function Dashboard({
               return Date.now() - d.getTime() < 7 * 86400000
             }).length,
             icon: "✨",
+            accent: "from-amber-500/20 to-orange-500/20 text-amber-300",
           },
-        ].map(({ label, value, icon }) => (
+        ].map(({ label, value, icon, accent }) => (
           <div
             key={label}
             data-glass="stat"
-            className="bg-neutral-50 dark:bg-[#18181b] rounded-2xl p-4 border border-neutral-200/60 dark:border-neutral-800 flex items-center justify-between"
+            className="bg-[rgba(53,54,58,0.4)] backdrop-blur-[8px] saturate-[180%] rounded-2xl p-4 border border-white/10 shadow-[inset_0.5px_1px_1px_0px_rgba(255,255,255,0.125)] hover:border-white/20 hover:bg-[rgba(65,75,95,0.45)] transition-all flex items-center justify-between"
           >
             <div>
-              <p className="text-xs text-neutral-500 dark:text-neutral-400">
+              <p className="text-xs text-white/60 font-medium">
                 {label}
               </p>
-              <p className="text-xl font-bold text-neutral-900 dark:text-white mt-1">
+              <p className="text-xl sm:text-2xl font-bold text-white mt-1 tracking-tight">
                 {value}
               </p>
             </div>
-            <span className="text-2xl">{icon}</span>
+            <div className={`w-11 h-11 rounded-2xl bg-gradient-to-br ${accent} border border-white/10 flex items-center justify-center text-xl shadow-inner`}>
+              {icon}
+            </div>
           </div>
         ))}
       </div>
@@ -180,7 +184,7 @@ export default function Dashboard({
             </div>
           </div>
 
-          <div className="rounded-xl overflow-hidden bg-neutral-100/50 dark:bg-neutral-900/40 p-1">
+          <div className="rounded-2xl overflow-hidden bg-[rgba(53,54,58,0.35)] backdrop-blur-[8px] saturate-[180%] border border-white/10 p-2 shadow-[inset_0.5px_1px_1px_0px_rgba(255,255,255,0.125)]">
             <JustifiedGallery
               photos={recentPhotos}
               onPhotoClick={(_photo, index) => setRecentLightboxIndex(index)}
@@ -194,13 +198,13 @@ export default function Dashboard({
       {/* Events / Albums Grid */}
       <section>
         <div className="flex items-center justify-between mb-4">
-          <h2 className="text-base font-semibold text-neutral-700 dark:text-neutral-200 flex items-center gap-2">
-            <span className="w-1.5 h-4 bg-indigo-500 rounded-full" />
+          <h2 className="text-base font-bold text-white tracking-tight flex items-center gap-2">
+            <span className="w-1.5 h-4 bg-blue-500 rounded-full shadow-sm shadow-blue-500/50" />
             {searchQuery
               ? `Kết quả tìm kiếm "${searchQuery}"`
               : "Tất cả sự kiện"}
-            <span className="text-neutral-400 font-normal">
-              ({filtered.length})
+            <span className="text-xs font-semibold px-2 py-0.5 rounded-full bg-white/10 text-white/70 border border-white/10">
+              {filtered.length}
             </span>
           </h2>
         </div>
@@ -232,14 +236,14 @@ export default function Dashboard({
               <button
                 data-glass="create"
                 onClick={onCreateEvent}
-                className="group rounded-xl border-2 border-dashed border-gray-200 dark:border-neutral-700 hover:border-blue-400 hover:bg-blue-50/40 dark:hover:bg-neutral-900 flex flex-col items-center justify-center gap-2 text-gray-400 hover:text-blue-600 transition-all cursor-pointer min-h-[200px] p-4"
+                className="group rounded-2xl border-2 border-dashed border-white/20 hover:border-blue-400 bg-[rgba(53,54,58,0.25)] hover:bg-[rgba(53,54,58,0.45)] backdrop-blur-[8px] saturate-[180%] flex flex-col items-center justify-center gap-3 text-white/60 hover:text-white transition-all cursor-pointer min-h-[200px] p-4 shadow-[inset_0.5px_1px_1px_0px_rgba(255,255,255,0.08)]"
               >
-                <div className="w-10 h-10 rounded-full bg-blue-500/10 dark:bg-blue-500/20 flex items-center justify-center text-blue-500 group-hover:scale-110 transition-transform">
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                <div className="w-11 h-11 rounded-2xl bg-blue-500/20 border border-blue-400/30 flex items-center justify-center text-blue-400 group-hover:scale-110 transition-transform shadow-inner">
+                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
                     <path d="M12 5v14M5 12h14" strokeLinecap="round" />
                   </svg>
                 </div>
-                <span className="text-sm font-semibold">Tạo sự kiện mới</span>
+                <span className="text-xs sm:text-sm font-semibold tracking-tight">Tạo sự kiện mới</span>
               </button>
             )}
           </div>
