@@ -59,6 +59,14 @@ function mapUser(dto: UserResponseDto): User {
  */
 
 export function getGoogleLoginUrl(): string {
+  // Dev (localhost) + API thật: popup phải mở THẲNG domain API (không qua proxy Vite) để cookie
+  // phiên OAuth2 nằm đúng domain mà Google gọi lại; backend trả token về return_origin (whitelist).
+  const proxyTarget = import.meta.env.VITE_PROXY_TARGET
+  if (import.meta.env.DEV && proxyTarget && !/localhost|127\.0\.0\.1/.test(proxyTarget)) {
+    const origin = new URL(proxyTarget).origin
+    return `${origin}${OAUTH2_LOGIN_PATH}?return_origin=${encodeURIComponent(window.location.origin)}`
+  }
+
   return `${API_ORIGIN}${OAUTH2_LOGIN_PATH}`
 }
 
