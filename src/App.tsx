@@ -500,7 +500,7 @@ export default function App() {
   }
 
   return (
-    <div className="min-h-screen flex flex-col bg-white dark:bg-[#0b0b0c] text-neutral-900 dark:text-neutral-100 transition-colors">
+    <div className="min-h-screen flex flex-col text-white transition-colors">
       {/* Login page has its own layout */}
       {view === "login" ? (
         <LoginPage

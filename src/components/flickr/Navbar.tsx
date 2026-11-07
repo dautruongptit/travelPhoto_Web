@@ -75,7 +75,7 @@ export default function Navbar({
   ]
 
   return (
-    <header data-glass="navbar" className="sticky top-0 z-40 w-full bg-white/95 dark:bg-[#0b0b0c]/95 backdrop-blur-md border-b border-neutral-200/80 dark:border-neutral-800/80 transition-colors">
+    <header data-glass="navbar" className="sticky top-0 z-40 w-full transition-colors">
       <div className="max-w-screen-2xl mx-auto px-4 sm:px-6 h-14 sm:h-16 flex items-center justify-between gap-3 sm:gap-6">
         {/* TRÁI: Logo Flickr Style + Tabs */}
         <div className="flex items-center gap-6 sm:gap-8">
@@ -84,7 +84,7 @@ export default function Navbar({
             className="flex items-center gap-1.5 focus:outline-none group text-left cursor-pointer"
             title="TravelPhoto"
           >
-            <span className="font-black text-lg sm:text-xl tracking-tight text-neutral-900 dark:text-white flex items-center gap-1">
+            <span className="font-black text-lg sm:text-xl tracking-tight text-white flex items-center gap-1">
               TravelPhoto
               <span className="inline-flex items-center gap-0.5 ml-0.5">
                 <span className="w-2.5 h-2.5 rounded-full bg-[#0063dc] group-hover:scale-110 transition-transform" />
@@ -105,8 +105,8 @@ export default function Navbar({
                   onClick={() => onSelectTab?.(tab.id)}
                   className={`px-3.5 py-1.5 rounded-full transition-all cursor-pointer ${
                     isActive
-                      ? "text-[#0063dc] dark:text-white font-semibold bg-neutral-100 dark:bg-neutral-800"
-                      : "text-neutral-600 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-white hover:bg-neutral-100/60 dark:hover:bg-neutral-800/50"
+                      ? "text-white font-semibold bg-white/15 border border-white/20"
+                      : "text-white/70 hover:text-white hover:bg-white/10"
                   }`}
                 >
                   {tab.label}
@@ -121,7 +121,7 @@ export default function Navbar({
           <div className="flex-1 max-w-md mx-2 sm:mx-4">
             <div className="relative group">
               <svg
-                className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-neutral-400 dark:text-neutral-500 pointer-events-none group-focus-within:text-[#0063dc] transition-colors"
+                className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-white/50 pointer-events-none group-focus-within:text-blue-400 transition-colors"
                 viewBox="0 0 24 24"
                 fill="none"
                 stroke="currentColor"
@@ -137,12 +137,12 @@ export default function Navbar({
                 value={searchQuery}
                 onChange={(e) => onSearchChange(e.target.value)}
                 placeholder="Tìm kiếm ảnh, địa điểm, chuyến đi…"
-                className="w-full h-9 sm:h-10 pl-10 pr-9 bg-neutral-100 dark:bg-[#18181b] border border-transparent dark:border-neutral-800 rounded-full text-sm text-neutral-900 dark:text-neutral-100 placeholder-neutral-400 focus:outline-none focus:border-[#0063dc] focus:bg-white dark:focus:bg-[#0b0b0c] focus:ring-2 focus:ring-[#0063dc]/20 transition-all"
+                className="w-full h-9 sm:h-10 pl-10 pr-9 rounded-full text-sm text-white placeholder-white/40 focus:outline-none focus:ring-2 focus:ring-blue-400/40 transition-all"
               />
               {searchQuery ? (
                 <button
                   onClick={() => onSearchChange("")}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-neutral-400 hover:text-neutral-600 dark:hover:text-neutral-200 text-sm cursor-pointer"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-white/50 hover:text-white text-sm cursor-pointer"
                 >
                   ✕
                 </button>
@@ -264,7 +264,7 @@ export default function Navbar({
           {/* Mobile Hamburger Button */}
           <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="md:hidden w-9 h-9 flex items-center justify-center rounded-lg hover:bg-neutral-100 dark:hover:bg-neutral-800 text-neutral-600 dark:text-neutral-300 cursor-pointer"
+            className="md:hidden w-9 h-9 flex items-center justify-center rounded-lg hover:bg-white/10 text-white/70 hover:text-white cursor-pointer"
             aria-label="Menu"
           >
             <svg
@@ -286,7 +286,7 @@ export default function Navbar({
 
       {/* Mobile Drawer */}
       {mobileMenuOpen && (
-        <div className="md:hidden border-t border-neutral-200 dark:border-neutral-800 px-4 py-3 bg-white dark:bg-[#0b0b0c] flex flex-col gap-1.5 text-sm font-medium">
+        <div className="md:hidden border-t border-white/10 px-4 py-3 bg-[rgba(10,15,42,0.88)] backdrop-blur-[20px] flex flex-col gap-1.5 text-sm font-medium">
           {navTabs.map((tab) => (
             <button
               key={tab.id}
@@ -296,8 +296,8 @@ export default function Navbar({
               }}
               className={`text-left px-3 py-2 rounded-lg transition-colors cursor-pointer ${
                 activeTab === tab.id
-                  ? "bg-neutral-100 dark:bg-neutral-800 text-[#0063dc] font-semibold"
-                  : "text-neutral-600 dark:text-neutral-400"
+                  ? "bg-white/15 text-white font-semibold"
+                  : "text-white/70 hover:text-white hover:bg-white/10"
               }`}
             >
               {tab.label}

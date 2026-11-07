@@ -1,31 +1,38 @@
 /* glass-theme.css — Giao diện trong suốt CasaOS (CHỈ CÓ 1 GIAO DIỆN DUY NHẤT, KHÔNG CÓ NGÀY ĐÊM).
  * Nền: Ảnh núi đêm wallpaper02.
  * Thẻ/Thanh công cụ: Kính mờ trong suốt (Dark Glassmorphism).
- * Cửa sổ bật lên (Modal/Popup/Dropdown/Toast): cũng là kính mờ, đậm hơn thẻ widget để chữ đọc rõ. */
+ * Cửa sổ bật lên (Modal/Popup/Dropdown/Toast): cũng là kính mờ, đậm hơn thẻ widget để chữ đọc rõ.
+ *
+ * DESIGN TOKENS — đo theo Reference Image 1 (CasaOS desktop glassmorphism):
+ *   Widget surface:  rgba(45, 55, 95,  0.55)  — xanh chàm đêm, bán trong suốt
+ *   Widget hover:    rgba(60, 72, 120, 0.68)  — sáng & đậm hơn khi hover
+ *   Navbar:          rgba(14, 18, 36,  0.60)  — tối hơn, dải ngang
+ *   Border:          rgba(255,255,255, 0.09)  — viền bắt sáng mảnh
+ *   Float (dropdown/toast): rgba(10,15,42, 0.88) + blur(20px)
+ */
 
 :root,
 html,
 html.dark {
   --g-wallpaper: url("/images/wallpaper.jpg");
-  --g-blur: blur(5px) saturate(180%);
-  --g-shadow: rgba(255, 255, 255, 0.125) 0.5px 1px 1px 0px inset, 0 8px 32px rgba(0, 0, 0, 0.25);
-  --g-shadow-hover: 0 14px 44px rgba(0, 0, 0, 0.45);
-  /* Sắc xanh chàm đêm Midnight Indigo chuẩn CasaOS */
-  --g-bg: rgba(53, 54, 58, 0.4);
-  --g-bg-hover: rgba(36, 45, 80, 0.48);
+  --g-blur: blur(16px) saturate(180%);
+  --g-shadow: 0 0.5px 1px rgba(255,255,255,0.1) inset, 0 8px 32px rgba(0,0,0,0.28);
+  --g-shadow-hover: 0 0.5px 1px rgba(255,255,255,0.15) inset, 0 14px 44px rgba(0,0,0,0.5);
+  /* Midnight Indigo — đúng tone Reference Image 1 */
+  --g-bg: rgba(45, 55, 95, 0.55);
+  --g-bg-hover: rgba(60, 72, 120, 0.68);
   --g-border: rgba(255, 255, 255, 0.09);
   --g-border-hover: rgba(255, 255, 255, 0.22);
   --g-text: #ffffff;
-  --g-text-2: rgba(226, 232, 240, 0.72);
-  --g-overlay: rgba(8, 12, 26, 0.16); /* Lớp phủ nhẹ giúp rực rỡ ráng hoàng hôn và bầu trời sao */
+  --g-text-2: rgba(200, 215, 240, 0.72);
+  --g-overlay: rgba(5, 8, 20, 0.22);
   --g-dash: rgba(255, 255, 255, 0.28);
   --g-chip-bg: rgba(255, 255, 255, 0.12);
   --g-chip-border: rgba(255, 255, 255, 0.20);
-  /* Lớp nổi (dropdown / toast): CasaOS dùng công thức đậm & mờ sâu hơn thẻ widget
-   * — đo trực tiếp trên dropdown-content của CasaOS: rgba(0,0,0,0.8) + blur(16px). */
-  --g-float-bg: rgba(0, 0, 0, 0.8);
-  --g-float-blur: blur(16px);
-  --g-radius: 10px;
+  /* Lớp nổi (dropdown / toast): đậm, mờ sâu để chữ luôn đọc rõ */
+  --g-float-bg: rgba(10, 15, 42, 0.88);
+  --g-float-blur: blur(20px);
+  --g-radius: 12px;
 }
 
 /* ── Nền trang: ảnh núi đêm toàn màn hình + lớp phủ mờ tối ─────────────────── */
@@ -80,6 +87,9 @@ body::before {
   box-shadow: var(--g-shadow) !important;
   color: var(--g-text) !important;
 }
+[data-glass="stat"] {
+  border-radius: var(--g-radius) !important;
+}
 
 /* Lớp nổi trên cùng: dropdown & toast — đậm hơn, mờ sâu hơn để chữ luôn đọc rõ
  * dù phía sau là ảnh nền sáng hay thẻ kính khác. */
@@ -112,7 +122,9 @@ body::before {
 }
 [data-glass="navbar"] {
   border-top: 0 !important;
-  background: rgba(18, 23, 44, 0.45) !important;
+  background: rgba(10, 14, 36, 0.60) !important;
+  -webkit-backdrop-filter: blur(20px) saturate(180%) !important;
+  backdrop-filter: blur(20px) saturate(180%) !important;
   border-bottom: 1px solid rgba(255, 255, 255, 0.08) !important;
 }
 
@@ -124,10 +136,11 @@ body::before {
   box-shadow: var(--g-shadow-hover) !important;
 }
 [data-glass="search"] {
-  background: rgba(26, 33, 60, 0.38) !important;
-  border: 1px solid rgba(255, 255, 255, 0.10) !important;
+  background: rgba(26, 33, 60, 0.45) !important;
+  border: 1px solid rgba(255, 255, 255, 0.12) !important;
   box-shadow: none !important;
   color: var(--g-text) !important;
+  border-radius: 999px !important;
 }
 [data-glass="search"]::placeholder {
   color: var(--g-text-2) !important;
@@ -141,6 +154,7 @@ body::before {
   border: 1px solid var(--g-border) !important;
   box-shadow: var(--g-shadow) !important;
   color: var(--g-text) !important;
+  border-radius: var(--g-radius) !important;
 }
 [data-glass="event-card"]:hover {
   background: var(--g-bg-hover) !important;
@@ -160,6 +174,7 @@ body::before {
 [data-glass="create"] {
   border: 2px dashed var(--g-dash) !important;
   color: var(--g-text-2) !important;
+  border-radius: var(--g-radius) !important;
 }
 [data-glass="create"]:hover {
   color: var(--g-text) !important;

@@ -153,7 +153,7 @@ export default function Dashboard({
           <div
             key={label}
             data-glass="stat"
-            className="bg-[rgba(53,54,58,0.4)] backdrop-blur-[8px] saturate-[180%] rounded-[10px] p-4 border border-white/10 shadow-[inset_0.5px_1px_1px_0px_rgba(255,255,255,0.125)] hover:border-white/20 hover:bg-[rgba(65,75,95,0.45)] transition-all flex items-center justify-between"
+            className="rounded-[12px] p-4 hover:border-white/20 transition-all flex items-center justify-between"
           >
             <div>
               <p className="text-xs text-white/60 font-medium">
