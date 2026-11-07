@@ -151,11 +151,11 @@ export default function VnpayCheckoutModal({
   }
 
   return (
-    <div className="fixed inset-0 z-[90] bg-[#F6F7FB] dark:bg-slate-950 overflow-y-auto fade-in">
+    <div className="fixed inset-0 z-[90] bg-transparent overflow-y-auto fade-in">
       <div className="min-h-full flex flex-col items-center px-4 py-10 sm:py-14">
         {/* Header căn giữa trang */}
         <div className="w-full max-w-sm flex flex-col items-center text-center mb-6">
-          <div className="w-11 h-11 rounded-2xl bg-white dark:bg-neutral-900 shadow-sm border border-neutral-100 dark:border-neutral-800 flex items-center justify-center mb-3">
+          <div className="w-11 h-11 rounded-2xl bg-[rgba(53,54,58,0.4)] backdrop-blur-[8px] shadow-sm border border-white/10 flex items-center justify-center mb-3">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
               <rect
                 x="2"
@@ -189,7 +189,7 @@ export default function VnpayCheckoutModal({
         </div>
 
         {/* Card chính */}
-        <div className="w-full max-w-sm bg-white dark:bg-neutral-900 rounded-3xl shadow-sm border border-neutral-100 dark:border-neutral-800 p-5 sm:p-6">
+        <div className="slide-up w-full max-w-sm bg-[rgba(22,28,54,0.88)] backdrop-blur-2xl saturate-[140%] rounded-3xl shadow-2xl border border-white/15 p-5 sm:p-6">
           {/* Redirecting / lỗi khởi tạo */}
           {step === "redirecting" && (
             <div className="py-10 flex flex-col items-center gap-3">
@@ -271,7 +271,10 @@ export default function VnpayCheckoutModal({
               {/* QR / trạng thái chờ */}
               <div className="mt-5 rounded-2xl border border-neutral-100 dark:border-neutral-800 p-5 flex flex-col items-center">
                 {step === "qr" ? (
-                  <div className="w-44 h-44 rounded-2xl bg-white border border-neutral-100 shadow-sm p-2.5 grid grid-cols-9 grid-rows-9 gap-0.5 relative overflow-hidden">
+                  <div
+                    className="w-44 h-44 rounded-2xl shadow-sm p-2.5 grid grid-cols-9 grid-rows-9 gap-0.5 relative overflow-hidden"
+                    style={{ backgroundColor: "#ffffff", border: "1px solid #f5f5f5" }}
+                  >
                     <div className="absolute top-0 left-0 right-0 h-0.5 bg-gradient-to-r from-transparent via-blue-400 to-transparent" />
                     {Array.from({ length: 81 }).map((_, i) => (
                       <div
