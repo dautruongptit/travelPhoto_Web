@@ -24,9 +24,13 @@ html.dark {
 }
 
 /* ── Nền trang: ảnh núi đêm toàn màn hình + lớp phủ mờ tối ─────────────────── */
+/* QUAN TRỌNG: không đặt ảnh nền qua `background-attachment: fixed` trực tiếp trên
+ * html/body — Chromium không cho `backdrop-filter` của các thẻ kính con "nhìn thấy"
+ * nền dạng fixed-attachment đó, nên thẻ kính chỉ hiện màu phẳng, không có hiệu ứng mờ ảnh.
+ * CasaOS gốc dùng 1 lớp riêng `position: fixed` (không phải background-attachment: fixed)
+ * để vẽ ảnh nền — đã xác minh trực tiếp trên DOM thật của CasaOS (div#background). */
 html,
 body {
-  background: var(--g-wallpaper) center / cover fixed no-repeat !important;
   background-color: #0b0f19 !important;
   color: var(--g-text);
   min-height: 100vh;
@@ -36,8 +40,10 @@ body::before {
   content: "";
   position: fixed;
   inset: 0;
-  background: var(--g-overlay);
   z-index: -1;
+  background:
+    linear-gradient(var(--g-overlay), var(--g-overlay)),
+    var(--g-wallpaper) center / cover no-repeat;
   pointer-events: none;
 }
 
