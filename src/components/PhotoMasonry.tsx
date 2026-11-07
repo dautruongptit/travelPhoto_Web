@@ -6,7 +6,7 @@ import AuthImg from "./AuthImg"
 interface Props {
   photos: Photo[]
   selectedIds: Set<string>
-  onSelectPhoto: (id: string) => void
+  onSelectPhoto?: (id: string) => void
   onPhotoClick: (photo: Photo, index: number) => void
 }
 
@@ -30,7 +30,7 @@ export default function PhotoMasonry({
           key={photo.id}
           photo={photo}
           selected={selectedIds.has(photo.id)}
-          onSelect={() => onSelectPhoto(photo.id)}
+          onSelect={onSelectPhoto ? () => onSelectPhoto(photo.id) : undefined}
           onClick={() => onPhotoClick(photo, index)}
         />
       ))}
@@ -46,7 +46,7 @@ function MasonryItem({
 }: {
   photo: Photo
   selected: boolean
-  onSelect: () => void
+  onSelect?: () => void
   onClick: () => void
 }) {
   const [loaded, setLoaded] = useState(false)
@@ -89,14 +89,15 @@ function MasonryItem({
           selected ? "bg-blue-600/20" : "bg-black/0 group-hover:bg-black/30"
         }`}
       >
-        {/* Chọn ảnh */}
+        {/* Chọn ảnh (chỉ khi được phép chọn) */}
+        {onSelect && (
         <div
           className={`absolute top-2 left-2 transition-opacity duration-200 ${
             selected ? "opacity-100" : "opacity-0 group-hover:opacity-100"
           }`}
           onClick={(e) => {
             e.stopPropagation()
-            onSelect()
+            onSelect?.()
           }}
         >
           <div
@@ -117,6 +118,7 @@ function MasonryItem({
             )}
           </div>
         </div>
+        )}
         {/* Biểu tượng xem */}
         <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none">
           <div className="w-10 h-10 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center">

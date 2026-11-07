@@ -1,6 +1,7 @@
 # Dependencies
 node_modules/
 node_modules_old/
+node_modules.broken-bak/
 
 # Build output
 dist/

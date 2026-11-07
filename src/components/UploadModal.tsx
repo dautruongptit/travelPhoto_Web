@@ -298,7 +298,7 @@ export default function UploadModal({
             {!isUploading && (
               <button
                 onClick={onClose}
-                className="w-8 h-8 flex items-center justify-center rounded-full text-neutral-400 hover:text-neutral-700 dark:hover:text-white hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-colors cursor-pointer"
+                className="btn btn-ghost btn-icon btn-sm"
               >
                 ✕
               </button>
@@ -322,12 +322,12 @@ export default function UploadModal({
                   : "border-neutral-300 dark:border-neutral-700 hover:border-[#0063dc]/60 bg-neutral-50/50 dark:bg-neutral-800/30"
               } ${isUploading ? "pointer-events-none opacity-50" : ""}`}
             >
-              <div className="flex items-center justify-center gap-3 mb-3">
+              <div className="flex flex-wrap items-center justify-center gap-2 sm:gap-3 mb-3">
                 {/* Nút chụp camera trực tiếp trên điện thoại */}
                 <button
                   type="button"
                   onClick={() => cameraRef.current?.click()}
-                  className="flex items-center gap-2 px-4 py-2 rounded-full bg-[#0063dc] text-white text-sm font-semibold hover:bg-[#0052b8] transition-all shadow-sm active:scale-95 cursor-pointer"
+                  className="btn btn-primary cursor-pointer"
                 >
                   <svg
                     width="16"
@@ -347,7 +347,7 @@ export default function UploadModal({
                 <button
                   type="button"
                   onClick={() => fileRef.current?.click()}
-                  className="flex items-center gap-2 px-4 py-2 rounded-full bg-white dark:bg-neutral-800 border border-neutral-300 dark:border-neutral-700 text-neutral-800 dark:text-neutral-200 text-sm font-semibold hover:bg-neutral-100 dark:hover:bg-neutral-700 transition-all cursor-pointer"
+                  className="btn btn-secondary"
                 >
                   <svg
                     width="16"
@@ -571,7 +571,7 @@ export default function UploadModal({
               {done ? (
                 <button
                   onClick={onClose}
-                  className="px-5 py-2 rounded-full bg-[#0063dc] hover:bg-[#0052b8] text-white text-sm font-semibold transition-all cursor-pointer"
+                  className="btn btn-primary cursor-pointer"
                 >
                   Xong
                 </button>
@@ -580,14 +580,14 @@ export default function UploadModal({
                   <button
                     onClick={onClose}
                     disabled={isUploading}
-                    className="px-4 py-2 rounded-full border border-neutral-300 dark:border-neutral-700 text-sm font-medium hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-colors disabled:opacity-40 cursor-pointer"
+                    className="btn btn-secondary disabled:opacity-40 cursor-pointer"
                   >
                     Hủy
                   </button>
                   <button
                     onClick={startUpload}
                     disabled={!canUpload || isUploading || entries.length === 0}
-                    className="px-5 py-2 rounded-full bg-[#ff0084] hover:bg-[#e00074] text-white text-sm font-semibold transition-all shadow-sm disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer active:scale-95"
+                    className="btn btn-primary disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
                   >
                     {isUploading
                       ? "Đang xử lý & tải…"

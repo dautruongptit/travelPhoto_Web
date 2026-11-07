@@ -1,12 +1,18 @@
-import { useState, useMemo, useRef, useEffect } from "react"
+import { useState, useMemo } from "react"
 import type { TravelEvent, User, Photo, SortOption } from "../types"
 import { formatFileSize, formatDateRange, formatDate } from "../utils"
 import Lightbox from "./Lightbox"
 import ShareModal from "./ShareModal"
 import AuthImg from "./AuthImg"
+import Avatar from "./Avatar"
 import JustifiedGallery from "./flickr/JustifiedGallery"
 import PhotoMasonry from "./PhotoMasonry"
 import PhotoList from "./PhotoList"
+import {
+  SortDropdown,
+  ViewModeButtons,
+  usePersistedViewMode,
+} from "./photoView"
 import ShareTab from "./ShareTab"
 import { infoOf } from "../visibility"
 
@@ -23,80 +29,7 @@ interface Props {
   onOpenProfile?: () => void
 }
 
-const SORT_LABELS: Record<SortOption, string> = {
-  newest: "Mới nhất",
-  oldest: "Cũ nhất",
-  "name-az": "Tên A–Z",
-  "name-za": "Tên Z–A",
-}
-
 type AlbumTab = "photos" | "info"
-type ViewMode = "masonry" | "justified" | "grid" | "large" | "list"
-const VIEW_MODE_KEY = "travelphoto-album-view"
-
-const VIEW_BUTTONS: { mode: ViewMode; label: string; icon: React.ReactNode }[] = [
-  {
-    mode: "masonry",
-    label: "Xếp gạch (giữ tỉ lệ ảnh)",
-    icon: (
-      <>
-        <rect x="3" y="3" width="8" height="10" />
-        <rect x="13" y="3" width="8" height="6" />
-        <rect x="3" y="15" width="8" height="6" />
-        <rect x="13" y="11" width="8" height="10" />
-      </>
-    ),
-  },
-  {
-    mode: "grid",
-    label: "Lưới ô vuông",
-    icon: (
-      <>
-        <rect x="3" y="3" width="4.5" height="4.5" />
-        <rect x="9.75" y="3" width="4.5" height="4.5" />
-        <rect x="16.5" y="3" width="4.5" height="4.5" />
-        <rect x="3" y="9.75" width="4.5" height="4.5" />
-        <rect x="9.75" y="9.75" width="4.5" height="4.5" />
-        <rect x="16.5" y="9.75" width="4.5" height="4.5" />
-        <rect x="3" y="16.5" width="4.5" height="4.5" />
-        <rect x="9.75" y="16.5" width="4.5" height="4.5" />
-        <rect x="16.5" y="16.5" width="4.5" height="4.5" />
-      </>
-    ),
-  },
-  {
-    mode: "justified",
-    label: "Hàng cân bằng",
-    icon: (
-      <>
-        <rect x="3" y="3" width="11" height="8" />
-        <rect x="15.5" y="3" width="5.5" height="8" />
-        <rect x="3" y="13" width="6" height="8" />
-        <rect x="10.5" y="13" width="10.5" height="8" />
-      </>
-    ),
-  },
-  {
-    mode: "large",
-    label: "Ảnh lớn",
-    icon: <rect x="4" y="4" width="16" height="16" rx="1" />,
-  },
-  {
-    mode: "list",
-    label: "Danh sách chi tiết",
-    icon: (
-      <>
-        <rect x="3" y="4" width="4" height="4" rx="1" />
-        <rect x="9" y="4.5" width="12" height="3" rx="1" />
-        <rect x="3" y="10" width="4" height="4" rx="1" />
-        <rect x="9" y="10.5" width="12" height="3" rx="1" />
-        <rect x="3" y="16" width="4" height="4" rx="1" />
-        <rect x="9" y="16.5" width="12" height="3" rx="1" />
-      </>
-    ),
-  },
-]
-
 export default function AlbumPage({
   event,
   user,
@@ -112,45 +45,13 @@ export default function AlbumPage({
   const [selected, setSelected] = useState<Set<string>>(new Set())
   const [sort, setSort] = useState<SortOption>("newest")
   const [filterQuery, setFilterQuery] = useState("")
-  const [showSortMenu, setShowSortMenu] = useState(false)
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false)
   const [showShareModal, setShowShareModal] = useState(false)
   const [shareModalMode, setShareModalMode] = useState<"share" | "settings">("share")
   const [shareRefreshKey, setShareRefreshKey] = useState(0)
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null)
   const [slideshow, setSlideshow] = useState(false)
-  const [viewMode, setViewMode] = useState<ViewMode>(() => {
-    try {
-      const saved = localStorage.getItem(VIEW_MODE_KEY)
-      return saved === "grid" ||
-        saved === "large" ||
-        saved === "justified" ||
-        saved === "list"
-        ? saved
-        : "masonry"
-    } catch {
-      return "masonry"
-    }
-  })
-  const changeViewMode = (m: ViewMode) => {
-    setViewMode(m)
-    try {
-      localStorage.setItem(VIEW_MODE_KEY, m)
-    } catch {
-      // bỏ qua nếu trình duyệt chặn localStorage
-    }
-  }
-  const sortRef = useRef<HTMLDivElement>(null)
-
-  useEffect(() => {
-    const handler = (e: MouseEvent) => {
-      if (sortRef.current && !sortRef.current.contains(e.target as Node)) {
-        setShowSortMenu(false)
-      }
-    }
-    document.addEventListener("mousedown", handler)
-    return () => document.removeEventListener("mousedown", handler)
-  }, [])
+  const [viewMode, changeViewMode] = usePersistedViewMode()
 
   const q = filterQuery || searchQuery
 
@@ -254,7 +155,7 @@ export default function AlbumPage({
                     setShareModalMode("share")
                     setShowShareModal(true)
                   }}
-                  className="flex items-center gap-1.5 h-8 px-3.5 bg-white/5 hover:bg-white/10 border border-white/15 rounded-full text-sm font-semibold text-white transition-all cursor-pointer shadow-sm active:scale-95"
+                  className="btn btn-secondary cursor-pointer"
                 >
                   <svg
                     width="13"
@@ -278,9 +179,13 @@ export default function AlbumPage({
                   type="button"
                   onClick={onOpenProfile}
                   title={user.name || "Hồ sơ cá nhân"}
-                  className="w-8 h-8 rounded-full bg-blue-600 flex items-center justify-center text-xs font-bold text-white shadow-md ring-2 ring-white/10 hover:ring-white/30 transition-all cursor-pointer active:scale-95"
+                  className="rounded-full ring-2 ring-white/10 hover:ring-white/30 transition-all cursor-pointer active:scale-95"
                 >
-                  {(user.name || "U").charAt(0).toUpperCase()}
+                  <Avatar
+                    src={user.avatar}
+                    name={user.name || "U"}
+                    className="w-8 h-8 rounded-full text-xs"
+                  />
                 </button>
               )}
             </div>
@@ -351,9 +256,9 @@ export default function AlbumPage({
 
             {/* PHẢI: Chế độ xem, Sắp xếp, Chọn tất cả, Tải ảnh lên — giữ nguyên 100% màu gốc */}
             {activeTab === "photos" && (
-              <div className="flex items-center gap-2 flex-shrink-0 pb-1.5">
+              <div className="flex items-center gap-2 flex-wrap min-w-0 pb-1.5">
                 {/* Chế độ xem: Trình chiếu + Lưới */}
-                <div className="flex items-center gap-0.5 text-neutral-500 dark:text-neutral-400 mr-1">
+                <div className="flex items-center gap-1.5 mr-1">
                   {photos.length > 0 && (
                     <button
                       onClick={() => {
@@ -362,7 +267,7 @@ export default function AlbumPage({
                       }}
                       title="Trình chiếu"
                       aria-label="Trình chiếu"
-                      className="w-8 h-8 flex items-center justify-center rounded-md hover:bg-neutral-100 dark:hover:bg-neutral-800 hover:text-neutral-800 dark:hover:text-white transition-colors cursor-pointer"
+                      className="btn btn-secondary btn-icon cursor-pointer"
                     >
                       <svg
                         width="18"
@@ -380,69 +285,14 @@ export default function AlbumPage({
                       </svg>
                     </button>
                   )}
-                  {VIEW_BUTTONS.map((b) => (
-                    <button
-                      key={b.mode}
-                      onClick={() => changeViewMode(b.mode)}
-                      title={b.label}
-                      aria-label={b.label}
-                      aria-pressed={viewMode === b.mode}
-                      className={`w-8 h-8 flex items-center justify-center rounded-md transition-colors cursor-pointer ${
-                        viewMode === b.mode
-                          ? "text-[#0063dc] dark:text-[#388bfd]"
-                          : "hover:bg-neutral-100 dark:hover:bg-neutral-800 hover:text-neutral-800 dark:hover:text-white"
-                      }`}
-                    >
-                      <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
-                        {b.icon}
-                      </svg>
-                    </button>
-                  ))}
+                  <ViewModeButtons
+                    viewMode={viewMode}
+                    onChange={changeViewMode}
+                  />
                 </div>
 
                 {/* Sắp xếp */}
-                <div className="relative" ref={sortRef}>
-                  <button
-                    onClick={() => setShowSortMenu((v) => !v)}
-                    className="flex items-center gap-1.5 h-9 px-3.5 bg-neutral-50 dark:bg-neutral-800/80 border border-neutral-200 dark:border-neutral-800 rounded-xl text-sm font-medium text-neutral-600 dark:text-neutral-300 hover:border-blue-300 transition-colors cursor-pointer"
-                  >
-                    <svg
-                      width="13"
-                      height="13"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                    >
-                      <path d="M3 6h18M7 12h10M11 18h2" strokeLinecap="round" />
-                    </svg>
-                    <span>{SORT_LABELS[sort]}</span>
-                  </button>
-
-                  {showSortMenu && (
-                    <div
-                      data-glass="dropdown"
-                      className="slide-up absolute right-0 top-full mt-1.5 w-36 bg-white dark:bg-[#18181b] rounded-xl shadow-xl border border-neutral-100 dark:border-neutral-800 py-1 z-30 text-sm"
-                    >
-                      {(Object.keys(SORT_LABELS) as SortOption[]).map((s) => (
-                        <button
-                          key={s}
-                          onClick={() => {
-                            setSort(s)
-                            setShowSortMenu(false)
-                          }}
-                          className={`w-full text-left px-3.5 py-2 transition-colors cursor-pointer ${
-                            sort === s
-                              ? "text-blue-400 font-semibold bg-white/10"
-                              : "text-white/80 hover:bg-white/10"
-                          }`}
-                        >
-                          {SORT_LABELS[s]}
-                        </button>
-                      ))}
-                    </div>
-                  )}
-                </div>
+                <SortDropdown sort={sort} onChange={setSort} />
 
                 {/* Chọn tất cả */}
                 {photos.length > 0 && canSelect && (
@@ -450,7 +300,7 @@ export default function AlbumPage({
                     onClick={
                       selected.size === photos.length ? clearSelect : selectAll
                     }
-                    className="h-9 px-3.5 bg-neutral-50 dark:bg-neutral-800/80 border border-neutral-200 dark:border-neutral-800 rounded-xl text-sm text-neutral-600 dark:text-neutral-300 hover:border-blue-300 transition-colors cursor-pointer"
+                    className="btn btn-secondary cursor-pointer"
                   >
                     {selected.size === photos.length
                       ? "Bỏ chọn tất cả"
@@ -462,7 +312,7 @@ export default function AlbumPage({
                 {canUpload && (
                   <button
                     onClick={onUpload}
-                    className="h-9 px-3.5 bg-blue-600 hover:bg-blue-500 active:scale-95 text-white rounded-xl text-sm font-semibold flex items-center gap-1.5 shadow-md shadow-blue-600/30 transition-all cursor-pointer"
+                    className="btn btn-primary active:scale-95 cursor-pointer"
                   >
                     <svg
                       width="13"
@@ -508,7 +358,7 @@ export default function AlbumPage({
             {canUpload && !q && (
               <button
                 onClick={onUpload}
-                className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold px-5 py-2.5 rounded-xl transition-colors shadow-lg shadow-blue-200 dark:shadow-none cursor-pointer"
+                className="btn btn-primary cursor-pointer"
               >
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
                   <path d="M12 5v14M5 12h14" stroke="white" strokeWidth="2.5" strokeLinecap="round" />
@@ -601,7 +451,7 @@ export default function AlbumPage({
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
               {/* ================= CỘT TRÁI (5 CỘT): THÔNG TIN SỰ KIỆN ================= */}
               <div className="lg:col-span-5">
-                <div className="bg-[rgba(53,54,58,0.4)] backdrop-blur-[5px] saturate-[180%] rounded-[10px] p-6 shadow-[inset_0.5px_1px_1px_0px_rgba(255,255,255,0.125)] space-y-6">
+                <div className="blur-background p-6 space-y-6">
                   {/* Header Thẻ Thông tin sự kiện */}
                   <div className="flex items-center justify-between pb-4 border-b border-white/10">
                     <div className="flex items-center gap-3">
@@ -647,9 +497,15 @@ export default function AlbumPage({
                     <div className="flex items-center justify-between gap-4">
                       <span className="text-xs text-white/50 font-medium">Người tạo:</span>
                       <div className="flex items-center gap-2">
-                        <div className="w-5 h-5 rounded-full bg-blue-600 flex items-center justify-center text-xs font-bold text-white shadow-sm">
-                          {(event.createdBy || user?.name || "U").charAt(0).toUpperCase()}
-                        </div>
+                        <Avatar
+                          src={
+                            user && String(event.ownerId) === String(user.id)
+                              ? user.avatar
+                              : ""
+                          }
+                          name={event.createdBy || user?.name || "U"}
+                          className="w-5 h-5 rounded-full text-[10px]"
+                        />
                         <span className="text-sm font-bold text-white">
                           {event.createdBy || user?.name || "Bạn"}
                         </span>
@@ -694,7 +550,7 @@ export default function AlbumPage({
                 ) : (
                   /* GIAO DIỆN DÀNH CHO KHÁCH (VIEWER) */
                   <div className="space-y-6">
-                    <div className="bg-[rgba(53,54,58,0.4)] backdrop-blur-[5px] saturate-[180%] rounded-[10px] p-6 shadow-[inset_0.5px_1px_1px_0px_rgba(255,255,255,0.125)] space-y-5">
+                    <div className="blur-background p-6 space-y-5">
                       <div className="relative rounded-2xl overflow-hidden aspect-[16/9] bg-neutral-900 border border-white/10">
                         <AuthImg
                           src={event.coverImage}
@@ -715,7 +571,7 @@ export default function AlbumPage({
                       <div className="flex items-center gap-3">
                         <button
                           onClick={() => setActiveTab("photos")}
-                          className="flex-1 py-3 px-4 bg-blue-600 hover:bg-blue-500 active:scale-95 text-white font-semibold text-sm rounded-xl shadow-lg shadow-blue-600/30 transition-all cursor-pointer text-center"
+                          className="btn btn-primary flex-1 cursor-pointer text-center"
                         >
                           Xem {photoTotal} bức ảnh trong album
                         </button>
@@ -725,7 +581,7 @@ export default function AlbumPage({
                               setSlideshow(true)
                               setLightboxIndex(0)
                             }}
-                            className="py-3 px-5 bg-white/10 hover:bg-white/15 text-white font-semibold text-sm rounded-xl border border-white/10 transition-colors cursor-pointer"
+                            className="btn btn-secondary flex-1 cursor-pointer"
                           >
                             Trình chiếu
                           </button>
@@ -748,14 +604,14 @@ export default function AlbumPage({
           <div className="w-px h-4 bg-white/20" />
           <button
             onClick={selected.size === photos.length ? clearSelect : selectAll}
-            className="px-2.5 py-1 text-xs text-white/80 hover:text-white rounded-full transition-colors cursor-pointer"
+            className="btn btn-ghost btn-sm cursor-pointer"
           >
             {selected.size === photos.length ? "Bỏ chọn" : "Tất cả"}
           </button>
           {canSelect && (
             <button
               onClick={() => setShowDeleteConfirm(true)}
-              className="px-2.5 py-1 text-xs text-red-400 hover:text-red-300 rounded-full transition-colors cursor-pointer"
+              className="btn btn-ghost-danger btn-sm cursor-pointer"
             >
               Xóa
             </button>
@@ -763,7 +619,7 @@ export default function AlbumPage({
           <button
             onClick={clearSelect}
             title="Đóng"
-            className="w-7 h-7 flex items-center justify-center text-white/50 hover:text-white rounded-full transition-colors cursor-pointer"
+            className="btn btn-ghost btn-icon btn-sm cursor-pointer"
           >
             ✕
           </button>
@@ -827,13 +683,13 @@ export default function AlbumPage({
             <div className="flex gap-2">
               <button
                 onClick={() => setShowDeleteConfirm(false)}
-                className="flex-1 py-2 rounded-full border border-neutral-200 dark:border-neutral-700 text-sm font-medium text-neutral-700 dark:text-neutral-300 hover:bg-neutral-50 dark:hover:bg-neutral-800 transition-colors cursor-pointer"
+                className="btn btn-secondary flex-1 cursor-pointer"
               >
                 Hủy
               </button>
               <button
                 onClick={handleDelete}
-                className="flex-1 py-2 rounded-full bg-red-600 hover:bg-red-700 text-sm font-semibold text-white transition-colors cursor-pointer"
+                className="btn btn-danger flex-1 cursor-pointer"
               >
                 Xóa {selected.size} ảnh
               </button>

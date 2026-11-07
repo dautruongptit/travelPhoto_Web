@@ -28,15 +28,9 @@ function Toggle({
       onClick={onChange}
       role="switch"
       aria-checked={checked}
-      className={`relative w-10 h-6 rounded-full transition-colors flex-shrink-0 ${
-        checked ? "bg-blue-600" : "bg-gray-300 dark:bg-gray-600"
-      }`}
+      className="switch"
     >
-      <span
-        className={`absolute top-0.5 left-0.5 w-5 h-5 bg-white rounded-full shadow transition-transform ${
-          checked ? "translate-x-4" : ""
-        }`}
-      />
+      <span className="switch-thumb" />
     </button>
   )
 }
@@ -104,7 +98,7 @@ export default function SettingsModal({
           </h2>
           <button
             onClick={onClose}
-            className="w-9 h-9 flex items-center justify-center rounded-xl text-gray-400 dark:text-gray-500 hover:text-gray-700 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors text-xl"
+            className="btn btn-ghost btn-icon"
           >
             ×
           </button>
@@ -199,7 +193,7 @@ export default function SettingsModal({
                 <div className="flex gap-2 mt-2.5">
                   <button
                     onClick={() => setConfirmDelete(false)}
-                    className="px-3 py-1.5 rounded-lg text-sm font-medium bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-300"
+                    className="btn btn-secondary btn-sm"
                   >
                     Hủy
                   </button>
@@ -212,7 +206,7 @@ export default function SettingsModal({
                       )
                       onClose()
                     }}
-                    className="px-3 py-1.5 rounded-lg text-sm font-semibold bg-red-600 hover:bg-red-700 text-white"
+                    className="btn btn-danger btn-sm"
                   >
                     Xác nhận xóa
                   </button>

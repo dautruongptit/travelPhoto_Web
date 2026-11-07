@@ -173,10 +173,213 @@ input[type='date']::-webkit-calendar-picker-indicator {
 
 /* ── Lớp nền kính mờ CasaOS Acrylic (.blur-background) ────────────────────── */
 .blur-background {
-  background-color: var(--g-bg, rgba(45, 55, 85, 0.22));
-  -webkit-backdrop-filter: blur(12px) saturate(160%);
-  backdrop-filter: blur(12px) saturate(160%);
+  background-size: cover;
+  background-position: bottom center;
+  background-attachment: fixed;
+  background-color: rgba(53, 54, 58, 0.4);
+  -webkit-backdrop-filter: blur(5px) saturate(180%);
+  backdrop-filter: blur(5px) saturate(180%);
   border-radius: 10px;
-  border: 1px solid var(--g-border, rgba(255, 255, 255, 0.10));
-  box-shadow: var(--g-shadow, rgba(255, 255, 255, 0.125) 0.5px 1px 1px 0px inset);
+  box-shadow: rgba(255, 255, 255, 0.125) 0.5px 1px 1px 0px inset;
+  border: none;
+
+  z-index: 0;
+  overflow: hidden;
+}
+
+/* Hover: sáng & đậm hơn nhẹ (cùng tông với thẻ sự kiện). Viết ở đây vì CSS không nằm trong
+ * @layer luôn thắng class Tailwind, nên hover:bg-* trên phần tử sẽ không có tác dụng. */
+.blur-background.glass-hover:hover {
+  background-color: rgba(65, 75, 95, 0.48);
+  box-shadow:
+    rgba(255, 255, 255, 0.22) 0.5px 1px 1px 0px inset,
+    0 12px 32px rgba(0, 0, 0, 0.28);
+}
+
+/* ── Nút bấm chuẩn CasaOS (.button is-rounded): pill, xanh #2075f3, chữ trắng ──────────
+ * Kích thước/màu/bo góc nằm ở đây (không trong @layer) nên luôn thắng class Tailwind. */
+/* display nằm trong @layer components để các utility như hidden / md:hidden vẫn ẩn được nút. */
+@layer components {
+  .btn {
+    display: inline-flex;
+  }
+}
+.btn {
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  height: 32px;
+  padding: 0 16px;
+  border: 1px solid transparent;
+  border-radius: 9999px;
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 1;
+  white-space: nowrap;
+  box-shadow: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+.btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+.btn-sm {
+  height: 24px;
+  padding: 0 12px;
+  font-size: 12px;
+  gap: 0.375rem;
+}
+.btn-primary {
+  background-color: #2075f3;
+  color: #fff;
+}
+.btn-primary:hover:not(:disabled) {
+  background-color: #1a64d4;
+}
+.btn-danger {
+  background-color: #cc0f35;
+  color: #fff;
+}
+.btn-danger:hover:not(:disabled) {
+  background-color: #b30d2f;
+}
+.btn-secondary {
+  background-color: rgba(255, 255, 255, 0.1);
+  color: #f3f5f6;
+}
+.btn-secondary:hover:not(:disabled) {
+  background-color: rgba(255, 255, 255, 0.18);
+}
+/* Nút chỉ có icon: tròn 32px, dùng kèm .btn-secondary / .btn-primary */
+.btn-icon {
+  width: 32px;
+  padding: 0;
+}
+.btn-icon.btn-sm {
+  width: 24px;
+  padding: 0;
+}
+.btn-lg {
+  height: 40px;
+  padding: 0 20px;
+  font-size: 14px;
+}
+.btn-ghost {
+  background-color: transparent;
+  color: rgba(243, 245, 246, 0.75);
+}
+.btn-ghost:hover:not(:disabled) {
+  background-color: rgba(255, 255, 255, 0.1);
+  color: #fff;
+}
+.btn-ghost-danger {
+  background-color: transparent;
+  color: #ff6b81;
+}
+.btn-ghost-danger:hover:not(:disabled) {
+  background-color: rgba(204, 15, 53, 0.18);
+  color: #ff8a9b;
+}
+.btn-success {
+  background-color: #059669;
+  color: #fff;
+}
+
+/* ── Công tắc bật/tắt (role="switch") ─────────────────────────────────────────────
+ * Màu thumb đặt ở đây (không dùng bg-white) vì modal có rule ép .bg-white thành trong suốt. */
+.switch {
+  position: relative;
+  width: 40px;
+  height: 22px;
+  flex-shrink: 0;
+  padding: 0;
+  border: none;
+  border-radius: 9999px;
+  background-color: rgba(255, 255, 255, 0.22);
+  cursor: pointer;
+  transition: background-color 0.25s ease;
+}
+.switch:hover:not(:disabled) {
+  background-color: rgba(255, 255, 255, 0.32);
+}
+.switch[aria-checked="true"] {
+  background-color: #2075f3;
+}
+.switch[aria-checked="true"]:hover:not(:disabled) {
+  background-color: #1a64d4;
+}
+.switch:focus-visible {
+  outline: 2px solid rgba(32, 117, 243, 0.6);
+  outline-offset: 2px;
+}
+.switch:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+.switch-thumb {
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 18px;
+  height: 18px;
+  border-radius: 9999px;
+  background-color: #fff;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.35);
+  transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1), width 0.15s ease;
+}
+.switch:active:not(:disabled) .switch-thumb {
+  width: 22px;
+}
+.switch[aria-checked="true"] .switch-thumb {
+  transform: translateX(18px);
+}
+.switch[aria-checked="true"]:active:not(:disabled) .switch-thumb {
+  transform: translateX(14px);
+}
+
+/* ── Ô nhập bị lỗi: viền đỏ + bong bóng cảnh báo khi hover/focus ─────────────────────
+ * Dùng bọc quanh input: <div className="field-invalid" data-error="Nội dung lỗi">.
+ * Selector dài để thắng rule ép viền input của modal (glass-theme.css, !important). */
+.field-invalid {
+  position: relative;
+}
+.field-invalid input,
+.field-invalid textarea,
+.field-invalid select,
+[class*="fixed inset-0"] .slide-up .field-invalid :is(input, textarea, select) {
+  border-color: #ef4444 !important;
+  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.22) !important;
+}
+[class*="fixed inset-0"] .slide-up .field-invalid :is(input, textarea, select):focus {
+  border-color: #ef4444 !important;
+  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.38) !important;
+}
+.field-invalid::after {
+  content: attr(data-error);
+  position: absolute;
+  right: 8px;
+  bottom: calc(100% + 6px);
+  z-index: 20;
+  max-width: 260px;
+  padding: 5px 10px;
+  border-radius: 6px;
+  background-color: #cc0f35;
+  color: #fff;
+  font-size: 12px;
+  line-height: 1.3;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.35);
+  opacity: 0;
+  transform: translateY(4px);
+  pointer-events: none;
+  transition: opacity 0.15s ease, transform 0.15s ease;
+}
+.field-invalid:hover::after,
+.field-invalid:focus-within::after {
+  opacity: 1;
+  transform: translateY(0);
+}
+/* Chữ lỗi trong modal luôn đỏ (rule màu chữ chung của modal đang làm chúng thành xám trắng) */
+[class*="fixed inset-0"] .slide-up :is(p, span).text-red-500 {
+  color: #ff6b81 !important;
 }

@@ -119,7 +119,7 @@ export default function SharePage({
       return (
         <a
           href={`/events/${event.id}`}
-          className="h-10 px-5 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-xl text-sm transition-colors inline-flex items-center"
+          className="btn btn-primary"
         >
           Mở album của bạn
         </a>
@@ -130,7 +130,7 @@ export default function SharePage({
       return (
         <a
           href={`/events/${event.id}`}
-          className="h-10 px-5 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-xl text-sm transition-colors inline-flex items-center"
+          className="btn btn-primary"
         >
           Đi đến album
         </a>
@@ -142,7 +142,7 @@ export default function SharePage({
         <button
           onClick={handleJoin}
           disabled={joining}
-          className="h-10 px-5 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-xl text-sm transition-colors disabled:opacity-60 cursor-pointer"
+          className="btn btn-primary disabled:opacity-60 cursor-pointer"
         >
           {joining ? "Đang tham gia…" : "Tham gia album"}
         </button>
@@ -153,7 +153,7 @@ export default function SharePage({
       <button
         onClick={signIn}
         disabled={signingIn}
-        className="h-10 px-5 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-xl text-sm transition-colors disabled:opacity-60 cursor-pointer"
+        className="btn btn-primary disabled:opacity-60 cursor-pointer"
       >
         {signingIn ? "Đang xác thực…" : "Đăng nhập Google để tham gia"}
       </button>
@@ -190,7 +190,7 @@ export default function SharePage({
             <button
               onClick={onToggleTheme}
               aria-label="Đổi giao diện sáng/tối"
-              className="w-9 h-9 rounded-full flex items-center justify-center text-neutral-600 dark:text-neutral-300 hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-colors cursor-pointer"
+              className="btn btn-ghost btn-icon"
             >
               {theme === "dark" ? "☀️" : "🌙"}
             </button>
@@ -218,7 +218,7 @@ export default function SharePage({
             <button
               onClick={signIn}
               disabled={signingIn}
-              className="inline-flex items-center bg-blue-600 hover:bg-blue-700 text-white font-semibold px-5 py-2.5 rounded-xl transition-colors disabled:opacity-60 cursor-pointer"
+              className="btn btn-primary disabled:opacity-60 cursor-pointer"
             >
               {signingIn ? "Đang xác thực…" : "Đăng nhập Google để tiếp tục"}
             </button>
@@ -236,7 +236,7 @@ export default function SharePage({
             </p>
             <a
               href="/"
-              className="inline-flex items-center bg-blue-600 hover:bg-blue-700 text-white font-semibold px-5 py-2.5 rounded-xl transition-colors"
+              className="btn btn-primary"
             >
               Về trang chủ
             </a>

@@ -155,7 +155,7 @@ export default function VnpayCheckoutModal({
       <div className="min-h-full flex flex-col items-center px-4 py-10 sm:py-14">
         {/* Header căn giữa trang */}
         <div className="w-full max-w-sm flex flex-col items-center text-center mb-6">
-          <div className="w-11 h-11 rounded-2xl bg-[rgba(53,54,58,0.4)] backdrop-blur-[8px] shadow-sm border border-white/10 flex items-center justify-center mb-3">
+          <div className="w-11 h-11 blur-background flex items-center justify-center mb-3">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
               <rect
                 x="2"
@@ -203,7 +203,7 @@ export default function VnpayCheckoutModal({
                   </p>
                   <button
                     onClick={onCancel}
-                    className="mt-2 px-4 py-2 rounded-xl border border-neutral-200 dark:border-neutral-700 text-sm font-medium text-neutral-700 dark:text-neutral-300"
+                    className="btn btn-secondary mt-2"
                   >
                     Đóng
                   </button>
@@ -410,7 +410,7 @@ export default function VnpayCheckoutModal({
               <button
                 onClick={handleConfirmedPayment}
                 disabled={step === "waiting"}
-                className="mt-5 w-full py-3 rounded-2xl bg-blue-600 hover:bg-blue-700 disabled:bg-neutral-300 dark:disabled:bg-neutral-700 disabled:cursor-not-allowed text-white text-sm font-semibold transition-colors flex items-center justify-center gap-1.5"
+                className="btn btn-primary mt-5 w-full disabled:cursor-not-allowed"
               >
                 Tôi đã thanh toán
                 <svg width="15" height="15" viewBox="0 0 24 24" fill="none">
@@ -426,7 +426,7 @@ export default function VnpayCheckoutModal({
               <button
                 onClick={onCancel}
                 disabled={step === "waiting"}
-                className="mt-1 w-full py-2 text-sm text-neutral-400 dark:text-neutral-500 hover:text-neutral-600 dark:hover:text-neutral-300 disabled:opacity-40 transition-colors"
+                className="btn btn-ghost mt-1 w-full disabled:opacity-40"
               >
                 Hủy
               </button>
@@ -533,14 +533,14 @@ export default function VnpayCheckoutModal({
 
               <button
                 onClick={handleDone}
-                className="mt-6 w-full py-3 rounded-2xl bg-blue-600 hover:bg-blue-700 text-sm font-semibold text-white transition-colors"
+                className="btn btn-primary mt-6 w-full"
               >
                 Tiếp tục
               </button>
               {result.success && (
                 <button
                   onClick={() => {}}
-                  className="mt-2 w-full py-2.5 rounded-2xl bg-blue-50 dark:bg-blue-950/30 text-sm font-medium text-blue-600 dark:text-blue-400 hover:bg-blue-100 dark:hover:bg-blue-900/40 transition-colors flex items-center justify-center gap-1.5"
+                  className="btn btn-secondary mt-2 w-full"
                 >
                   <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
                     <path

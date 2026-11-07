@@ -149,11 +149,11 @@ export default function Lightbox({
       onTouchEnd={handleTouchEnd}
     >
       {/* Top Header Bar: trái = Quay lại · phải = Chia sẻ, Phóng to, Thu nhỏ, Yêu thích, Xóa, Tải về, Thông tin */}
-      <div className="flex items-center justify-between gap-4 px-3 sm:px-5 h-14 bg-black/60 backdrop-blur-md border-b border-neutral-800/60 z-40">
+      <div className="flex items-center justify-between gap-2 sm:gap-4 px-2 sm:px-5 h-14 bg-black/60 backdrop-blur-md border-b border-neutral-800/60 z-40">
         {/* Trái: quay lại */}
         <button
           onClick={onClose}
-          className="flex items-center gap-2 h-9 pl-2 pr-3.5 rounded-full text-neutral-200 hover:text-white hover:bg-white/10 transition-colors cursor-pointer"
+          className="btn btn-ghost cursor-pointer"
           title="Quay lại (Esc)"
         >
           <svg
@@ -168,7 +168,7 @@ export default function Lightbox({
           >
             <path d="M19 12H5M12 19l-7-7 7-7" />
           </svg>
-          <span className="text-sm font-medium">Quay lại</span>
+          <span className="hidden sm:inline text-sm font-medium">Quay lại</span>
         </button>
 
         {/* Giữa: tên ảnh + vị trí (ẩn trên màn hình nhỏ) */}
@@ -260,7 +260,7 @@ export default function Lightbox({
             <button
               onClick={prev}
               aria-label="Ảnh trước"
-              className="absolute left-4 z-10 w-11 h-11 flex items-center justify-center bg-black/50 hover:bg-black/80 backdrop-blur-md rounded-full text-white transition-all duration-150 hover:scale-105 border border-white/10 cursor-pointer"
+              className="absolute left-4 z-10 btn btn-secondary btn-icon cursor-pointer"
             >
               <svg
                 width="22"
@@ -303,7 +303,7 @@ export default function Lightbox({
             <button
               onClick={next}
               aria-label="Ảnh sau"
-              className="absolute right-4 z-10 w-11 h-11 flex items-center justify-center bg-black/50 hover:bg-black/80 backdrop-blur-md rounded-full text-white transition-all duration-150 hover:scale-105 border border-white/10 cursor-pointer"
+              className="absolute right-4 z-10 btn btn-secondary btn-icon cursor-pointer"
             >
               <svg
                 width="22"
@@ -584,7 +584,7 @@ function IconButton({
         onClick={onClick}
         disabled={disabled}
         aria-label={label}
-        className={`w-9 h-9 rounded-full flex items-center justify-center transition-colors cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed ${
+        className={`w-8 h-8 sm:w-9 sm:h-9 rounded-full flex items-center justify-center transition-colors cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed ${
           active
             ? activeClass
             : `text-neutral-300 hover:bg-white/10 ${hoverClass}`

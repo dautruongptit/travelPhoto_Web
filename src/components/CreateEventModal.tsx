@@ -107,7 +107,7 @@ export default function CreateEventModal({
             </div>
             <button
               onClick={onClose}
-              className="w-9 h-9 flex items-center justify-center rounded-xl text-gray-400 dark:text-gray-500 hover:text-gray-700 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors text-xl"
+              className="btn btn-ghost btn-icon"
             >
               ×
             </button>
@@ -120,16 +120,22 @@ export default function CreateEventModal({
             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">
               Tên sự kiện <span className="text-red-500">*</span>
             </label>
-            <input
-              type="text"
-              value={name}
-              onChange={(e) => {
-                setName(e.target.value)
-                setErrors((prev) => ({ ...prev, name: "" }))
-              }}
-              placeholder="Ví dụ: Đà Lạt 2026"
-              className={inputClass("name")}
-            />
+            <div
+              className={errors.name ? "field-invalid" : undefined}
+              data-error={errors.name || undefined}
+            >
+              <input
+                type="text"
+                value={name}
+                aria-invalid={!!errors.name}
+                onChange={(e) => {
+                  setName(e.target.value)
+                  setErrors((prev) => ({ ...prev, name: "" }))
+                }}
+                placeholder="Ví dụ: Đà Lạt 2026"
+                className={inputClass("name")}
+              />
+            </div>
             {errors.name && (
               <p className="text-red-500 text-sm mt-1.5 flex items-center gap-1">
                 <span>⚠</span>
@@ -158,17 +164,24 @@ export default function CreateEventModal({
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">
                 Ngày bắt đầu <span className="text-red-500">*</span>
               </label>
-              <input
-                type="date"
-                value={startDate}
-                onChange={(e) => {
-                  setStartDate(e.target.value)
-                  setErrors((prev) => ({ ...prev, startDate: "" }))
-                }}
-                className={inputClass("startDate")}
-              />
+              <div
+                className={errors.startDate ? "field-invalid" : undefined}
+                data-error={errors.startDate || undefined}
+              >
+                <input
+                  type="date"
+                  value={startDate}
+                  aria-invalid={!!errors.startDate}
+                  onChange={(e) => {
+                    setStartDate(e.target.value)
+                    setErrors((prev) => ({ ...prev, startDate: "" }))
+                  }}
+                  className={inputClass("startDate")}
+                />
+              </div>
               {errors.startDate && (
-                <p className="text-red-500 text-sm mt-1.5">
+                <p className="text-red-500 text-sm mt-1.5 flex items-center gap-1">
+                  <span>⚠</span>
                   {errors.startDate}
                 </p>
               )}
@@ -192,7 +205,10 @@ export default function CreateEventModal({
             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">
               Địa điểm <span className="text-red-500">*</span>
             </label>
-            <div className="relative">
+            <div
+              className={`relative ${errors.location ? "field-invalid" : ""}`}
+              data-error={errors.location || undefined}
+            >
               <svg
                 className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400 dark:text-gray-500"
                 width="16"
@@ -221,6 +237,7 @@ export default function CreateEventModal({
               <input
                 type="text"
                 value={location}
+                aria-invalid={!!errors.location}
                 onChange={(e) => {
                   setLocation(e.target.value)
                   setErrors((prev) => ({ ...prev, location: "" }))
@@ -250,14 +267,14 @@ export default function CreateEventModal({
             <button
               onClick={onClose}
               disabled={isSubmitting}
-              className="flex-1 py-3 rounded-xl border border-gray-200 dark:border-gray-700 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors disabled:opacity-40"
+              className="btn btn-secondary flex-1 disabled:opacity-40"
             >
               Hủy
             </button>
             <button
               onClick={handleSubmit}
               disabled={isSubmitting}
-              className="flex-1 py-3 rounded-xl bg-blue-600 hover:bg-blue-700 text-sm font-semibold text-white transition-all shadow-sm hover:shadow-md hover:shadow-blue-200 disabled:opacity-60"
+              className="btn btn-primary flex-1 disabled:opacity-60"
             >
               {isSubmitting ? "Đang tạo…" : "Tạo sự kiện"}
             </button>

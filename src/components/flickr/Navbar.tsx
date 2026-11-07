@@ -23,7 +23,7 @@ interface NavbarProps {
 
 export default function Navbar({
   user,
-  activeTab = "explore",
+  activeTab = "albums",
   onSelectTab,
   onLogout,
   onGoHome,
@@ -68,10 +68,8 @@ export default function Navbar({
   }, [])
 
   const navTabs: { id: FlickrNavTab; label: string }[] = [
-    { id: "explore", label: "Explore" },
-    { id: "photostream", label: "Photostream" },
+    { id: "photos", label: "Photo" },
     { id: "albums", label: "Albums" },
-    { id: "trips", label: "Trips" },
   ]
 
   return (
@@ -118,10 +116,30 @@ export default function Navbar({
 
         {/* GIỮA: Ô tìm kiếm Pill-shaped */}
         {showSearch && (
-          <div className="flex-1 max-w-md mx-2 sm:mx-4">
+          <div className="flex-1 min-w-0 max-w-md mx-2 sm:mx-4">
             <div className="relative group">
+              <input
+                ref={searchInputRef}
+                type="text"
+                value={searchQuery}
+                onChange={(e) => onSearchChange(e.target.value)}
+                placeholder="Tìm kiếm ảnh, địa điểm, chuyến đi…"
+                className="blur-background w-full h-9 sm:h-10 pl-4 pr-16 text-sm text-white placeholder-white/70 focus:outline focus:outline-1 focus:outline-white/30 transition-all"
+              />
+              {searchQuery ? (
+                <button
+                  onClick={() => onSearchChange("")}
+                  className="absolute right-10 top-1/2 -translate-y-1/2 text-white/60 hover:text-white text-sm cursor-pointer"
+                >
+                  ✕
+                </button>
+              ) : (
+                <span className="hidden sm:inline-block absolute right-10 top-1/2 -translate-y-1/2 px-1.5 py-0.5 text-xs text-white/60 bg-white/10 rounded border border-white/15 pointer-events-none">
+                  /
+                </span>
+              )}
               <svg
-                className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-white/50 pointer-events-none group-focus-within:text-blue-400 transition-colors"
+                className="absolute right-3.5 top-1/2 -translate-y-1/2 w-[18px] h-[18px] text-white pointer-events-none"
                 viewBox="0 0 24 24"
                 fill="none"
                 stroke="currentColor"
@@ -130,27 +148,6 @@ export default function Navbar({
                 <circle cx="11" cy="11" r="8" />
                 <line x1="21" y1="21" x2="16.65" y2="16.65" />
               </svg>
-              <input
-                ref={searchInputRef}
-                data-glass="search"
-                type="text"
-                value={searchQuery}
-                onChange={(e) => onSearchChange(e.target.value)}
-                placeholder="Tìm kiếm ảnh, địa điểm, chuyến đi…"
-                className="w-full h-9 sm:h-10 pl-10 pr-9 rounded-[10px] text-sm text-white placeholder-white/40 focus:outline-none focus:ring-2 focus:ring-blue-400/40 transition-all"
-              />
-              {searchQuery ? (
-                <button
-                  onClick={() => onSearchChange("")}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-white/50 hover:text-white text-sm cursor-pointer"
-                >
-                  ✕
-                </button>
-              ) : (
-                <span className="hidden sm:inline-block absolute right-3 top-1/2 -translate-y-1/2 px-1.5 py-0.5 text-xs text-neutral-400 dark:text-neutral-500 bg-white dark:bg-neutral-800 rounded border border-neutral-200 dark:border-neutral-700 pointer-events-none">
-                  /
-                </span>
-              )}
             </div>
           </div>
         )}
@@ -172,9 +169,9 @@ export default function Navbar({
               </button>
 
               {profileOpen && (
-                <div data-glass="dropdown" className="absolute right-0 mt-2 w-64 bg-white dark:bg-[#18181b] rounded-2xl shadow-2xl border border-neutral-100 dark:border-neutral-800 p-2 z-50 text-neutral-800 dark:text-neutral-200">
+                <div data-glass="dropdown" className="absolute right-0 mt-2 w-56 bg-white dark:bg-[#18181b] rounded-2xl shadow-2xl border border-neutral-100 dark:border-neutral-800 p-2 z-50 text-neutral-800 dark:text-neutral-200">
                   <div className="px-3 py-2 border-b border-neutral-100 dark:border-neutral-800">
-                    <p className="font-semibold text-sm truncate">
+                    <p className="font-semibold text-[13px] truncate">
                       {user.name}
                     </p>
                     <p className="text-xs text-neutral-500 truncate">
@@ -201,13 +198,13 @@ export default function Navbar({
                     </div>
                   </div>
 
-                  <div className="py-1 text-sm">
+                  <div className="py-1 text-xs">
                     <button
                       onClick={() => {
                         setProfileOpen(false)
                         onOpenProfile()
                       }}
-                      className="w-full text-left px-3 py-2 rounded-xl hover:bg-neutral-100 dark:hover:bg-neutral-800 flex items-center gap-2 cursor-pointer"
+                      className="w-full text-left px-2.5 py-1.5 rounded-lg hover:bg-neutral-100 dark:hover:bg-neutral-800 flex items-center gap-2 cursor-pointer"
                     >
                       <span>Hồ sơ cá nhân</span>
                     </button>
@@ -216,10 +213,10 @@ export default function Navbar({
                         setProfileOpen(false)
                         onOpenUpgrade()
                       }}
-                      className="w-full text-left px-3 py-2 rounded-xl hover:bg-neutral-100 dark:hover:bg-neutral-800 flex items-center justify-between text-[#0063dc] font-medium cursor-pointer"
+                      className="w-full text-left px-2.5 py-1.5 rounded-lg hover:bg-neutral-100 dark:hover:bg-neutral-800 flex items-center justify-between text-[#0063dc] font-medium cursor-pointer"
                     >
                       <span>Nâng cấp dung lượng (VNPay)</span>
-                      <span className="text-xs px-1.5 py-0.5 bg-[#0063dc]/10 text-[#0063dc] rounded-full font-bold">
+                      <span className="text-[10px] px-1.5 py-0.5 bg-[#0063dc]/10 text-[#0063dc] rounded-full font-bold">
                         PRO
                       </span>
                     </button>
@@ -228,7 +225,7 @@ export default function Navbar({
                         setProfileOpen(false)
                         onOpenSettings()
                       }}
-                      className="w-full text-left px-3 py-2 rounded-xl hover:bg-neutral-100 dark:hover:bg-neutral-800 flex items-center gap-2 cursor-pointer"
+                      className="w-full text-left px-2.5 py-1.5 rounded-lg hover:bg-neutral-100 dark:hover:bg-neutral-800 flex items-center gap-2 cursor-pointer"
                     >
                       <span>Cài đặt</span>
                     </button>
@@ -238,7 +235,7 @@ export default function Navbar({
                           setProfileOpen(false)
                           onOpenHelp()
                         }}
-                        className="w-full text-left px-3 py-2 rounded-xl hover:bg-neutral-100 dark:hover:bg-neutral-800 flex items-center gap-2 cursor-pointer"
+                        className="w-full text-left px-2.5 py-1.5 rounded-lg hover:bg-neutral-100 dark:hover:bg-neutral-800 flex items-center gap-2 cursor-pointer"
                       >
                         <span>Trợ giúp & Hướng dẫn</span>
                       </button>
@@ -251,7 +248,7 @@ export default function Navbar({
                         setProfileOpen(false)
                         onLogout()
                       }}
-                      className="w-full text-left px-3 py-2 rounded-xl hover:bg-red-50 dark:hover:bg-red-950/30 text-red-600 dark:text-red-400 text-sm flex items-center gap-2 cursor-pointer"
+                      className="w-full text-left px-2.5 py-1.5 rounded-lg hover:bg-red-50 dark:hover:bg-red-950/30 text-red-600 dark:text-red-400 text-xs flex items-center gap-2 cursor-pointer"
                     >
                       <span>Đăng xuất</span>
                     </button>
@@ -264,7 +261,7 @@ export default function Navbar({
           {/* Mobile Hamburger Button */}
           <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="md:hidden w-9 h-9 flex items-center justify-center rounded-lg hover:bg-white/10 text-white/70 hover:text-white cursor-pointer"
+            className="md:hidden btn btn-ghost btn-icon cursor-pointer"
             aria-label="Menu"
           >
             <svg

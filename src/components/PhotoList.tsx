@@ -5,7 +5,7 @@ import AuthImg from "./AuthImg"
 interface Props {
   photos: Photo[]
   selectedIds: Set<string>
-  onSelectPhoto: (id: string) => void
+  onSelectPhoto?: (id: string) => void
   onPhotoClick: (photo: Photo, index: number) => void
 }
 
@@ -39,13 +39,14 @@ export default function PhotoList({
                 onPhotoClick(photo, index)
               }
             }}
-            className={`flex items-center gap-3 px-3 py-2 cursor-pointer transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 ${
+            className={`group flex items-center gap-3 px-3 py-2 cursor-pointer transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 ${
               selected
                 ? "bg-blue-50 dark:bg-blue-950/30"
                 : "hover:bg-neutral-50 dark:hover:bg-neutral-800/60"
             }`}
           >
-            {/* Chọn ảnh */}
+            {/* Chọn ảnh (chỉ khi được phép chọn) */}
+            {onSelectPhoto && (
             <button
               type="button"
               aria-label={selected ? "Bỏ chọn" : "Chọn ảnh"}
@@ -53,10 +54,10 @@ export default function PhotoList({
                 e.stopPropagation()
                 onSelectPhoto(photo.id)
               }}
-              className={`w-5 h-5 shrink-0 rounded-full border-2 flex items-center justify-center transition-colors cursor-pointer ${
+              className={`w-5 h-5 shrink-0 rounded-full border-2 flex items-center justify-center transition-all cursor-pointer ${
                 selected
                   ? "bg-blue-600 border-blue-600"
-                  : "border-neutral-300 dark:border-neutral-600 hover:border-blue-400"
+                  : "border-neutral-300 dark:border-neutral-600 hover:border-blue-400 opacity-0 group-hover:opacity-100 focus-visible:opacity-100"
               }`}
             >
               {selected && (
@@ -71,6 +72,7 @@ export default function PhotoList({
                 </svg>
               )}
             </button>
+            )}
 
             {/* Thumbnail */}
             <div className="w-12 h-12 rounded-lg overflow-hidden bg-neutral-100 dark:bg-neutral-800 shrink-0">

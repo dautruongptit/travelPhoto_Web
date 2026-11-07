@@ -3,7 +3,7 @@ import { useCallback, useEffect, useRef } from "react"
 export type NavState = { view: "login" } | { view: "dashboard" } | {
   view: "album"
   eventId: string
-} | { view: "help" }
+} | { view: "help" } | { view: "photos" } | { view: "terms" } | { view: "privacy" }
 
 /** URL hiển thị trên thanh địa chỉ cho từng màn hình (login/dashboard dùng chung "/"). */
 export function pathFor(state: NavState): string {
@@ -12,6 +12,12 @@ export function pathFor(state: NavState): string {
       return `/events/${state.eventId}`
     case "help":
       return "/help"
+    case "photos":
+      return "/photos"
+    case "terms":
+      return "/terms"
+    case "privacy":
+      return "/privacy"
     default:
       return "/"
   }
@@ -22,6 +28,9 @@ export function parsePath(pathname: string): NavState {
   const m = pathname.match(/^\/events\/(\d+)\/?$/)
   if (m) return { view: "album", eventId: m[1] }
   if (pathname === "/help") return { view: "help" }
+  if (pathname === "/photos") return { view: "photos" }
+  if (pathname === "/terms") return { view: "terms" }
+  if (pathname === "/privacy") return { view: "privacy" }
   return { view: "dashboard" }
 }
 

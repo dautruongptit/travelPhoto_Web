@@ -60,7 +60,7 @@ export default function ProfileModal({
           </h2>
           <button
             onClick={onClose}
-            className="w-9 h-9 flex items-center justify-center rounded-xl text-gray-400 dark:text-gray-500 hover:text-gray-700 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors text-xl"
+            className="btn btn-ghost btn-icon"
           >
             ×
           </button>
@@ -91,13 +91,13 @@ export default function ProfileModal({
                       setEditing(false)
                       setName(user.name)
                     }}
-                    className="px-3 py-1.5 rounded-lg text-sm font-medium text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800"
+                    className="btn btn-secondary btn-sm"
                   >
                     Hủy
                   </button>
                   <button
                     onClick={handleSave}
-                    className="px-3 py-1.5 rounded-lg text-sm font-semibold bg-blue-600 hover:bg-blue-700 text-white"
+                    className="btn btn-primary"
                   >
                     Lưu
                   </button>
@@ -202,7 +202,7 @@ export default function ProfileModal({
                 onClose()
                 onOpenUpgrade()
               }}
-              className="mt-3 w-full py-2 rounded-lg bg-blue-50 dark:bg-blue-950/40 text-blue-700 dark:text-blue-400 text-sm font-semibold hover:bg-blue-100 dark:hover:bg-blue-900/40 transition-colors"
+              className="btn btn-primary mt-3 w-full"
             >
               Nâng cấp dung lượng
             </button>

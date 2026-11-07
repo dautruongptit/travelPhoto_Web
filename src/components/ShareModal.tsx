@@ -38,6 +38,7 @@ export default function ShareModal({
   const [isPublic, setIsPublic] = useState<boolean | null>(null)
   const [existingLinks, setExistingLinks] = useState<ShareLinkResponse[]>([])
   const [linksLoaded, setLinksLoaded] = useState(false)
+  const [linksError, setLinksError] = useState(false)
   const [shareUrl, setShareUrl] = useState<string | null>(null)
 
   /** Link đầy đủ đã được lưu lúc tạo (server chỉ trả token thật 1 lần). */
@@ -79,7 +80,10 @@ export default function ShareModal({
         }
       })
       .catch(() => {
-        if (!cancelled) setLinksLoaded(false)
+        if (!cancelled) {
+          setLinksLoaded(false)
+          setLinksError(true)
+        }
       })
 
     return () => {
@@ -177,7 +181,7 @@ export default function ShareModal({
         className="absolute inset-0 bg-black/50 backdrop-blur-sm"
         onClick={onClose}
       />
-      <div className="slide-up relative bg-white dark:bg-gray-900 rounded-3xl shadow-2xl w-full max-w-md overflow-hidden">
+      <div className="slide-up relative bg-white dark:bg-gray-900 rounded-3xl shadow-2xl w-full max-w-md max-h-[92vh] overflow-y-auto">
         {/* Header */}
         <div className="px-6 pt-6 pb-4 border-b border-gray-100 dark:border-gray-800">
           <div className="flex items-center justify-between">
@@ -191,7 +195,7 @@ export default function ShareModal({
             </div>
             <button
               onClick={onClose}
-              className="w-9 h-9 flex items-center justify-center rounded-xl text-gray-400 dark:text-gray-500 hover:text-gray-700 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors text-xl"
+              className="btn btn-ghost btn-icon"
             >
               ×
             </button>
@@ -224,21 +228,21 @@ export default function ShareModal({
               aria-label="Công khai album"
               disabled={savingPublic || isPublic === null}
               onClick={handleTogglePublic}
-              className={`relative w-11 h-6 rounded-full flex-shrink-0 transition-colors disabled:opacity-50 cursor-pointer ${
-                isPublic ? "bg-green-500" : "bg-gray-300 dark:bg-gray-600"
-              }`}
+              className="switch"
             >
-              <span
-                className={`absolute top-0.5 left-0.5 w-5 h-5 rounded-full bg-white shadow transition-transform ${
-                  isPublic ? "translate-x-5" : ""
-                }`}
-              />
+              <span className="switch-thumb" />
             </button>
           </div>
 
           {mode === "settings" ? null : !shareUrl ? (
             <div className="space-y-4">
-              {!linksLoaded && (
+              {!linksLoaded && !linksError && (
+                <div className="flex items-center gap-2 p-3 rounded-xl border border-gray-200 dark:border-gray-700 text-sm text-gray-500 dark:text-gray-400">
+                  <div className="w-4 h-4 border-2 border-blue-500 border-t-transparent rounded-full animate-spin" />
+                  Đang kiểm tra link hiện có…
+                </div>
+              )}
+              {linksError && (
                 <div className="p-3 rounded-xl bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 text-sm text-amber-700 dark:text-amber-300">
                   Không thể kiểm tra link hiện có. Thử tải lại trang.
                 </div>
@@ -322,7 +326,7 @@ export default function ShareModal({
                 type="button"
                 disabled={loading || !linksLoaded || hasActiveLink}
                 onClick={handleGenerateLink}
-                className="w-full h-11 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-xl shadow-lg shadow-blue-200/50 dark:shadow-none flex items-center justify-center gap-2 transition-colors disabled:opacity-50"
+                className="btn btn-primary w-full disabled:opacity-50"
               >
                 {loading ? (
                   <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
@@ -370,12 +374,12 @@ export default function ShareModal({
                   type="text"
                   readOnly
                   value={shareUrl}
-                  className="flex-1 bg-transparent text-xs text-gray-700 dark:text-gray-300 focus:outline-none select-all"
+                  className="flex-1 min-w-0 bg-transparent text-xs text-gray-700 dark:text-gray-300 focus:outline-none select-all"
                 />
                 <button
                   type="button"
                   onClick={handleCopyLink}
-                  className="h-8 px-4 bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold rounded-lg transition-colors flex items-center gap-1.5 flex-shrink-0"
+                  className="btn btn-primary btn-sm flex-shrink-0"
                 >
                   <svg width="12" height="12" viewBox="0 0 24 24" fill="none">
                     <rect

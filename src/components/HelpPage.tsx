@@ -50,7 +50,7 @@ export default function HelpPage({ onBack }: Props) {
       {/* Back */}
       <button
         onClick={onBack}
-        className="flex items-center gap-1.5 text-sm text-neutral-500 dark:text-neutral-400 hover:text-neutral-800 dark:hover:text-neutral-200 transition-colors mb-6"
+        className="btn btn-ghost mb-6"
       >
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
           <path
@@ -83,7 +83,7 @@ export default function HelpPage({ onBack }: Props) {
             >
               <button
                 onClick={() => setOpenIndex(open ? null : i)}
-                className="w-full flex items-center justify-between gap-4 px-4 py-3.5 text-left bg-[rgba(53,54,58,0.4)] hover:bg-[rgba(65,75,95,0.48)] backdrop-blur-[5px] saturate-[180%] rounded-[10px] shadow-[inset_0.5px_1px_1px_0px_rgba(255,255,255,0.125)] transition-colors"
+                className="w-full flex items-center justify-between gap-4 px-4 py-3.5 text-left blur-background glass-hover transition-colors"
               >
                 <span className="text-sm font-medium text-neutral-800 dark:text-neutral-100">
                   {item.q}
@@ -119,7 +119,7 @@ export default function HelpPage({ onBack }: Props) {
       </div>
 
       {/* Contact */}
-      <div className="mt-8 rounded-[10px] bg-[rgba(53,54,58,0.4)] backdrop-blur-[5px] saturate-[180%] shadow-[inset_0.5px_1px_1px_0px_rgba(255,255,255,0.125)] p-5">
+      <div className="mt-8 blur-background p-5">
         <h2 className="text-base font-semibold text-neutral-900 dark:text-white">
           Vẫn cần trợ giúp?
         </h2>
@@ -130,7 +130,7 @@ export default function HelpPage({ onBack }: Props) {
         <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-3">
           <a
             href="tel:19001234"
-            className="flex items-center gap-3 rounded-xl bg-[rgba(22,28,54,0.5)] hover:bg-[rgba(36,45,80,0.6)] backdrop-blur-[8px] border border-white/10 px-4 py-3 hover:border-blue-300/50 transition-colors"
+            className="flex items-center gap-3 blur-background glass-hover px-4 py-3 transition-colors"
           >
             <div className="w-9 h-9 rounded-full bg-blue-100 dark:bg-blue-950/40 flex items-center justify-center flex-shrink-0">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
@@ -155,7 +155,7 @@ export default function HelpPage({ onBack }: Props) {
 
           <a
             href="mailto:support@tripalbum.vn"
-            className="flex items-center gap-3 rounded-xl bg-[rgba(22,28,54,0.5)] hover:bg-[rgba(36,45,80,0.6)] backdrop-blur-[8px] border border-white/10 px-4 py-3 hover:border-blue-300/50 transition-colors"
+            className="flex items-center gap-3 blur-background glass-hover px-4 py-3 transition-colors"
           >
             <div className="w-9 h-9 rounded-full bg-blue-100 dark:bg-blue-950/40 flex items-center justify-center flex-shrink-0">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none">

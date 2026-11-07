@@ -15,13 +15,13 @@
 html,
 html.dark {
   --g-wallpaper: url("/images/wallpaper.jpg");
-  --g-blur: blur(12px) saturate(160%);
-  --g-shadow: rgba(255, 255, 255, 0.125) 0.5px 1px 1px 0px inset, 0 8px 24px rgba(0, 0, 0, 0.16);
+  --g-blur: blur(5px) saturate(180%);
+  --g-shadow: rgba(255, 255, 255, 0.125) 0.5px 1px 1px 0px inset;
   --g-shadow-hover: rgba(255, 255, 255, 0.22) 0.5px 1px 1px 0px inset, 0 12px 32px rgba(0, 0, 0, 0.28);
   /* Sắc kính mờ CasaOS Acrylic trong suốt cao (giảm opacity theo yêu cầu) */
-  --g-bg: rgba(45, 55, 85, 0.22);
-  --g-bg-hover: rgba(65, 80, 125, 0.32);
-  --g-border: 1px solid rgba(255, 255, 255, 0.10);
+  --g-bg: rgba(53, 54, 58, 0.4);
+  --g-bg-hover: rgba(65, 75, 95, 0.48);
+  --g-border: none;
   --g-border-hover: 1px solid rgba(255, 255, 255, 0.22);
   --g-text: #ffffff;
   --g-text-2: rgba(226, 232, 240, 0.75);
@@ -73,10 +73,7 @@ body::before {
   color: var(--g-text);
 }
 
-/* ── Bề mặt kính trong suốt chuẩn CasaOS .blur-background ─────────────── */
-.blur-background,
-[data-glass="stat"],
-[data-glass="event-card"],
+/* ── Bề mặt kính trong suốt (.blur-background được định nghĩa riêng trong index.css) ── */
 [data-glass="panel"] {
   background-color: var(--g-bg) !important;
   -webkit-backdrop-filter: var(--g-blur) !important;
@@ -87,9 +84,7 @@ body::before {
   color: var(--g-text) !important;
 }
 
-.blur-background:hover,
-[data-glass="stat"]:hover,
-[data-glass="event-card"]:hover {
+[data-glass="panel"]:hover {
   background-color: var(--g-bg-hover) !important;
   border: var(--g-border-hover) !important;
   box-shadow: var(--g-shadow-hover) !important;
@@ -126,26 +121,13 @@ body::before {
 }
 [data-glass="navbar"] {
   border-top: 0 !important;
-  background: rgba(20, 25, 45, 0.45) !important;
+  background: var(--g-bg) !important;
   -webkit-backdrop-filter: var(--g-blur) !important;
   backdrop-filter: var(--g-blur) !important;
   border-bottom: 1px solid rgba(255, 255, 255, 0.08) !important;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15) !important;
 }
 
-/* Ô tìm kiếm & thẻ thống kê: hover sáng hơn */
-[data-glass="search"] {
-  background: rgba(45, 55, 85, 0.22) !important;
-  -webkit-backdrop-filter: var(--g-blur) !important;
-  backdrop-filter: var(--g-blur) !important;
-  box-shadow: rgba(255, 255, 255, 0.10) 0.5px 1px 1px 0px inset !important;
-  border: 1px solid rgba(255, 255, 255, 0.10) !important;
-  color: var(--g-text) !important;
-  border-radius: var(--g-radius) !important;
-}
-[data-glass="search"]::placeholder {
-  color: var(--g-text-2) !important;
-}
 
 /* ── Thẻ sự kiện: thân trong suốt kế thừa thẻ cha ──────────────────────────── */
 [data-glass="event-body"] {
@@ -156,13 +138,10 @@ body::before {
   border-radius: 0 !important;
   box-shadow: none !important;
 }
-[data-glass="event-card"]:hover [data-glass="event-body"] {
-  background: transparent !important;
-}
 
 /* ── Thẻ "Tạo sự kiện": viền đứt + nền kính siêu trong suốt chuẩn CasaOS ───── */
 [data-glass="create"] {
-  background: rgba(45, 55, 85, 0.14) !important;
+  background: var(--g-bg) !important;
   -webkit-backdrop-filter: var(--g-blur) !important;
   backdrop-filter: var(--g-blur) !important;
   box-shadow: var(--g-shadow) !important;
@@ -171,7 +150,7 @@ body::before {
   border-radius: var(--g-radius) !important;
 }
 [data-glass="create"]:hover {
-  background: rgba(65, 80, 125, 0.25) !important;
+  background: var(--g-bg-hover) !important;
   border-color: rgba(255, 255, 255, 0.40) !important;
   color: var(--g-text) !important;
 }
@@ -188,13 +167,12 @@ body::before {
 /* ── Tab đang chọn ─────────────────────────────────────────────────────────── */
 [data-glass="tab"][data-active="true"] {
   background: var(--g-bg-hover) !important;
-  border: 1px solid var(--g-border) !important;
+  border: 1px solid rgba(255, 255, 255, 0.10) !important;
   color: var(--g-text) !important;
 }
 
 /* ── Màu chữ trong các bề mặt kính ─────────────────────────────────────────── */
 [data-glass="navbar"] :is(.text-neutral-900, .text-neutral-800, .text-neutral-700, .text-white, .text-gray-900, .text-gray-800, .text-gray-700),
-[data-glass="stat"] :is(.text-neutral-900, .text-neutral-800, .text-white),
 [data-glass="event-body"] :is(.text-gray-600, .text-neutral-300, .text-neutral-900, .text-white),
 [data-glass="panel"] :is(.text-neutral-900, .text-neutral-800, .text-white),
 [data-glass="dropdown"] :is(.text-neutral-900, .text-neutral-800, .text-neutral-700, .text-white),
@@ -202,7 +180,6 @@ body::before {
   color: var(--g-text) !important;
 }
 [data-glass="navbar"] :is(.text-neutral-400, .text-neutral-500, .text-neutral-600, .text-gray-400, .text-gray-500, .text-gray-600),
-[data-glass="stat"] :is(.text-neutral-400, .text-neutral-500),
 [data-glass="event-body"] :is(.text-gray-400, .text-gray-500),
 [data-glass="panel"] :is(.text-neutral-400, .text-neutral-500),
 [data-glass="dropdown"] :is(.text-neutral-400, .text-neutral-500, .text-neutral-600) {
@@ -331,7 +308,7 @@ body::before {
 }
 
 /* Nút phụ / Hủy / Đóng bên trong modal */
-[class*="fixed inset-0"] .slide-up button:has(svg):not(.bg-blue-600):not(.bg-red-600):not(.bg-\[\#ff0084\]):hover,
+[class*="fixed inset-0"] .slide-up button:has(svg):not(.btn):not(.bg-blue-600):not(.bg-red-600):not(.bg-\[\#ff0084\]):hover,
 [class*="fixed inset-0"] .slide-up button.text-gray-400:hover,
 [class*="fixed inset-0"] .slide-up button.text-neutral-400:hover,
 [class*="fixed inset-0"] .slide-up button.text-gray-500:hover {

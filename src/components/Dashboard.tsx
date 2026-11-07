@@ -47,7 +47,7 @@ const EmptyEvents = ({ onCreateEvent }: { onCreateEvent: () => void }) => (
     </p>
     <button
       onClick={onCreateEvent}
-      className="flex items-center gap-2 bg-[#ff0084] hover:bg-[#e00074] text-white font-semibold px-5 py-2.5 rounded-full transition-all shadow-sm active:scale-95 cursor-pointer text-sm"
+      className="btn btn-primary cursor-pointer"
     >
       <svg
         width="16"
@@ -128,9 +128,9 @@ export default function Dashboard({
   }
 
   return (
-    <main className="max-w-screen-2xl mx-auto px-4 sm:px-6 py-6 sm:py-8 pb-20">
+    <main className="max-w-screen-2xl mx-auto px-4 sm:px-6 py-6 sm:py-8 pb-4">
       {/* CasaOS Quick Metric Widgets */}
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3.5 mb-8">
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 mb-6">
         {[
           { label: "Sự kiện & Chuyến đi", value: events.length, icon: "🗺️", accent: "text-cyan-400" },
           { label: "Tổng số bức ảnh", value: totalPhotos, icon: "📸", accent: "text-pink-400" },
@@ -152,18 +152,17 @@ export default function Dashboard({
         ].map(({ label, value, icon, accent }) => (
           <div
             key={label}
-            data-glass="stat"
-            className="rounded-[10px] p-4 transition-all flex items-center justify-between cursor-default"
+            className="blur-background glass-hover px-3 py-2.5 transition-all flex items-center justify-between cursor-default"
           >
             <div>
-              <p className="text-xs text-white/60 font-medium">
+              <p className="text-[11px] text-white/60 font-medium">
                 {label}
               </p>
-              <p className="text-xl sm:text-2xl font-bold text-white mt-1 tracking-tight">
+              <p className="text-base sm:text-lg font-bold text-white mt-0.5 tracking-tight leading-tight">
                 {value}
               </p>
             </div>
-            <div className={`w-10 h-10 rounded-xl bg-white/[0.08] border border-white/10 flex items-center justify-center text-lg ${accent}`}>
+            <div className={`w-7 h-7 rounded-lg bg-white/[0.08] border border-white/10 flex items-center justify-center text-sm ${accent}`}>
               {icon}
             </div>
           </div>
@@ -184,7 +183,7 @@ export default function Dashboard({
             </div>
           </div>
 
-          <div className="rounded-2xl overflow-hidden bg-[rgba(53,54,58,0.35)] backdrop-blur-[8px] saturate-[180%] border border-white/10 p-2 shadow-[inset_0.5px_1px_1px_0px_rgba(255,255,255,0.125)]">
+          <div className="blur-background p-2">
             <JustifiedGallery
               photos={recentPhotos}
               onPhotoClick={(_photo, index) => setRecentLightboxIndex(index)}
@@ -202,7 +201,7 @@ export default function Dashboard({
             <span className="w-1.5 h-4 bg-blue-500 rounded-full shadow-sm shadow-blue-500/50" />
             {searchQuery
               ? `Kết quả tìm kiếm "${searchQuery}"`
-              : "Tất cả sự kiện"}
+              : "Tất cả album"}
             <span className="text-xs font-semibold px-2 py-0.5 rounded-full bg-white/10 text-white/70 border border-white/10">
               {filtered.length}
             </span>
@@ -261,7 +260,7 @@ export default function Dashboard({
             onClick={
               selected.size === filtered.length ? clearSelect : selectAll
             }
-            className="px-2.5 py-1 text-xs text-neutral-300 hover:text-white rounded-full transition-colors cursor-pointer"
+            className="btn btn-ghost btn-sm cursor-pointer"
           >
             {selected.size === filtered.length
               ? "Bỏ chọn"
@@ -269,14 +268,14 @@ export default function Dashboard({
           </button>
           <button
             onClick={() => setShowDeleteConfirm(true)}
-            className="px-2.5 py-1 text-xs text-red-400 hover:text-red-300 rounded-full transition-colors cursor-pointer"
+            className="btn btn-ghost-danger btn-sm cursor-pointer"
           >
             Xóa
           </button>
           <button
             onClick={clearSelect}
             title="Đóng"
-            className="w-7 h-7 flex items-center justify-center text-neutral-400 hover:text-white rounded-full transition-colors cursor-pointer"
+            className="btn btn-ghost btn-icon btn-sm cursor-pointer"
           >
             ✕
           </button>
@@ -301,13 +300,13 @@ export default function Dashboard({
             <div className="flex gap-2">
               <button
                 onClick={() => setShowDeleteConfirm(false)}
-                className="flex-1 py-2 rounded-full border border-neutral-200 dark:border-neutral-700 text-sm font-medium text-neutral-700 dark:text-neutral-300 hover:bg-neutral-50 dark:hover:bg-neutral-800 transition-colors cursor-pointer"
+                className="btn btn-secondary flex-1 cursor-pointer"
               >
                 Hủy
               </button>
               <button
                 onClick={handleDelete}
-                className="flex-1 py-2 rounded-full bg-red-600 hover:bg-red-700 text-sm font-semibold text-white transition-colors cursor-pointer"
+                className="btn btn-danger flex-1 cursor-pointer"
               >
                 Xóa {selected.size} sự kiện
               </button>

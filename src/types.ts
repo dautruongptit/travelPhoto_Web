@@ -78,7 +78,14 @@ export interface PaymentOrder {
   amount: number // VNĐ
 }
 
-export type AppView = "login" | "dashboard" | "album" | "help"
+export type AppView =
+  | "login"
+  | "dashboard"
+  | "album"
+  | "help"
+  | "photos"
+  | "terms"
+  | "privacy"
 export type SortOption = "newest" | "oldest" | "name-az" | "name-za"
 
 export interface FlickrPhoto extends Photo {
@@ -90,4 +97,4 @@ export interface FlickrPhoto extends Photo {
   aspectRatio?: number
 }
 
-export type FlickrNavTab = "explore" | "photostream" | "albums" | "trips"
+export type FlickrNavTab = "photos" | "albums"

@@ -1,5 +1,7 @@
 interface Props {
   onOpenHelp: () => void
+  onOpenTerms: () => void
+  onOpenPrivacy: () => void
 }
 
 /**
@@ -9,13 +11,17 @@ interface Props {
  * - Phải: Trợ giúp & Hướng dẫn, Điều khoản dịch vụ, Chính sách bảo mật, support@travelphoto.site, 1900 1234
  * - Hoàn toàn không viền (bỏ toàn bộ border).
  */
-export default function Footer({ onOpenHelp }: Props) {
+export default function Footer({
+  onOpenHelp,
+  onOpenTerms,
+  onOpenPrivacy,
+}: Props) {
   const year = new Date().getFullYear()
 
   return (
     <footer className="mt-auto mb-[10px] mx-5 sm:mx-8 md:mx-12 px-2 sm:px-4 py-2 flex flex-col md:flex-row items-center justify-between gap-3 select-none text-white">
       {/* Bên trái: Logo CasaOS-style + Made with ❤️ & Bản quyền */}
-      <div className="flex items-center gap-2.5 sm:gap-3 text-xs min-w-0">
+      <div className="flex items-center gap-2.5 sm:gap-3 text-xs min-w-0 max-w-full">
         <div className="flex items-center gap-1.5 font-bold tracking-tight text-white shrink-0">
           <span className="inline-flex items-center -space-x-1.5">
             <span className="w-3.5 h-3.5 rounded-full bg-cyan-400 opacity-90 shadow-sm shadow-cyan-400/50" />
@@ -26,7 +32,7 @@ export default function Footer({ onOpenHelp }: Props) {
 
         <span className="text-white/20 hidden sm:inline">|</span>
 
-        <p className="text-white/75 truncate text-xs">
+        <p className="text-white/75 truncate min-w-0 text-xs">
           <span>Made with</span>
           <span className="text-rose-500 inline-block text-xs mx-1">❤️</span>
           <span>by</span>
@@ -45,12 +51,18 @@ export default function Footer({ onOpenHelp }: Props) {
         >
           Trợ giúp & Hướng dẫn
         </button>
-        <span className="cursor-pointer hover:text-white transition-colors">
+        <button
+          onClick={onOpenTerms}
+          className="hover:text-white transition-colors cursor-pointer"
+        >
           Điều khoản dịch vụ
-        </span>
-        <span className="cursor-pointer hover:text-white transition-colors">
+        </button>
+        <button
+          onClick={onOpenPrivacy}
+          className="hover:text-white transition-colors cursor-pointer"
+        >
           Chính sách bảo mật
-        </span>
+        </button>
         <a
           href="mailto:support@travelphoto.site"
           className="hover:text-white transition-colors hidden sm:inline"

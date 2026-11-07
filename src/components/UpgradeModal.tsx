@@ -51,7 +51,7 @@ export default function UpgradeModal({
             </div>
             <button
               onClick={onClose}
-              className="w-9 h-9 flex items-center justify-center rounded-xl text-neutral-400 dark:text-neutral-500 hover:text-neutral-700 dark:hover:text-neutral-200 hover:bg-neutral-100 dark:hover:bg-neutral-700 transition-colors text-xl"
+              className="btn btn-ghost btn-icon"
             >
               ×
             </button>
@@ -178,7 +178,7 @@ export default function UpgradeModal({
         </div>
 
         {/* Footer */}
-        <div className="flex-shrink-0 px-6 py-4 border-t border-neutral-100 dark:border-neutral-800 flex items-center justify-between gap-3">
+        <div className="flex-shrink-0 px-6 py-4 border-t border-neutral-100 dark:border-neutral-800 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
           <div className="text-sm">
             <span className="text-neutral-500 dark:text-neutral-400">
               Tổng thanh toán:{" "}
@@ -187,16 +187,16 @@ export default function UpgradeModal({
               {formatCurrency(selectedPlan.totalPrice)}
             </span>
           </div>
-          <div className="flex gap-3">
+          <div className="flex flex-col-reverse gap-2 sm:flex-row sm:gap-3">
             <button
               onClick={onClose}
-              className="px-4 py-2.5 rounded-xl border border-neutral-200 dark:border-neutral-700 text-sm font-medium text-neutral-700 dark:text-neutral-300 hover:bg-neutral-50 dark:hover:bg-neutral-800 transition-colors"
+              className="btn btn-secondary w-full sm:w-auto"
             >
               Để sau
             </button>
             <button
               onClick={() => onProceedToCheckout(selectedPlan)}
-              className="px-5 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-sm font-semibold text-white transition-all shadow-sm hover:shadow-md hover:shadow-blue-200 flex items-center gap-2"
+              className="btn btn-primary w-full sm:w-auto"
             >
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
                 <rect

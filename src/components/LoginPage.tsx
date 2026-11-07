@@ -7,6 +7,8 @@ interface Props {
   onLogin: (token: string) => void
   /** Gọi khi đăng nhập thất bại — App.tsx hiện toast lỗi */
   onLoginError: (message: string) => void
+  onOpenTerms?: () => void
+  onOpenPrivacy?: () => void
 }
 
 export default function LoginPage({
@@ -14,6 +16,8 @@ export default function LoginPage({
   onToggleTheme,
   onLogin,
   onLoginError,
+  onOpenTerms,
+  onOpenPrivacy,
 }: Props) {
   const { signIn, loading } = useGoogleLoginPopup({
     onSuccess: onLogin,
@@ -21,21 +25,44 @@ export default function LoginPage({
   })
 
   return (
-    <div className="min-h-screen flex flex-col lg:flex-row relative overflow-hidden bg-[#1b1646]">
-      {/* Ảnh nền toàn trang (bản đồ nằm bên trái, phần trống bên phải dành cho form) */}
-      <picture>
-        <source srcSet="/images/login-hero.avif" type="image/avif" />
-        <source srcSet="/images/login-hero.webp" type="image/webp" />
-        <img
-          src="/images/login-hero.png"
-          alt=""
-          aria-hidden="true"
-          loading="eager"
-          decoding="async"
-          style={{ objectPosition: "left center" }}
-          className="hero-zoom absolute inset-0 w-full h-full object-cover"
-        />
-      </picture>
+    <div className="min-h-screen lg:h-screen flex flex-col lg:flex-row relative overflow-hidden bg-[#1b1646]">
+      {/* Nền: bầu trời sao + đồi núi (gradient bên dưới làm dự phòng khi ảnh chưa tải) */}
+      <div
+        aria-hidden="true"
+        className="absolute inset-0"
+        style={{
+          background: "linear-gradient(160deg, #14216a 0%, #1a3184 55%, #2362aa 100%)",
+        }}
+      >
+        <picture>
+          <source srcSet="/images/login-bg@2x.avif" type="image/avif" />
+          <source srcSet="/images/login-bg@2x.webp" type="image/webp" />
+          <img
+            src="/images/login-bg@2x.webp"
+            alt=""
+            loading="eager"
+            decoding="async"
+            className="h-full w-full object-cover object-bottom"
+          />
+        </picture>
+      </div>
+      {/* Bản đồ Việt Nam: nằm sát khung đăng nhập, mép mờ dần vào nền */}
+      <div
+        aria-hidden="true"
+        className="absolute inset-0 flex items-center justify-end pointer-events-none sm:bottom-auto sm:h-[46vh] sm:justify-center lg:bottom-0 lg:h-auto lg:justify-end lg:right-auto lg:w-[60%] xl:w-[62%] 2xl:w-[66%]"
+      >
+        <picture className="block h-full w-full lg:w-auto lg:max-w-full lg:aspect-[2160/2048]">
+          <source srcSet="/images/login-map@2x.avif?v=15" type="image/avif" />
+          <source srcSet="/images/login-map@2x.webp?v=15" type="image/webp" />
+          <img
+            src="/images/login-map@2x.webp?v=15"
+            alt=""
+            loading="eager"
+            decoding="async"
+            className="h-full w-full object-cover opacity-40 sm:object-contain sm:opacity-100"
+          />
+        </picture>
+      </div>
       {/* Theme toggle */}
       <button
         onClick={onToggleTheme}
@@ -45,7 +72,7 @@ export default function LoginPage({
             : "Chuyển sang giao diện tối"
         }
         title={theme === "dark" ? "Chế độ sáng" : "Chế độ tối"}
-        className="absolute top-5 right-5 z-20 w-9 h-9 flex items-center justify-center rounded-full text-gray-500 dark:text-gray-400 bg-white/70 dark:bg-gray-900/70 backdrop-blur hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-gray-700 dark:hover:text-gray-200 transition-colors"
+        className="absolute top-5 right-5 z-20 btn btn-ghost btn-icon"
       >
         {theme === "dark" ? (
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
@@ -99,9 +126,9 @@ export default function LoginPage({
       </div>
 
       {/* Right login panel */}
-      <div className="dark relative z-10 flex-1 flex flex-col items-center justify-center px-4 sm:px-8 py-8">
+      <div className="dark relative z-10 flex-1 flex flex-col items-center justify-center px-4 sm:px-8 py-4 sm:pt-[44vh] lg:pt-4 lg:overflow-y-auto">
         {/* Thẻ kính mờ để chữ luôn dễ đọc trên ảnh nền */}
-        <div className="w-full max-w-md rounded-3xl bg-[#111827]/50 backdrop-blur-md border border-white/10 shadow-2xl p-6 sm:p-9">
+        <div className="w-full max-w-md rounded-3xl bg-[#111827]/50 backdrop-blur-md border border-white/10 shadow-2xl p-6 sm:p-7">
 
         <div className="w-full slide-up">
           {/* Giới thiệu: tiêu đề -> mô tả -> số liệu, rồi ngăn cách với phần đăng nhập */}
@@ -149,7 +176,7 @@ export default function LoginPage({
           <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-2 tracking-tight">
             Chào mừng!
           </h2>
-          <p className="text-gray-500 dark:text-gray-400 text-base mb-10">
+          <p className="text-gray-500 dark:text-gray-400 text-base mb-6">
             Đăng nhập để quản lý và chia sẻ album ảnh du lịch của bạn.
           </p>
 
@@ -158,7 +185,7 @@ export default function LoginPage({
             onClick={signIn}
             disabled={loading}
             aria-busy={loading}
-            className="w-full flex items-center justify-center gap-3 h-[52px] rounded-2xl border-2 border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-700 dark:text-gray-200 text-sm font-semibold hover:border-blue-400 hover:shadow-md transition-all disabled:opacity-60 disabled:cursor-not-allowed"
+            className="btn btn-secondary btn-lg w-full"
           >
             {loading ? (
               <>
@@ -229,15 +256,23 @@ export default function LoginPage({
             </button>
           </p>
 
-          <p className="mt-10 text-xs text-gray-400 dark:text-gray-500 text-center leading-relaxed">
+          <p className="mt-6 text-xs text-gray-400 dark:text-gray-500 text-center leading-relaxed">
             Khi đăng nhập, bạn đồng ý với{" "}
-            <span className="text-gray-600 dark:text-gray-300 cursor-pointer hover:underline">
+            <button
+              type="button"
+              onClick={onOpenTerms}
+              className="text-gray-600 dark:text-gray-300 cursor-pointer hover:underline"
+            >
               Điều khoản dịch vụ
-            </span>{" "}
+            </button>{" "}
             và{" "}
-            <span className="text-gray-600 dark:text-gray-300 cursor-pointer hover:underline">
+            <button
+              type="button"
+              onClick={onOpenPrivacy}
+              className="text-gray-600 dark:text-gray-300 cursor-pointer hover:underline"
+            >
               Chính sách bảo mật
-            </span>
+            </button>
             .
           </p>
         </div>

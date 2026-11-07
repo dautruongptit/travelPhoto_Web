@@ -41,9 +41,11 @@ import SharePage from "./components/SharePage"
 import LoginPage from "./components/LoginPage"
 import Navbar from "./components/flickr/Navbar"
 import Dashboard from "./components/Dashboard"
+import PhotosPage from "./components/PhotosPage"
 import CreateEventModal from "./components/CreateEventModal"
 import AlbumPage from "./components/AlbumPage"
 import HelpPage from "./components/HelpPage"
+import LegalPage from "./components/LegalPage"
 import UploadModal from "./components/UploadModal"
 import ProfileModal from "./components/ProfileModal"
 import SettingsModal from "./components/SettingsModal"
@@ -59,7 +61,6 @@ export default function App() {
   const [view, setView] = useState<AppView>("login")
   // Đang mở link chia sẻ /share/{token}: hiển thị SharePage, KHÔNG ép về dashboard/login
   const [shareToken] = useState(() => parseShareToken(window.location.pathname))
-  const [activeNavTab, setActiveNavTab] = useState<FlickrNavTab>("explore")
   const [events, setEvents] = useState<TravelEvent[]>([])
   const [selectedEventId, setSelectedEventId] = useState<string | null>(null)
   const [showCreateModal, setShowCreateModal] = useState(false)
@@ -142,6 +143,11 @@ export default function App() {
         setView("dashboard")
       } else if (state.view === "help") {
         setView("help")
+      } else if (state.view === "photos") {
+        setSelectedEventId(null)
+        setView("photos")
+      } else if (state.view === "terms" || state.view === "privacy") {
+        setView(state.view)
       } else {
         setSelectedEventId(null)
         setView("login")
@@ -247,7 +253,14 @@ export default function App() {
       return
     }
     if (!token) {
-      replace({ view: "login" })
+      // Trang pháp lý công khai: xem được khi chưa đăng nhập
+      const legal = parsePath(window.location.pathname)
+      if (legal.view === "terms" || legal.view === "privacy") {
+        setView(legal.view)
+        replace(legal)
+      } else {
+        replace({ view: "login" })
+      }
       setCheckingSession(false)
       return
     }
@@ -264,6 +277,12 @@ export default function App() {
           loadEventPhotos(target.eventId)
         } else if (target.view === "help") {
           setView("help")
+          replace(target)
+        } else if (target.view === "photos") {
+          setView("photos")
+          replace(target)
+        } else if (target.view === "terms" || target.view === "privacy") {
+          setView(target.view)
           replace(target)
         } else {
           setView("dashboard")
@@ -349,6 +368,22 @@ export default function App() {
   const handleOpenHelp = () => {
     setView("help")
     push({ view: "help" })
+  }
+
+  const handleOpenLegal = (kind: "terms" | "privacy") => {
+    setView(kind)
+    push({ view: kind })
+    window.scrollTo({ top: 0 })
+  }
+
+  // Từ trang pháp lý: đã đăng nhập -> về trang chủ, chưa đăng nhập -> về màn hình đăng nhập
+  const handleLegalBack = () => {
+    if (user) {
+      handleGoHome()
+    } else {
+      setView("login")
+      replace({ view: "login" })
+    }
   }
 
   const handleSaveProfileName = (name: string) => {
@@ -462,13 +497,18 @@ export default function App() {
   }
 
   const handleSelectNavTab = (tab: FlickrNavTab) => {
-    setActiveNavTab(tab)
-    if (tab === "explore" || tab === "albums" || tab === "trips") {
+    if (tab === "photos") {
+      setView("photos")
+      setSelectedEventId(null)
+      setSearchQuery("")
+      push({ view: "photos" })
+    } else {
       handleGoHome()
-    } else if (tab === "photostream") {
-      setShowProfileModal(true)
     }
   }
+
+  // Tab đang sáng suy ra từ màn hình hiện tại (không giữ state riêng nữa)
+  const activeNavTab: FlickrNavTab = view === "photos" ? "photos" : "albums"
 
   const selectedEvent = selectedEventId
     ? events.find((e) => e.id === selectedEventId)
@@ -508,6 +548,14 @@ export default function App() {
           onToggleTheme={toggleTheme}
           onLogin={handleLoginSuccess}
           onLoginError={handleLoginError}
+          onOpenTerms={() => handleOpenLegal("terms")}
+          onOpenPrivacy={() => handleOpenLegal("privacy")}
+        />
+      ) : !user && (view === "terms" || view === "privacy") ? (
+        <LegalPage
+          kind={view}
+          onBack={handleLegalBack}
+          onSwitch={() => handleOpenLegal(view === "terms" ? "privacy" : "terms")}
         />
       ) : (
         <>
@@ -520,7 +568,7 @@ export default function App() {
               onGoHome={handleGoHome}
               searchQuery={searchQuery}
               onSearchChange={setSearchQuery}
-              showSearch={view === "dashboard"}
+              showSearch={view === "dashboard" || view === "photos"}
               usedBytes={storageUsedBytes}
               limitBytes={storageLimitBytes}
               onOpenProfile={() => setShowProfileModal(true)}
@@ -543,6 +591,10 @@ export default function App() {
               />
             )}
 
+            {view === "photos" && (
+              <PhotosPage events={events} searchQuery={searchQuery} />
+            )}
+
             {view === "album" && selectedEvent && (
               <AlbumPage
                 event={selectedEvent}
@@ -558,9 +610,25 @@ export default function App() {
             )}
 
             {view === "help" && <HelpPage onBack={handleGoHome} />}
+
+            {(view === "terms" || view === "privacy") && (
+              <LegalPage
+                kind={view}
+                onBack={handleLegalBack}
+                onSwitch={() =>
+                  handleOpenLegal(view === "terms" ? "privacy" : "terms")
+                }
+              />
+            )}
           </div>
 
-          {view !== "album" && <Footer onOpenHelp={handleOpenHelp} />}
+          {view !== "album" && (
+            <Footer
+              onOpenHelp={handleOpenHelp}
+              onOpenTerms={() => handleOpenLegal("terms")}
+              onOpenPrivacy={() => handleOpenLegal("privacy")}
+            />
+          )}
         </>
       )}
 

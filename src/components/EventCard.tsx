@@ -28,12 +28,9 @@ export default function EventCard({
 
   return (
     <article
-      data-glass="event-card"
       onClick={onClick}
-      className={`group flex flex-col h-full rounded-[10px] overflow-hidden transition-all duration-300 cursor-pointer ${
-        selected
-          ? "ring-2 ring-blue-500 border-blue-400 ring-offset-2 ring-offset-transparent"
-          : ""
+      className={`group blur-background glass-hover flex flex-col h-full hover:-translate-y-1 transition-all duration-300 cursor-pointer ${
+        selected ? "outline outline-2 outline-offset-2 outline-blue-500" : ""
       }`}
     >
       {/* Cover image - Aspect ratio 16:10 compact chuẩn CasaOS app card */}

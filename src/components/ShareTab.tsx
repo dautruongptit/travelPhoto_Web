@@ -158,7 +158,7 @@ export default function ShareTab({
   return (
     <div className={`space-y-6 ${isEmbedded ? "" : "max-w-screen-2xl mx-auto px-4 sm:px-6 py-6"}`}>
       {/* THẺ 1: LIÊN KẾT CHIA SẺ */}
-      <div className="bg-[rgba(53,54,58,0.4)] backdrop-blur-[5px] saturate-[180%] rounded-[10px] p-6 shadow-[inset_0.5px_1px_1px_0px_rgba(255,255,255,0.125)] space-y-4">
+      <div className="blur-background p-6 space-y-4">
         <div className="flex items-center justify-between pb-3 border-b border-white/10">
           <div className="flex items-center gap-3">
             <div className="w-9 h-9 rounded-2xl bg-blue-500/15 border border-blue-500/30 flex items-center justify-center text-blue-400 shadow-inner">
@@ -180,7 +180,7 @@ export default function ShareTab({
           {!hasActiveLink && (
             <button
               onClick={() => onOpenShareModal()}
-              className="inline-flex items-center gap-1.5 px-4 py-1.5 text-white text-sm font-semibold rounded-full shadow-md bg-blue-600 hover:bg-blue-500 active:scale-95 shadow-blue-600/30 cursor-pointer transition-all"
+              className="btn btn-primary cursor-pointer"
             >
               <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
                 <line x1="12" y1="5" x2="12" y2="19" />
@@ -195,7 +195,7 @@ export default function ShareTab({
           <div className="py-8 text-center">
             <button
               onClick={() => onOpenShareModal()}
-              className="inline-flex items-center gap-1.5 text-sm text-blue-400 hover:text-blue-300 font-medium cursor-pointer"
+              className="btn btn-primary cursor-pointer"
             >
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
                 <line x1="12" y1="5" x2="12" y2="19" />
@@ -238,7 +238,7 @@ export default function ShareTab({
 
                     <button
                       onClick={() => setConfirmRevokeLink(link)}
-                      className="text-xs text-rose-400 hover:text-rose-300 hover:bg-rose-500/10 px-2 py-0.5 rounded-lg transition-colors cursor-pointer flex items-center gap-1"
+                      className="btn btn-ghost-danger btn-sm cursor-pointer"
                     >
                       <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                         <circle cx="12" cy="12" r="10" />
@@ -265,12 +265,12 @@ export default function ShareTab({
                       type="button"
                       onClick={() => handleCopy(link)}
                       disabled={isHidden}
-                      className={`px-3.5 py-1.5 rounded-xl text-xs font-semibold flex items-center gap-1.5 transition-all shrink-0 cursor-pointer ${
+                      className={`btn btn-sm shrink-0 ${
                         isCopied
-                          ? "bg-emerald-600 text-white"
+                          ? "btn-success"
                           : isHidden
-                            ? "bg-white/10 text-white/40 cursor-not-allowed"
-                            : "bg-blue-600 hover:bg-blue-500 text-white active:scale-95 shadow-sm shadow-blue-600/30"
+                            ? "btn-secondary"
+                            : "btn-primary"
                       }`}
                     >
                       {isCopied ? (
@@ -296,7 +296,7 @@ export default function ShareTab({
                       onClick={() => setQrModalLink(link)}
                       disabled={isHidden}
                       title="Xem mã QR"
-                      className="p-1.5 px-3 rounded-xl bg-white/10 hover:bg-white/20 text-white text-xs font-medium shrink-0 cursor-pointer active:scale-95"
+                      className="btn btn-secondary btn-sm shrink-0 cursor-pointer"
                     >
                       QR
                     </button>
@@ -309,7 +309,7 @@ export default function ShareTab({
       </div>
 
       {/* THẺ 2: THÀNH VIÊN */}
-      <div className="bg-[rgba(53,54,58,0.4)] backdrop-blur-[5px] saturate-[180%] rounded-[10px] p-6 shadow-[inset_0.5px_1px_1px_0px_rgba(255,255,255,0.125)] space-y-4">
+      <div className="blur-background p-6 space-y-4">
         <div className="flex items-center gap-3 pb-3 border-b border-white/10">
           <div className="w-9 h-9 rounded-2xl bg-purple-500/15 border border-purple-500/30 flex items-center justify-center text-purple-400 shadow-inner">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -376,7 +376,7 @@ export default function ShareTab({
                   <button
                     onClick={() => handleRemoveMember(m.userId)}
                     title="Gỡ thành viên"
-                    className="p-1.5 text-white/40 hover:text-rose-400 hover:bg-rose-500/10 rounded-lg transition-colors cursor-pointer"
+                    className="btn btn-ghost btn-icon btn-sm cursor-pointer"
                   >
                     <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                       <polyline points="3 6 5 6 21 6" />
@@ -391,7 +391,7 @@ export default function ShareTab({
       </div>
 
       {/* THẺ 3: BẢO MẬT & ĐỒNG BỘ LƯU TRỮ */}
-      <div className="bg-[rgba(53,54,58,0.4)] backdrop-blur-[5px] saturate-[180%] rounded-[10px] p-6 shadow-[inset_0.5px_1px_1px_0px_rgba(255,255,255,0.125)] space-y-3.5">
+      <div className="blur-background p-6 space-y-3.5">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2.5">
             <svg className="w-5 h-5 text-cyan-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -426,7 +426,7 @@ export default function ShareTab({
 
           <button
             onClick={() => onOpenShareModal("settings")}
-            className="px-3.5 py-1.5 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-sm text-white/80 transition-all cursor-pointer"
+            className="btn btn-secondary btn-sm cursor-pointer"
           >
             Cài đặt nâng cao
           </button>
@@ -473,7 +473,7 @@ export default function ShareTab({
               </div>
               <button
                 onClick={() => setQrModalLink(null)}
-                className="w-7 h-7 rounded-lg flex items-center justify-center text-white/50 hover:text-white hover:bg-white/10 transition-colors cursor-pointer shrink-0"
+                className="btn btn-ghost btn-icon btn-sm shrink-0 cursor-pointer"
               >
                 ✕
               </button>
@@ -516,7 +516,7 @@ export default function ShareTab({
                   handleCopy(qrModalLink)
                   setQrModalLink(null)
                 }}
-                className="flex-1 py-2.5 px-3 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-sm font-semibold flex items-center justify-center gap-1.5 transition-all cursor-pointer active:scale-95 shadow-sm shadow-blue-600/30"
+                className="btn btn-primary btn-sm flex-1 cursor-pointer"
               >
                 <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                   <rect x="9" y="9" width="13" height="13" rx="2" />
@@ -527,7 +527,7 @@ export default function ShareTab({
               <button
                 type="button"
                 onClick={() => setQrModalLink(null)}
-                className="py-2.5 px-4 rounded-xl bg-white/10 hover:bg-white/15 text-sm text-white/90 transition-colors cursor-pointer"
+                className="btn btn-secondary cursor-pointer"
               >
                 Đóng
               </button>
@@ -555,7 +555,7 @@ export default function ShareTab({
                 type="button"
                 disabled={isRevoking}
                 onClick={() => setConfirmRevokeLink(null)}
-                className="px-4 py-2 rounded-xl border border-white/15 bg-white/5 hover:bg-white/10 text-sm font-semibold text-white/80 transition-all cursor-pointer"
+                className="btn btn-secondary cursor-pointer"
               >
                 Hủy
               </button>
@@ -563,7 +563,7 @@ export default function ShareTab({
                 type="button"
                 disabled={isRevoking}
                 onClick={executeRevoke}
-                className="px-4 py-2 rounded-xl bg-rose-600 hover:bg-rose-500 active:scale-95 text-sm font-semibold text-white transition-all cursor-pointer"
+                className="btn btn-danger active:scale-95 cursor-pointer"
               >
                 {isRevoking ? "Đang thu hồi..." : "Xác nhận thu hồi"}
               </button>
