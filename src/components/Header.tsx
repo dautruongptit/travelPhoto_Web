@@ -100,7 +100,7 @@ export default function Header({
           <div className="flex-1 max-w-xl mx-auto">
             <div className="relative">
               <svg
-                className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400 dark:text-gray-500 pointer-events-none"
+                className="absolute left-3.5 top-1/2 -translate-y-1/2 text-white/50 pointer-events-none"
                 width="16"
                 height="16"
                 viewBox="0 0 24 24"
@@ -121,16 +121,17 @@ export default function Header({
                 />
               </svg>
               <input
+                data-glass="search"
                 type="text"
                 value={searchQuery}
                 onChange={(e) => onSearchChange(e.target.value)}
                 placeholder="Tìm kiếm ảnh, sự kiện…"
-                className="w-full h-10 pl-10 pr-4 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl text-sm text-gray-700 dark:text-gray-300 placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:border-blue-400 focus:bg-white dark:focus:bg-gray-800 focus:ring-2 focus:ring-blue-100 dark:focus:ring-blue-900/40 transition-all"
+                className="w-full h-10 pl-10 pr-4 rounded-xl text-sm placeholder-white/40 focus:outline-none focus:ring-2 focus:ring-blue-500/40 transition-all"
               />
               {searchQuery && (
                 <button
                   onClick={() => onSearchChange("")}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-white/50 hover:text-white/80"
                 >
                   ×
                 </button>
@@ -215,8 +216,8 @@ export default function Header({
             </button>
 
             {profileOpen && (
-              <div className="slide-up absolute right-0 top-full mt-2 w-72 bg-white dark:bg-gray-900 rounded-2xl shadow-xl border border-gray-100 dark:border-gray-800 overflow-hidden z-50">
-                <div className="px-4 py-4 border-b border-gray-100 dark:border-gray-800">
+              <div className="slide-up absolute right-0 top-full mt-2 w-72 bg-[rgba(0,0,0,0.8)] backdrop-blur-[16px] text-white rounded-[10px] shadow-xl border border-white/10 overflow-hidden z-50">
+                <div className="px-4 py-4 border-b border-white/10">
                   <div className="flex items-center gap-3">
                     <Avatar
                       src={user.avatar}
@@ -224,10 +225,10 @@ export default function Header({
                       className="w-10 h-10 rounded-full"
                     />
                     <div className="min-w-0">
-                      <p className="text-sm font-semibold text-gray-900 dark:text-white truncate">
+                      <p className="text-sm font-semibold text-white truncate">
                         {user.name}
                       </p>
-                      <p className="text-xs text-gray-500 dark:text-gray-400 truncate">
+                      <p className="text-xs text-white/60 truncate">
                         {user.email}
                       </p>
                     </div>
@@ -235,14 +236,14 @@ export default function Header({
 
                   {/* Storage usage */}
                   <div className="mt-3">
-                    <div className="flex items-center justify-between text-xs text-gray-500 dark:text-gray-400 mb-1">
+                    <div className="flex items-center justify-between text-xs text-white/60 mb-1">
                       <span>
                         {formatTotalSize(usedBytes)} /{" "}
                         {formatTotalSize(limitBytes)}
                       </span>
                       <span>{usedPercent}%</span>
                     </div>
-                    <div className="h-1.5 bg-gray-100 dark:bg-gray-800 rounded-full overflow-hidden">
+                    <div className="h-1.5 bg-white/10 rounded-full overflow-hidden">
                       <div
                         className={`h-full rounded-full ${
                           usedPercent >= 90
@@ -259,7 +260,7 @@ export default function Header({
                         setProfileOpen(false)
                         onOpenUpgrade()
                       }}
-                      className="mt-2 w-full py-1.5 rounded-lg bg-blue-50 dark:bg-blue-950/40 text-blue-700 dark:text-blue-400 text-sm font-semibold hover:bg-blue-100 dark:hover:bg-blue-900/40 transition-colors flex items-center justify-center gap-1"
+                      className="mt-2 w-full py-1.5 rounded-lg bg-blue-500/20 text-blue-300 text-sm font-semibold hover:bg-blue-500/30 transition-colors flex items-center justify-center gap-1"
                     >
                       <svg
                         width="12"
@@ -294,20 +295,20 @@ export default function Header({
                         setProfileOpen(false)
                         onClick()
                       }}
-                      className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors text-left"
+                      className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-white/80 hover:bg-white/10 transition-colors text-left"
                     >
                       <span>{icon}</span>
                       {label}
                     </button>
                   ))}
                 </div>
-                <div className="border-t border-gray-100 dark:border-gray-800 py-2">
+                <div className="border-t border-white/10 py-2">
                   <button
                     onClick={() => {
                       setProfileOpen(false)
                       onLogout()
                     }}
-                    className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-red-600 hover:bg-red-50 dark:hover:bg-red-950/40 transition-colors text-left font-medium"
+                    className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-red-400 hover:bg-red-500/15 transition-colors text-left font-medium"
                   >
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
                       <path
