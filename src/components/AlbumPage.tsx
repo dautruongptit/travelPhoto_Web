@@ -23,6 +23,7 @@ interface Props {
   onBack: () => void
   onUpload: () => void
   onDeletePhotos: (ids: string[]) => void
+  onDeleteEvent?: () => Promise<void> | void
   onToast: (type: "success" | "error" | "warning" | "info", msg: string) => void
   /** Gọi khi quyền xem của album có thể đã đổi (tạo link chia sẻ, bật/tắt công khai) */
   onVisibilityChanged?: (eventId: string) => void
@@ -37,6 +38,7 @@ export default function AlbumPage({
   onBack,
   onUpload,
   onDeletePhotos,
+  onDeleteEvent,
   onToast,
   onVisibilityChanged,
   onOpenProfile,
@@ -544,6 +546,7 @@ export default function AlbumPage({
                       setShowShareModal(true)
                     }}
                     onToast={onToast}
+                    onDeleteEvent={onDeleteEvent}
                     refreshTrigger={shareRefreshKey}
                     isEmbedded={true}
                   />
@@ -669,27 +672,40 @@ export default function AlbumPage({
       {showDeleteConfirm && (
         <div className="fixed inset-0 z-[90] flex items-center justify-center p-4">
           <div
-            className="absolute inset-0 bg-black/60 backdrop-blur-sm"
+            className="absolute inset-0 bg-black/65 backdrop-blur-sm"
             onClick={() => setShowDeleteConfirm(false)}
           />
-          <div className="slide-up relative bg-white dark:bg-[#18181b] rounded-2xl shadow-2xl p-6 max-w-sm w-full border border-neutral-200 dark:border-neutral-800">
-            <h3 className="text-base font-bold text-neutral-900 dark:text-white mb-2">
-              Xác nhận xóa
-            </h3>
-            <p className="text-neutral-600 dark:text-neutral-400 text-sm mb-5">
-              Bạn có chắc muốn xóa <strong>{selected.size} ảnh</strong> đã chọn?
-              Hành động này không thể hoàn tác.
+          <div className="slide-up relative bg-[rgba(22,28,54,0.92)] backdrop-blur-2xl border border-white/15 rounded-3xl shadow-2xl p-6 max-w-sm w-full text-left text-white">
+            <div className="flex items-center gap-3 mb-3">
+              <div className="w-10 h-10 rounded-2xl bg-red-500/15 border border-red-500/30 flex items-center justify-center text-red-400 shrink-0">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
+                  <line x1="10" y1="11" x2="10" y2="17" />
+                  <line x1="14" y1="11" x2="14" y2="17" />
+                </svg>
+              </div>
+              <div>
+                <h3 className="text-base font-bold text-white tracking-tight">
+                  Xác nhận xóa ảnh
+                </h3>
+                <p className="text-xs text-red-300 font-medium">Hành động này không thể hoàn tác</p>
+              </div>
+            </div>
+            <p className="text-white/70 text-sm mb-5 leading-relaxed">
+              Bạn có chắc muốn xóa <strong>{selected.size} ảnh</strong> đã chọn khỏi album này?
             </p>
-            <div className="flex gap-2">
+            <div className="flex items-center gap-2.5">
               <button
+                type="button"
                 onClick={() => setShowDeleteConfirm(false)}
                 className="btn btn-secondary flex-1 cursor-pointer"
               >
-                Hủy
+                Hủy bỏ
               </button>
               <button
+                type="button"
                 onClick={handleDelete}
-                className="btn btn-danger flex-1 cursor-pointer"
+                className="btn btn-danger flex-1 cursor-pointer active:scale-95 transition-all shadow-lg shadow-red-600/30"
               >
                 Xóa {selected.size} ảnh
               </button>

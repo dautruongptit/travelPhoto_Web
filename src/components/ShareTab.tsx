@@ -18,6 +18,7 @@ interface Props {
   eventName?: string
   onOpenShareModal: (mode?: "share" | "settings") => void
   onToast?: (type: "success" | "error" | "warning" | "info", msg: string) => void
+  onDeleteEvent?: () => Promise<void> | void
   refreshTrigger?: number
   isEmbedded?: boolean
 }
@@ -27,6 +28,7 @@ export default function ShareTab({
   eventName = "Album",
   onOpenShareModal,
   onToast,
+  onDeleteEvent,
   refreshTrigger,
   isEmbedded = false,
 }: Props) {
@@ -37,6 +39,12 @@ export default function ShareTab({
   const [qrModalLink, setQrModalLink] = useState<ShareLinkResponse | null>(null)
   const [confirmRevokeLink, setConfirmRevokeLink] = useState<ShareLinkResponse | null>(null)
   const [isRevoking, setIsRevoking] = useState(false)
+  const [showDeleteAlbumModal, setShowDeleteAlbumModal] = useState(false)
+  const [confirmDeleteName, setConfirmDeleteName] = useState("")
+  const [isDeletingAlbum, setIsDeletingAlbum] = useState(false)
+
+  const isDeleteConfirmed =
+    confirmDeleteName.trim().toLowerCase() === eventName.trim().toLowerCase()
 
   const refresh = useCallback(async () => {
     try {
@@ -566,6 +574,155 @@ export default function ShareTab({
                 className="btn btn-danger active:scale-95 cursor-pointer"
               >
                 {isRevoking ? "Đang thu hồi..." : "Xác nhận thu hồi"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+      {/* THẺ 4: VÙNG NGUY HIỂM (XÓA ALBUM) */}
+      {onDeleteEvent && (
+        <div className="blur-background p-6 space-y-4 border border-red-500/20">
+          <div className="flex items-center justify-between pb-3 border-b border-red-500/20 flex-wrap gap-3">
+            <div className="flex items-center gap-3">
+              <div className="w-9 h-9 rounded-2xl bg-red-500/15 border border-red-500/30 flex items-center justify-center text-red-400 shadow-inner">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
+                  <line x1="10" y1="11" x2="10" y2="17" />
+                  <line x1="14" y1="11" x2="14" y2="17" />
+                </svg>
+              </div>
+              <div>
+                <h3 className="font-bold text-sm text-red-300">Vùng nguy hiểm</h3>
+                <p className="text-xs text-white/50">Xóa vĩnh viễn album này và toàn bộ ảnh bên trong</p>
+              </div>
+            </div>
+            <button
+              type="button"
+              onClick={() => {
+                setConfirmDeleteName("")
+                setShowDeleteAlbumModal(true)
+              }}
+              className="btn btn-ghost-danger btn-sm cursor-pointer"
+            >
+              Xóa album
+            </button>
+          </div>
+          <p className="text-xs text-white/60 leading-relaxed">
+            Khi xóa album, toàn bộ hình ảnh, liên kết chia sẻ công khai và quyền truy cập của các thành viên sẽ bị xóa vĩnh viễn không thể khôi phục.
+          </p>
+        </div>
+      )}
+
+      {/* MODAL XÁC NHẬN XÓA ALBUM */}
+      {showDeleteAlbumModal && onDeleteEvent && (
+        <div className="fixed inset-0 z-[95] flex items-center justify-center p-4">
+          <div
+            className="absolute inset-0 bg-black/65 backdrop-blur-sm"
+            onClick={() => {
+              if (!isDeletingAlbum) {
+                setShowDeleteAlbumModal(false)
+                setConfirmDeleteName("")
+              }
+            }}
+          />
+          <div className="slide-up relative bg-[rgba(22,28,54,0.92)] backdrop-blur-2xl border border-white/15 rounded-3xl shadow-2xl p-6 max-w-md w-full text-left text-white">
+            <div className="flex items-center gap-3 mb-3.5">
+              <div className="w-10 h-10 rounded-2xl bg-red-500/15 border border-red-500/30 flex items-center justify-center text-red-400 shrink-0">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
+                  <line x1="10" y1="11" x2="10" y2="17" />
+                  <line x1="14" y1="11" x2="14" y2="17" />
+                </svg>
+              </div>
+              <div className="min-w-0">
+                <h3 className="text-base font-bold text-white tracking-tight truncate">
+                  Xác nhận xóa album
+                </h3>
+                <p className="text-xs text-red-300 font-medium">Hành động này không thể hoàn tác</p>
+              </div>
+            </div>
+
+            <p className="text-white/70 text-sm mb-4 leading-relaxed">
+              Toàn bộ ảnh và dữ liệu trong album <strong className="text-white font-semibold break-all">"{eventName}"</strong> sẽ bị xóa vĩnh viễn khỏi hệ thống.
+            </p>
+
+            <div className="bg-black/35 border border-white/10 rounded-xl p-3 mb-4 text-xs">
+              <p className="text-white/60 mb-1.5">
+                Vui lòng nhập chính xác tên album dưới đây để xác nhận:
+              </p>
+              <p className="font-mono text-sm font-bold text-amber-300 select-all tracking-wide bg-white/[0.06] px-2.5 py-1.5 rounded-lg border border-white/10 break-all">
+                {eventName}
+              </p>
+            </div>
+
+            <div className="mb-5">
+              <label className="block text-xs font-medium text-white/70 mb-1.5">
+                Nhập lại tên album để mở khóa nút xóa:
+              </label>
+              <input
+                type="text"
+                autoFocus
+                value={confirmDeleteName}
+                onChange={(e) => setConfirmDeleteName(e.target.value)}
+                onKeyDown={async (e) => {
+                  if (e.key === "Enter" && isDeleteConfirmed && !isDeletingAlbum) {
+                    e.preventDefault()
+                    setIsDeletingAlbum(true)
+                    try {
+                      await onDeleteEvent()
+                    } finally {
+                      setIsDeletingAlbum(false)
+                    }
+                  }
+                }}
+                placeholder={`Nhập "${eventName}"...`}
+                className="w-full px-3.5 py-2.5 bg-black/40 border border-white/15 focus:border-red-400 focus:ring-2 focus:ring-red-400/20 rounded-xl text-sm text-white placeholder-white/30 outline-none transition-all"
+              />
+              {confirmDeleteName.trim() && !isDeleteConfirmed && (
+                <p className="text-xs text-red-400 mt-1.5 flex items-center gap-1">
+                  <span>⚠</span> Tên chưa khớp với yêu cầu
+                </p>
+              )}
+              {isDeleteConfirmed && (
+                <p className="text-xs text-emerald-400 mt-1.5 flex items-center gap-1 font-medium">
+                  <span>✓</span> Đã khớp, bạn có thể thực hiện xóa
+                </p>
+              )}
+            </div>
+
+            <div className="flex items-center gap-2.5">
+              <button
+                type="button"
+                disabled={isDeletingAlbum}
+                onClick={() => {
+                  setShowDeleteAlbumModal(false)
+                  setConfirmDeleteName("")
+                }}
+                className="btn btn-secondary flex-1 cursor-pointer"
+              >
+                Hủy bỏ
+              </button>
+              <button
+                type="button"
+                disabled={!isDeleteConfirmed || isDeletingAlbum}
+                onClick={async () => {
+                  setIsDeletingAlbum(true)
+                  try {
+                    await onDeleteEvent()
+                  } finally {
+                    setIsDeletingAlbum(false)
+                  }
+                }}
+                className={`btn btn-danger flex-1 transition-all ${
+                  isDeleteConfirmed && !isDeletingAlbum
+                    ? "cursor-pointer active:scale-95 shadow-lg shadow-red-600/30"
+                    : "opacity-40 cursor-not-allowed pointer-events-none"
+                }`}
+              >
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
+                </svg>
+                <span>{isDeletingAlbum ? "Đang xóa..." : "Xóa vĩnh viễn album"}</span>
               </button>
             </div>
           </div>

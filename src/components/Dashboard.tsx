@@ -75,6 +75,7 @@ export default function Dashboard({
 }: Props) {
   const [selected, setSelected] = useState<Set<string>>(new Set())
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false)
+  const [confirmName, setConfirmName] = useState("")
   const [recentLightboxIndex, setRecentLightboxIndex] = useState<number | null>(
     null,
   )
@@ -110,6 +111,16 @@ export default function Dashboard({
       })
     : events
 
+  const selectedEvents = events.filter((e) => selected.has(e.id))
+  const targetDeleteName = selectedEvents[0]?.name || ""
+  const isDeleteConfirmed =
+    selectedEvents.length === 1
+      ? confirmName.trim().toLowerCase() === targetDeleteName.trim().toLowerCase()
+      : confirmName.trim().toUpperCase() === "XÓA" ||
+        selectedEvents.some(
+          (e) => e.name.trim().toLowerCase() === confirmName.trim().toLowerCase(),
+        )
+
   const toggleSelect = (id: string) => {
     setSelected((prev) => {
       const next = new Set(prev)
@@ -122,9 +133,11 @@ export default function Dashboard({
   const clearSelect = () => setSelected(new Set())
 
   const handleDelete = () => {
+    if (!isDeleteConfirmed) return
     onDeleteEvents(Array.from(selected))
     clearSelect()
     setShowDeleteConfirm(false)
+    setConfirmName("")
   }
 
   return (
@@ -267,7 +280,10 @@ export default function Dashboard({
               : `Chọn tất cả (${filtered.length})`}
           </button>
           <button
-            onClick={() => setShowDeleteConfirm(true)}
+            onClick={() => {
+              setConfirmName("")
+              setShowDeleteConfirm(true)
+            }}
             className="btn btn-ghost-danger btn-sm cursor-pointer"
           >
             Xóa
@@ -286,29 +302,111 @@ export default function Dashboard({
       {showDeleteConfirm && (
         <div className="fixed inset-0 z-[90] flex items-center justify-center p-4">
           <div
-            className="absolute inset-0 bg-black/60 backdrop-blur-sm"
-            onClick={() => setShowDeleteConfirm(false)}
+            className="absolute inset-0 bg-black/65 backdrop-blur-sm"
+            onClick={() => {
+              setShowDeleteConfirm(false)
+              setConfirmName("")
+            }}
           />
-          <div className="slide-up relative bg-white dark:bg-[#18181b] rounded-2xl shadow-2xl p-6 max-w-sm w-full border border-neutral-200 dark:border-neutral-800">
-            <h3 className="text-base font-bold text-neutral-900 dark:text-white mb-2">
-              Xác nhận xóa sự kiện
-            </h3>
-            <p className="text-neutral-600 dark:text-neutral-400 text-sm mb-5 leading-relaxed">
-              Bạn có chắc muốn xóa <strong>{selected.size} sự kiện</strong> đã
-              chọn? Toàn bộ ảnh bên trong cũng sẽ bị xóa vĩnh viễn.
+          <div className="slide-up relative bg-[rgba(22,28,54,0.92)] backdrop-blur-2xl border border-white/15 rounded-3xl shadow-2xl p-6 max-w-md w-full text-left text-white">
+            <div className="flex items-center gap-3 mb-3.5">
+              <div className="w-10 h-10 rounded-2xl bg-red-500/15 border border-red-500/30 flex items-center justify-center text-red-400 shrink-0">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
+                  <line x1="10" y1="11" x2="10" y2="17" />
+                  <line x1="14" y1="11" x2="14" y2="17" />
+                </svg>
+              </div>
+              <div className="min-w-0">
+                <h3 className="text-base font-bold text-white tracking-tight truncate">
+                  Xác nhận xóa {selected.size === 1 ? "sự kiện / album" : `${selected.size} sự kiện / album`}
+                </h3>
+                <p className="text-xs text-red-300 font-medium">Hành động này không thể hoàn tác</p>
+              </div>
+            </div>
+
+            <p className="text-white/70 text-sm mb-4 leading-relaxed">
+              Toàn bộ ảnh, thông tin chuyến đi và liên kết chia sẻ bên trong{" "}
+              {selected.size === 1 ? (
+                <>sự kiện <strong className="text-white font-semibold break-all">"{targetDeleteName}"</strong></>
+              ) : (
+                <><strong className="text-white font-semibold">{selected.size} sự kiện đã chọn</strong></>
+              )}{" "}
+              sẽ bị xóa vĩnh viễn khỏi hệ thống.
             </p>
-            <div className="flex gap-2">
+
+            <div className="bg-black/35 border border-white/10 rounded-xl p-3 mb-4 text-xs">
+              <p className="text-white/60 mb-1.5">
+                {selected.size === 1
+                  ? "Vui lòng nhập chính xác tên sự kiện dưới đây để xác nhận:"
+                  : `Vui lòng nhập tên sự kiện "${targetDeleteName}" hoặc gõ "XÓA" để xác nhận:`}
+              </p>
+              <p className="font-mono text-sm font-bold text-amber-300 select-all tracking-wide bg-white/[0.06] px-2.5 py-1.5 rounded-lg border border-white/10 break-all">
+                {selected.size === 1 ? targetDeleteName : `${targetDeleteName} (hoặc XÓA)`}
+              </p>
+            </div>
+
+            <div className="mb-5">
+              <label className="block text-xs font-medium text-white/70 mb-1.5">
+                Nhập tên để xác nhận:
+              </label>
+              <input
+                type="text"
+                autoFocus
+                value={confirmName}
+                onChange={(e) => setConfirmName(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" && isDeleteConfirmed) {
+                    e.preventDefault()
+                    handleDelete()
+                  }
+                }}
+                placeholder={
+                  selected.size === 1
+                    ? `Nhập "${targetDeleteName}"...`
+                    : `Nhập "${targetDeleteName}" hoặc "XÓA"...`
+                }
+                className="w-full px-3.5 py-2.5 bg-black/40 border border-white/15 focus:border-red-400 focus:ring-2 focus:ring-red-400/20 rounded-xl text-sm text-white placeholder-white/30 outline-none transition-all"
+              />
+              {confirmName.trim() && !isDeleteConfirmed && (
+                <p className="text-xs text-red-400 mt-1.5 flex items-center gap-1">
+                  <span>⚠</span> Tên chưa khớp với yêu cầu
+                </p>
+              )}
+              {isDeleteConfirmed && (
+                <p className="text-xs text-emerald-400 mt-1.5 flex items-center gap-1 font-medium">
+                  <span>✓</span> Đã khớp, bạn có thể thực hiện xóa
+                </p>
+              )}
+            </div>
+
+            <div className="flex items-center gap-2.5">
               <button
-                onClick={() => setShowDeleteConfirm(false)}
+                type="button"
+                onClick={() => {
+                  setShowDeleteConfirm(false)
+                  setConfirmName("")
+                }}
                 className="btn btn-secondary flex-1 cursor-pointer"
               >
-                Hủy
+                Hủy bỏ
               </button>
               <button
+                type="button"
+                disabled={!isDeleteConfirmed}
                 onClick={handleDelete}
-                className="btn btn-danger flex-1 cursor-pointer"
+                className={`btn btn-danger flex-1 transition-all ${
+                  isDeleteConfirmed
+                    ? "cursor-pointer active:scale-95 shadow-lg shadow-red-600/30"
+                    : "opacity-40 cursor-not-allowed pointer-events-none"
+                }`}
               >
-                Xóa {selected.size} sự kiện
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
+                </svg>
+                <span>
+                  {selected.size === 1 ? "Xóa sự kiện" : `Xóa ${selected.size} sự kiện`}
+                </span>
               </button>
             </div>
           </div>

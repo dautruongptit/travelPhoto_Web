@@ -603,6 +603,10 @@ export default function App() {
                 onBack={handleGoHome}
                 onUpload={handleNavbarUpload}
                 onDeletePhotos={handleDeletePhotos}
+                onDeleteEvent={async () => {
+                  await handleDeleteEvents([selectedEvent.id])
+                  handleGoHome()
+                }}
                 onToast={addToast}
                 onVisibilityChanged={refreshEventVisibility}
                 onOpenProfile={() => setShowProfileModal(true)}
