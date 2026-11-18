@@ -4,7 +4,7 @@ import type { PaymentOrder, StoragePlan } from "../types"
 
 import { generateId } from "../utils"
 
-const PAYMENT_MODE = import.meta.env.VITE_PAYMENT_MODE ?? "mock"
+const PAYMENT_MODE = import.meta.env.VITE_PAYMENT_MODE ?? "real"
 
 interface CreatePaymentResponse {
   paymentUrl: string
@@ -117,3 +117,23 @@ export async function verifyVnpayReturn(
 }
 
 export const isMockPaymentMode = PAYMENT_MODE === "mock"
+
+export interface OrderStatusResponse {
+  orderId: string
+  status: "PENDING" | "SUCCESS" | "FAILED"
+  planId: string
+  planName: string
+  storageGb: number
+  amount: number
+  userStorageQuota?: number
+  message?: string
+}
+
+export async function checkOrderStatus(
+  orderId: string,
+): Promise<OrderStatusResponse> {
+  return apiFetch<OrderStatusResponse>(
+    `/payments/vnpay/orders/${orderId}/status`,
+    { method: "GET" },
+  )
+}

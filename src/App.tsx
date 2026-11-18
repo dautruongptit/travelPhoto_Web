@@ -19,6 +19,7 @@ import { getToken, setToken, clearToken } from "./lib/apiClient"
 import { fetchCurrentUser, logout as apiLogout } from "./lib/authApi"
 import {
   verifyVnpayReturn,
+  checkOrderStatus,
   readPendingOrder,
   clearPendingOrder,
   isMockPaymentMode,
@@ -352,8 +353,62 @@ export default function App() {
       )
       .finally(() => {
         // Dọn query string VNPay khỏi URL để tránh xử lý lại khi F5
-        window.history.replaceState({}, "", window.location.pathname)
+        window.history.replaceState({}, "", "/")
       })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
+  // Tự động kiểm tra trạng thái đơn hàng khi người dùng chuyển khoản/quét QR thành công
+  // (Cập nhật dung lượng ngay lập tức mà không cần chờ redirect)
+  useEffect(() => {
+    if (isMockPaymentMode) return
+
+    let cancelled = false
+    const timer = setInterval(() => {
+      const pending = readPendingOrder()
+      if (!pending?.orderId || cancelled) return
+
+      checkOrderStatus(pending.orderId)
+        .then((order) => {
+          if (cancelled) return
+          if (order.status === "SUCCESS") {
+            const plan = storagePlans.find((p) => p.id === order.planId)
+            const newBytes =
+              order.userStorageQuota ??
+              (plan ? plan.storageGB * 1024 * 1024 * 1024 : undefined)
+            if (newBytes) {
+              setStorageLimitBytes(newBytes)
+            }
+            addToast(
+              "success",
+              `Thanh toán VNPay thành công! Gói ${order.planName} (${order.storageGb}GB) đã được kích hoạt. Mã GD: ${order.orderId}.`,
+            )
+            clearPendingOrder()
+            fetchCurrentUser()
+              .then((u) => {
+                setUser(u)
+                if (u.storageQuota) {
+                  setStorageLimitBytes(u.storageQuota)
+                }
+              })
+              .catch(() => {})
+          } else if (order.status === "FAILED") {
+            addToast(
+              "error",
+              order.message || "Giao dịch thanh toán không thành công.",
+            )
+            clearPendingOrder()
+          }
+        })
+        .catch(() => {
+          // Bỏ qua lỗi mạng tạm thời trong lúc kiểm tra ngầm
+        })
+    }, 2500)
+
+    return () => {
+      cancelled = true
+      clearInterval(timer)
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
