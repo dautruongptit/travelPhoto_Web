@@ -3,6 +3,8 @@ export interface User {
   name: string
   email: string
   avatar: string
+  storageUsed?: number
+  storageQuota?: number
 }
 
 export interface Photo {

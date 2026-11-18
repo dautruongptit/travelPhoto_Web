@@ -70,12 +70,22 @@ export default function VnpayCheckoutModal({
 
         setOrderId(res.orderId)
 
+        if ("paymentUrl" in res && res.paymentUrl) {
+          window.location.href = res.paymentUrl
+          return
+        }
+
         setTimeout(() => !cancelled && setStep("qr"), 800)
       })
 
-      .catch(() => {
-        if (!cancelled)
-          setError("Không thể khởi tạo giao dịch. Vui lòng thử lại.")
+      .catch((err: unknown) => {
+        if (!cancelled) {
+          const msg =
+            err instanceof Error
+              ? err.message
+              : "Không thể khởi tạo giao dịch. Vui lòng thử lại."
+          setError(msg)
+        }
       })
 
     return () => {

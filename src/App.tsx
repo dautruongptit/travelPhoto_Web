@@ -167,6 +167,9 @@ export default function App() {
       fetchCurrentUser()
         .then((loggedInUser) => {
           setUser(loggedInUser)
+          if (loggedInUser.storageQuota) {
+            setStorageLimitBytes(loggedInUser.storageQuota)
+          }
           if (!shareToken) {
             setView("dashboard")
             replace({ view: "dashboard" })
@@ -246,6 +249,9 @@ export default function App() {
       fetchCurrentUser()
         .then((u) => {
           setUser(u)
+          if (u.storageQuota) {
+            setStorageLimitBytes(u.storageQuota)
+          }
           loadEvents()
         })
         .catch(() => clearToken())
@@ -267,6 +273,9 @@ export default function App() {
     fetchCurrentUser()
       .then(async (restoredUser) => {
         setUser(restoredUser)
+        if (restoredUser.storageQuota) {
+          setStorageLimitBytes(restoredUser.storageQuota)
+        }
         // F5 / mở link trực tiếp: khôi phục đúng màn hình theo URL (/events/{id}, /help)
         const target = parsePath(window.location.pathname)
         const list = await loadEvents()
@@ -319,6 +328,14 @@ export default function App() {
             "success",
             `Thanh toán VNPay thành công! Đã nâng cấp gói ${plan.label} — ${plan.storageGB}GB. Mã GD: ${result.transactionNo ?? result.orderId}.`,
           )
+          fetchCurrentUser()
+            .then((u) => {
+              setUser(u)
+              if (u.storageQuota) {
+                setStorageLimitBytes(u.storageQuota)
+              }
+            })
+            .catch(() => {})
         } else {
           addToast(
             "error",

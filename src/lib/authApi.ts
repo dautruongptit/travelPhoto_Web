@@ -35,6 +35,10 @@ interface UserResponseDto {
   lastLoginAt?: string
 
   lastLoginIp?: string
+
+  storageUsed?: number
+
+  storageQuota?: number
 }
 
 function mapUser(dto: UserResponseDto): User {
@@ -46,6 +50,10 @@ function mapUser(dto: UserResponseDto): User {
     email: dto.email,
 
     avatar: dto.avatarUrl,
+
+    storageUsed: dto.storageUsed,
+
+    storageQuota: dto.storageQuota,
   }
 }
 
