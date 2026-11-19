@@ -2,17 +2,21 @@
 <html>
   <head>
     <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Đang đăng nhập…</title>
     <style>
       body {
         margin: 0;
         display: flex;
+        flex-direction: column;
         align-items: center;
         justify-content: center;
         min-height: 100vh;
         font-family: Inter, system-ui, sans-serif;
         background: #0b0b0c;
         color: #fff;
+        padding: 24px;
+        box-sizing: border-box;
       }
       .spinner {
         width: 36px;
@@ -21,12 +25,28 @@
         border-top-color: #0063DC;
         border-radius: 50%;
         animation: spin .7s linear infinite;
+        margin-bottom: 20px;
       }
       @keyframes spin { to { transform: rotate(360deg); } }
+      .btn {
+        display: none;
+        margin-top: 20px;
+        padding: 14px 28px;
+        background: #0063DC;
+        color: #fff;
+        border-radius: 12px;
+        text-decoration: none;
+        font-weight: 600;
+        font-size: 15px;
+        box-shadow: 0 4px 14px rgba(0, 99, 220, 0.4);
+      }
     </style>
   </head>
   <body>
-    <div class="spinner"></div>
+    <div class="spinner" id="spinner"></div>
+    <p id="msg" style="text-align:center;line-height:1.6;margin:0;font-size:16px;">Đang xử lý đăng nhập...</p>
+    <a id="open-app-btn" href="#" class="btn">Mở ứng dụng TravelPhoto</a>
+
     <script>
       (function () {
         var params = new URLSearchParams(window.location.search);
@@ -36,12 +56,38 @@
           ? { type: "GOOGLE_AUTH_SUCCESS", token: token }
           : { type: "GOOGLE_AUTH_ERROR", error: error || "unknown" };
 
-        // Xóa token khỏi URL/lịch sử ngay (tránh để token nằm lại trong history của popup).
+        // Xóa token khỏi URL/lịch sử ngay
         try { window.history.replaceState({}, "", window.location.pathname); } catch (e) {}
+
+        // Ưu tiên bắn deep link về TravelPhoto Mobile App
+        if (token) {
+          var appUrl = "travelphoto://auth?token=" + encodeURIComponent(token);
+          try {
+            window.location.href = appUrl;
+          } catch (e) {}
+
+          var btn = document.getElementById("open-app-btn");
+          if (btn) {
+            btn.href = appUrl;
+            btn.style.display = "inline-block";
+          }
+        } else if (error) {
+          var appErrorUrl = "travelphoto://auth?error=" + encodeURIComponent(error);
+          try {
+            window.location.href = appErrorUrl;
+          } catch (e) {}
+
+          var btn = document.getElementById("open-app-btn");
+          if (btn) {
+            btn.href = appErrorUrl;
+            btn.innerText = "Quay lại ứng dụng TravelPhoto";
+            btn.style.display = "inline-block";
+          }
+        }
 
         var delivered = false;
 
-        // Cách 1: postMessage tới cửa sổ mở popup (hỗ trợ cả khi opener ở localhost:8300 hoặc production).
+        // Cách 1: postMessage tới cửa sổ mở popup (Web)
         try {
           if (window.opener && !window.opener.closed) {
             window.opener.postMessage(msg, "*");
@@ -49,8 +95,7 @@
           }
         } catch (e) {}
 
-        // Cách 2 (dự phòng): Google có thể làm mất window.opener (COOP) -> gửi qua
-        // BroadcastChannel (chỉ cùng origin), cửa sổ chính cũng đang lắng nghe kênh này.
+        // Cách 2: BroadcastChannel (Web)
         try {
           if ("BroadcastChannel" in window) {
             var bc = new BroadcastChannel("travelphoto-auth");
@@ -62,16 +107,24 @@
 
         if (delivered) {
           window.close();
-          // Nếu trình duyệt không cho tự đóng, nhắc người dùng thay vì load cả app trong popup.
           setTimeout(function () {
-            document.body.innerHTML =
-              '<p style="font-family:system-ui;text-align:center">Đăng nhập xong. Bạn có thể đóng cửa sổ này.</p>';
+            var sp = document.getElementById("spinner");
+            if (sp) sp.style.display = "none";
+            document.getElementById("msg").innerHTML =
+              'Đăng nhập thành công! Bạn có thể quay lại ứng dụng hoặc đóng tab này.';
           }, 600);
         } else if (token) {
-          // Không có opener lẫn BroadcastChannel (mở trực tiếp): đăng nhập ngay tại tab này.
-          window.location.replace("/?token=" + encodeURIComponent(token));
+          setTimeout(function () {
+            var sp = document.getElementById("spinner");
+            if (sp) sp.style.display = "none";
+            document.getElementById("msg").innerHTML =
+              'Đã xác thực tài khoản Google thành công.<br>Nhấn nút bên dưới nếu ứng dụng không tự mở:';
+          }, 800);
         } else {
-          window.location.replace("/?error=" + encodeURIComponent(error || "unknown"));
+          var sp = document.getElementById("spinner");
+          if (sp) sp.style.display = "none";
+          document.getElementById("msg").innerHTML =
+            'Đăng nhập không thành công: ' + (error || "unknown");
         }
       })();
     </script>
